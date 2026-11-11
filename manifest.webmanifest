@@ -1,7 +1,7 @@
 {
- "name": "Sales Insight · SCANDIA BOTANI",
- "short_name": "Sales Insight",
- "description": "Rekap penjualan SCANDIA BOTANI",
+ "name": "Monitoring Database · SCANDIA BOTANI",
+ "short_name": "Monitoring",
+ "description": "Monitoring database penjualan SCANDIA BOTANI",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
