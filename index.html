@@ -84,6 +84,17 @@ select.p{background-size:12px;background-position:right 6px center;padding-right
 .rw{display:grid;grid-template-columns:58px minmax(0,1fr) 96px;gap:8px;padding:6px 0;border-bottom:1px solid var(--ln)}.rw span:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 select.sp{max-width:96px;border-color:var(--ln);color:var(--tx);background-color:var(--cd)}select.sp.miss{border-color:var(--s0);color:var(--s0)}.sn{display:flex;gap:4px;align-items:center}.sn input{width:84px;padding:3px 6px;font:inherit;font-size:12px;border:1px solid var(--ln);border-radius:8px;background:var(--cd);color:var(--tx)}.x.warn{color:var(--s0);border-color:var(--s0);padding:1px 8px}
 .dd.up{color:var(--s0)}.dd.dn{color:var(--s2)}
+@media (min-width:900px){
+.w{max-width:1240px}
+#app{display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-areas:"hd hd" "inf inf" "nv v";column-gap:28px;align-items:start}
+#app>header{grid-area:hd;flex-direction:row;align-items:center;gap:12px}
+#app .hd{display:contents}#app .hd>div{flex:1;min-width:0}#app .ct select{flex:none;min-width:230px}#app #gear{order:3;margin-left:0}#app .ct{order:2}
+#app>#info{grid-area:inf}
+#nv{grid-area:nv;position:sticky;top:16px;display:flex;flex-direction:column;gap:4px;padding:8px;margin:14px 0 0}
+#nv button{flex-direction:row;justify-content:flex-start;gap:12px;font-size:14px;padding:11px 14px;border-radius:10px}
+#nv button:not(.on):hover{background:rgba(127,127,127,.1)}
+#v{grid-area:v;min-width:0}
+}
 </style>
 <script>try{if(localStorage.getItem('si_tk'))document.documentElement.className='chk'}catch(e){}addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__dp=e;var b=document.getElementById('inst');if(b)b.hidden=false})</script></head><body><div id="lg"><div class="lc"><div id="lgl"></div><h1>Monitoring Database</h1><p class="mu">Masuk untuk melihat data penjualan</p><input id="lu" placeholder="Username" autocomplete="username" autocapitalize="none"><div class="pw"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"><button type="button" class="eye" onclick="eye('lp',this)" aria-label="Lihat password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div><button class="b pr" id="lb">Masuk</button><p class="mu" id="lm"></p><div id="ap" class="fm" hidden><p class="mu">Masukkan alamat API (URL Web App Apps Script, berakhiran /exec):</p><input id="au" placeholder="Alamat API" autocapitalize="none"><button class="b" onclick="saveApi()">Simpan alamat</button></div><button class="b" id="inst" hidden onclick="instApp()">Pasang aplikasi di HP</button></div></div>
 <div class="w" id="app" hidden>
