@@ -84,7 +84,7 @@ select.p{background-size:12px;background-position:right 6px center;padding-right
 .rw{display:grid;grid-template-columns:58px minmax(0,1fr) 96px;gap:8px;padding:6px 0;border-bottom:1px solid var(--ln)}.rw span:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 select.sp{max-width:96px;border-color:var(--ln);color:var(--tx);background-color:var(--cd)}select.sp.miss{border-color:var(--s0);color:var(--s0)}.sn{display:flex;gap:4px;align-items:center}.sn input{width:84px;padding:3px 6px;font:inherit;font-size:12px;border:1px solid var(--ln);border-radius:8px;background:var(--cd);color:var(--tx)}.x.warn{color:var(--s0);border-color:var(--s0);padding:1px 8px}
 .dd.up{color:var(--s0)}.dd.dn{color:var(--s2)}
-@media (min-width:900px){
+@media (min-width:900px), (orientation:landscape) and (min-width:680px){
 #app.w{max-width:1240px;padding-top:20px;display:grid;grid-template-columns:220px minmax(0,1fr);column-gap:28px;align-items:start;grid-template-rows:auto auto auto}
 #app>header{grid-column:1 / -1;grid-row:1;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
 #app header .hd{flex:1 1 320px;min-width:0}
@@ -113,7 +113,7 @@ select.sp{max-width:96px;border-color:var(--ln);color:var(--tx);background-color
 ::selection{background:color-mix(in srgb,var(--ac) 28%,transparent)}
 :focus:not(:focus-visible){outline:none}
 :focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-@media (min-width:900px){
+@media (min-width:900px), (orientation:landscape) and (min-width:680px){
 #app.w{display:grid;grid-template-columns:220px minmax(0,1fr);column-gap:28px;align-items:start;row-gap:0;padding-top:20px}
 #app>header{grid-column:1 / -1;grid-row:1;display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:14px;row-gap:10px;margin:0 0 6px}
 #app>header .hd{display:contents}
@@ -231,7 +231,7 @@ F.forEach(x=>{const k=x.art||x.it,r=M[k]||(M[k]={art:x.art,it:x.it,dp:x.dp,q:0,a
 const all=Object.values(M).sort((a,b)=>b[tk]-a[tk]||b.a-a.a),l=pq?all.slice(0,100):all.slice(0,20),m=l[0]?l[0][tk]||1:1,tq=F.reduce((s,x)=>s+x.q,0),ta=F.reduce((s,x)=>s+x.a,0);
 $('#pl').innerHTML=(pq?`<div class="g" style="grid-template-columns:1fr 1.7fr"><div class="k"><small>Total Qty</small><b>${tq} pcs</b></div><div class="k"><small>Total Value</small><b style="font-size:18px;white-space:nowrap">${R(ta)}</b></div></div>`:'')+`<p class="mu">${pq?all.length+' produk cocok · ':''}${pd=='all'?'Semua department':E(pd)} · ${tm=='all'?'semua bulan':mname(tm)}${pq?'':` · total ${tq} pcs · ${R(ta)}`}<br>Sumber: ${fp?'tab TOTAL PENJUALAN (kolom F–I)':'order DO'+(sp?' · '+E(sp):' (tab TOTAL PENJUALAN belum terbaca)')} · delivery/instalasi tidak dihitung</p>`+(l.length?`<div class="ov"><table class="pt"><tr><th>#<th>Produk<th class="r">Qty<th class="r">Value</tr>${l.map((o,i)=>`<tr><td>${i+1}<td class="pn">${E(o.it)} <small class="mu">${E(o.art)}</small>${pq&&tm=='all'?`<br><small class="mu">${Object.entries(o.m).sort().map(([k,v])=>MN[+k.slice(5)-1].slice(0,3)+' '+v).join(' · ')} pcs</small>`:''}<div class="sb" style="height:6px;margin-top:4px"><i class="s2" style="flex:${o[tk]/m}"></i></div><td class="r">${o.q}<td class="r">${R(o.a)}</tr>`).join('')}</table></div>`:'<p class="mu">Tidak ada barang yang cocok.</p>')}
 function mv(k){if(md=='all')return tv(k);if(!sp&&DT[k])return(DT[k].d||{})[md]||0;return L.filter(x=>x.d.startsWith(k)&&(!sp||x.sa==sp)&&x.dp==md).reduce((s,x)=>s+x.a,0)}
-function msel(){const ds=[...new Set([...Object.values(DT).flatMap(x=>Object.keys(x.d||{})),...L.map(x=>x.dp)])].filter(Boolean).sort();return `<select onchange="md=this.value;draw()"><option value="all">Semua department</option>${ds.map(d=>`<option ${d==md?'selected':''}>${E(d)}</option>`).join('')}</select>`}
+function msel(){const ds=[...new Set([...Object.values(DT).flatMap(x=>Object.keys(x.d||{})),...L.map(x=>x.dp)])].filter(d=>d&&!BIAYA.test(d)).sort();return `<select onchange="md=this.value;draw()"><option value="all">Semua department</option>${ds.map(d=>`<option ${d==md?'selected':''}>${E(d)}</option>`).join('')}</select>`}
 function mchart(){const yr=Math.max(...months().map(k=>+k.slice(0,4))),keys=Array.from({length:12},(_,i)=>yr+'-'+String(i+1).padStart(2,'0')),val=keys.map(mv);
 if(mso=='v'){const o={};keys.forEach((k,i)=>{if(val[i])o[mname(k)]=val[i]});return bars(o)}
 const m=Math.max(...val,1);return `<div class="vc">${keys.map((k,i)=>`<div class="vx"><small>${val[i]?J(val[i]).replace(' ',''):''}</small><i class="${val[i]?'':'z'}" style="height:${Math.round(val[i]/m*128)}px"></i><span>${MN[i].slice(0,3)}</span></div>`).join('')}</div>`}
@@ -244,7 +244,8 @@ function cl(){const s=cq.toLowerCase(),A=custs().filter(c=>(cf=='all'||(cf=='st'
 $('#cn').textContent=`${A.length} customer · ${A.filter(c=>c.p).length} punya no. telp · total ${R(A.reduce((t,c)=>t+c.a,0))}`;
 $('#cl').innerHTML=A.slice(0,200).map(c=>{const pr=Object.values(c.pr).sort((a,b)=>b.q-a.q||b.a-a.a),al=Object.keys(c.names).filter(x=>x!=c.n);
 return `<details class="cc"><summary><div class="r1"><b>${E(c.n)}</b><b>${R(c.a)}</b></div><div class="r2"><span>${c.ps[0]?pf(c.ps[0])+(c.ps.length>1?' · +'+(c.ps.length-1)+' nomor':''):'Tanpa no. telp'}</span><span>${c.o.length+(c.dbSpo||0)} SPO · ${c.last?c.last.slice(8)+'/'+c.last.slice(5,7)+'/'+c.last.slice(2,4):'-'}</span></div><div class="r3">Sales Person: ${E(c.sas.join(', ')||'-')}</div></summary><div class="cd">${c.ps.length?`<h4>Kontak</h4>${c.ps.map(n=>`<div class="ph"><span>${pf(n)}</span><a class="b" href="tel:+${n}" target="_blank" rel="noopener">Telepon</a><a class="b" href="https:${SL}wa.me/${n}" target="_blank" rel="noopener">WhatsApp</a></div>`).join('')}`:''}${al.length?`<p class="mu">Nama lain: ${E(al.join(', '))}</p>`:''}<h4>Produk dibeli · ${pr.length} item · ${pr.reduce((s,x)=>s+x.q,0)} pcs</h4><div class="pl"><div class="pr0"><span>Produk</span><span>Qty</span><span>Value</span></div>${pr.map(x=>`<div class="pr1"><span>${E(x.it)}</span><span>${x.q}</span><span>${J(x.a)}</span></div>`).join('')||'<p class="mu">—</p>'}</div><h4>Riwayat pembelian · ${c.o.length} SPO${c.dbSpo?' (+'+c.dbSpo+' SPO tahun lalu, lihat arsip)':''}</h4><div class="pl">${c.o.sort((a,b)=>b.d.localeCompare(a.d)).map(o=>`<div class="rw"><span>${o.d.slice(8)}/${o.d.slice(5,7)}/${o.d.slice(2,4)}</span><span>${E(o.s.slice(-5))}${c.sas.length>1?' · '+E(o.sa):''}</span><span>${R(o.a)}</span></div>`).join('')}</div><p class="mu">${c.dbSps&&c.dbSps.length?'No. SPO tahun lalu: '+E(c.dbSps.map(s=>s.slice(-5)).join(' · ')):''}</p></div></details>`}).join('')+(A.length>200?'<p class="mu">Menampilkan 200 teratas — gunakan pencarian.</p>':'')}
-function dep(l){const o={};l.forEach(x=>o[x.dp]=(o[x.dp]||0)+x.a);return o}
+const BIAYA=/^(DELIVERY FEE|INSTALATION FEE|KODE PEMOTONG)$/i;
+function dep(l){const o={};l.forEach(x=>{if(!BIAYA.test(x.dp))o[x.dp]=(o[x.dp]||0)+x.a});return o}
 function chg(s,v){if(!confirm('Ubah semua barang SPO '+s+' menjadi '+v+'?')){draw();return}rpc('setStatus',[s,v],()=>load(true),e=>{alert(e.message);draw()})}
 function chgl(i,v){const x=L[i];rpc('setLineStatus',[x.sh,x.r,x.s,v],()=>load(true),e=>{alert(e.message);draw()})}
 function load(f){$('#v').innerHTML='<p class="mu">Memuat data…</p>';
