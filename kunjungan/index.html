@@ -631,7 +631,7 @@ function pager(el,key,total,onGo){
 
 function kartuDb(a){
   return '<div class="card"><div class="inf">'
-    +'<div class="al">'+E(a.alamat)+'</div>'
+    +'<div class="al">'+E(a.alamat||a.perumahan||a.kecamatan||'-')+'</div>'
     +'<div class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</div>'
     +'<div>'
     +(a.sektor?'<span class="tag sk">'+E(a.sektor)+'</span>':'')
@@ -642,7 +642,7 @@ function kartuDb(a){
 function kartuKj(a,i){
   var checked=!!SEL_KEYS[a.key];
   return '<div class="card'+(checked?' sel':'')+'"><div class="sel-wrap"><input type="checkbox" data-sel="'+i+'" '+(checked?'checked':'')+' aria-label="Select"><span class="sel-lbl">SEL</span></div><div class="inf click" data-kj-open="'+i+'">'
-    +'<div class="al">'+E(a.alamat)+'</div>'
+    +'<div class="al">'+E(a.alamat||a.perumahan||a.kecamatan||'-')+'</div>'
     +'<div class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</div>'
     +'<div>'+(a.dikunjungi?'<span class="tag ok">'+E(T().visited(tglTxt(a.terakhir),a.jumlahKunjungan))+'</span>':'<span class="tag">'+E(T().notVisited)+'</span>')
     +(a.sektor?'<span class="tag sk">'+E(a.sektor)+'</span>':'')
@@ -746,7 +746,7 @@ function formFields(a,mode){
       return '<div><strong>'+E(it.alamat||it.perumahan||it.kecamatan)+'</strong> <span class="mu">('+E([it.perumahan,it.kecamatan,it.kota].filter(Boolean).join(' · ')||'-')+')</span></div>';
     }).join('')+'</div>';
   }else{
-    headerBlock='<div class="al" style="font-weight:600">'+E(a.alamat)+'</div><p class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</p>';
+    headerBlock='<div class="al" style="font-weight:600">'+E(a.alamat||a.perumahan||a.kecamatan||'-')+'</div><p class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</p>';
   }
 
   return headerBlock
@@ -897,7 +897,7 @@ function renderHs(){
   var list=FIL.hs.slice(PG.hs*PS,PG.hs*PS+PS);
   $('#listHs').innerHTML='<div id="top-hs"></div>'+(list.map(function(h){
     return '<div class="card" style="display:block"><div class="row" style="justify-content:space-between;margin:0"><span class="tag ok" style="margin:0">'+E(tglTxt(h.tgl))+'</span>'+(h.sumber==='Baru'?'<span class="tag s1">'+E(T().newAddrTag)+'</span>':'')+'</div>'
-      +'<div class="al" style="margin-top:4px">'+E(h.alamat)+'</div><div class="mu">'+E([h.perumahan,h.kecamatan,h.kota].filter(Boolean).join(' · '))+'</div>'
+      +'<div class="al" style="margin-top:4px">'+E(h.alamat||h.perumahan||h.kecamatan||'-')+'</div><div class="mu">'+E([h.perumahan,h.kecamatan,h.kota].filter(Boolean).join(' · '))+'</div>'
       +'<div>'+(h.sektor?'<span class="tag sk">'+E(h.sektor)+'</span>':'')+h.sales.map(function(s){return '<span class="tag">'+E(s)+'</span>'}).join('')+(h.hasil?'<span class="tag">'+E(h.hasil)+'</span>':'')+'</div>'
       +(h.catatan?'<p class="mu" style="margin:6px 0 0">'+E(h.catatan)+'</p>':'')
       +(h.foto.length?'<p style="margin:6px 0 0">'+h.foto.map(function(u,i){return '<a href="'+E(u)+'" target="_blank" rel="noopener" style="font-size:13px;color:var(--ac);margin-right:10px">'+E(T().photoLink(i+1))+'</a>'}).join('')+'</p>':'')
