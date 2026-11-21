@@ -59,7 +59,7 @@ textarea{min-height:70px;resize:vertical}
       <select id="fp" aria-label="Perumahan"></select>
       <select id="fs" aria-label="Status"><option value="all">Semua status</option><option value="belum">Belum dikunjungi</option><option value="sudah">Sudah dikunjungi</option></select>
     </div>
-    <input id="q" placeholder="Cari alamat, perumahan, sales, atau catatan…" style="margin-bottom:6px">
+    <input id="q" placeholder="Cari… pisah dengan / (contoh: BNR / Bogor nirwana)" style="margin-bottom:6px">
     <p class="mu" id="sum"></p>
     <div id="list"></div>
     <div class="pg"><span></span><button class="b" id="more" hidden>Tampilkan lagi</button></div>
@@ -68,6 +68,9 @@ textarea{min-height:70px;resize:vertical}
       <h3>Gabung nama perumahan yang mirip</h3>
       <p class="mu">Pilih nama tujuan untuk tiap kelompok. Nama lain di kelompok itu akan diganti menjadi nama tujuan di seluruh data.</p>
       <div id="gabung"></div>
+      <h3 style="margin-top:12px">Sudah digabung</h3>
+      <p class="mu">Hapus nama yang tidak ingin digabung. Isi Nama Pencarian agar kata itu juga menemukan alamat di kelompok ini.</p>
+      <div id="grup"></div>
       <button class="b" id="cariMirip">Cari nama mirip</button>
     </section>
   </section>
@@ -111,8 +114,8 @@ function load(){
   rpc('kunjunganData',[]).then(function(d){
     DATA=d; ME.admin=!!d.admin; ME.u=d.u;
     $('#who').textContent=d.u+(d.admin?' · Admin':' · Sales')+' — kunjungan alamat';
-    $('#gabungSec').hidden=!d.admin;
-    buildFilters(); render();
+    $('#gabungSec').hidden=false;
+    buildFilters(); render(); loadGrup();
   }).catch(function(e){ $('#sum').textContent=e.message; if(/Sesi/.test(e.message)) logout(true); });
 }
 
@@ -137,6 +140,14 @@ $('#fc').onchange=function(){ $('#fp').value=''; buildFilters(); SHOW=60; render
 ['#fp','#fs'].forEach(function(s){ $(s).onchange=function(){ SHOW=60; render(); }; });
 var qt=null; $('#q').oninput=function(){ clearTimeout(qt); qt=setTimeout(function(){ SHOW=60; render(); },200); };
 
+// Pencarian: setiap bagian dipisah "/" (boleh salah satu), dan kata dalam satu bagian harus semuanya ada
+function cocokKeyword(a,q){
+  var teks=(a.alamat+' '+a.perumahan+' '+(a.cari||'')+' '+a.kecamatan+' '+a.kota+' '+a.sales.join(' ')+' '+a.catatan+' '+a.hasil).toLowerCase();
+  var bagian=q.split('/').map(function(s){return s.trim()}).filter(Boolean);
+  return bagian.some(function(b){
+    return b.split(/\s+/).every(function(k){return teks.indexOf(k)>=0});
+  });
+}
 function filtered(){
   var k=$('#fk').value, c=$('#fc').value, p=$('#fp').value, s=$('#fs').value, q=$('#q').value.trim().toLowerCase();
   return DATA.alamat.filter(function(a){
@@ -145,7 +156,7 @@ function filtered(){
     if(p&&a.perumahan!==p) return false;
     if(s==='belum'&&a.dikunjungi) return false;
     if(s==='sudah'&&!a.dikunjungi) return false;
-    if(q){ var t=(a.alamat+' '+a.perumahan+' '+a.kecamatan+' '+a.kota+' '+a.sales.join(' ')+' '+a.catatan+' '+a.hasil).toLowerCase(); if(t.indexOf(q)<0) return false; }
+    if(q && !cocokKeyword(a,q)) return false;
     return true;
   }).sort(function(a,b){return (a.dikunjungi-b.dikunjungi)||a.alamat.localeCompare(b.alamat)});
 }
@@ -249,6 +260,31 @@ function unggah(file){
 }
 $('#fCam').onchange=function(e){ unggah(e.target.files[0]); e.target.value=''; };
 $('#fGal').onchange=function(e){ unggah(e.target.files[0]); e.target.value=''; };
+
+function loadGrup(){
+  rpc('kunjunganDaftarGabung',[]).then(function(d){
+    window.__grupData=d;
+    if(!d.grup.length){ $('#grup').innerHTML='<p class="mu">Belum ada nama yang digabung.</p>'; return; }
+    $('#grup').innerHTML=d.grup.map(function(g,gi){
+      var cari=d.cari[g.tujuan]||'';
+      return '<div class="grp" data-tuj="'+E(g.tujuan)+'"><div style="font-weight:600">'+E(g.tujuan)+'</div>'
+        +'<div class="row" style="margin:6px 0"><input data-cari="'+gi+'" placeholder="Nama pencarian (contoh: BNR)" value="'+E(cari)+'"><button class="b" data-simpancari="'+gi+'">Simpan</button></div>'
+        +g.anggota.map(function(a){return '<label style="justify-content:space-between"><span>'+E(a)+'</span><button class="x" data-hapus="'+E(a)+'" style="border:1px solid var(--s0);color:var(--s0);background:none;border-radius:8px;padding:3px 9px;font:inherit;font-size:12px;cursor:pointer">Hapus</button></label>'}).join('')
+        +'</div>';
+    }).join('');
+  }).catch(function(e){ $('#grup').textContent=e.message; });
+}
+$('#grup').addEventListener('click',function(e){
+  var hp=e.target.dataset.hapus, sc=e.target.dataset.simpancari;
+  if(hp!==undefined){
+    if(!confirm('Keluarkan "'+hp+'" dari gabungan?')) return;
+    rpc('kunjunganHapusGabung',[hp]).then(function(){ load(); }).catch(function(err){ alert(err.message); });
+  }
+  if(sc!==undefined){
+    var g=window.__grupData.grup[+sc], inp=document.querySelector('input[data-cari="'+sc+'"]');
+    rpc('kunjunganSimpanCari',[g.tujuan,inp.value.trim()]).then(function(){ load(); }).catch(function(err){ alert(err.message); });
+  }
+});
 
 // admin: gabung perumahan mirip
 $('#cariMirip').onclick=function(){
