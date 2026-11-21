@@ -9,41 +9,48 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
 .w{max-width:760px;margin:0 auto;padding:14px 14px 40px}
-h1{font-size:20px;margin:0}.mu{color:var(--mu);font-size:13px;margin:4px 0}
-.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+h1{font-size:20px;margin:0}h3{font-size:14px;margin:0 0 6px}.mu{color:var(--mu);font-size:13px;margin:4px 0}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.ib{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:10px;width:40px;height:40px;display:inline-grid;place-items:center;cursor:pointer;padding:0;flex:none}
+.ib svg,.nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ib.on,.nav button.on{color:var(--ac);border-color:var(--ac)}
+.ib:disabled{opacity:.5}
 .b{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:9px;padding:9px 13px;font:inherit;font-size:14px;cursor:pointer}
 .b.pr{background:var(--ac);border-color:var(--ac);color:#fff}.b:disabled{opacity:.5}
 input,select,textarea{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:9px;padding:9px 11px;font:inherit;font-size:14px;width:100%}
-textarea{min-height:70px;resize:vertical}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.row>*{flex:1 1 150px;min-width:0}
+textarea{min-height:64px;resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center}.row>*{flex:1 1 150px;min-width:0}.row>.ib{flex:none;width:40px}
+.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:5px;margin-bottom:12px}
+.nav button{border:0;background:none;border-radius:10px;padding:9px 0;color:var(--mu);cursor:pointer;display:grid;place-items:center}
+.nav button.on{background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac)}
 .card{background:var(--cd);border:1px solid var(--ln);border-radius:12px;padding:11px 13px;margin:8px 0;display:flex;gap:11px;align-items:flex-start}
 .card .inf{flex:1;min-width:0;cursor:pointer}
 .card .al{font-weight:600;overflow-wrap:anywhere}
 .card input[type=checkbox]{width:22px;height:22px;margin-top:2px;flex:none;accent-color:var(--ac)}
-.tag{display:inline-block;font-size:11px;border:1px solid var(--ln);border-radius:9px;padding:0 7px;color:var(--mu);margin-right:4px}
-.tag.ok{color:var(--ac);border-color:var(--ac)}
+.tag{display:inline-block;font-size:11px;border:1px solid var(--ln);border-radius:9px;padding:0 7px;color:var(--mu);margin:2px 4px 0 0}
+.tag.ok{color:var(--ac);border-color:var(--ac)}.tag.s1{color:var(--s1);border-color:var(--s1)}
+.pg{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:12px 0}
+.pg .mu{margin:0}
+.pg .ib:disabled{opacity:.35}
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:50}
 .sheet[hidden]{display:none}
 .sheet .sc{background:var(--bg);width:100%;max-width:760px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:14px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 .chips label{border:1px solid var(--ln);background:var(--cd);border-radius:18px;padding:5px 11px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px}
 .chips input{width:auto;accent-color:var(--ac)}
-.fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin-top:6px}
-.fotos a{display:block;border:1px solid var(--ln);border-radius:8px;padding:8px;text-align:center;font-size:12px;color:var(--ac);text-decoration:none;background:var(--cd)}
+.grp{border:1px solid var(--ln);border-radius:10px;padding:9px;margin:8px 0;background:var(--cd)}
+.grp label{display:flex;align-items:center;gap:7px;font-size:14px;margin:3px 0;justify-content:space-between}
 .sec{background:var(--cd);border:1px solid var(--ln);border-radius:12px;padding:12px;margin-top:14px}
-.sec h3{font-size:14px;margin:0 0 6px}
-.grp{border:1px solid var(--ln);border-radius:10px;padding:9px;margin:8px 0;background:var(--bg)}
-.grp label{display:flex;align-items:center;gap:7px;font-size:14px;margin:3px 0}
-.grp input{width:auto;accent-color:var(--ac)}
-.pg{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0}
-.pg .mu{margin:0}
-[hidden]{display:none!important}
+.pend{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.pend span{font-size:12px;border:1px solid var(--ln);border-radius:8px;padding:3px 8px}
 .spn{display:inline-block;width:12px;height:12px;border:2px solid var(--ln);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:7px}
 @keyframes spin{to{transform:rotate(360deg)}}
+[hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--ac);outline-offset:2px}:focus:not(:focus-visible){outline:none}
 </style></head><body>
 <div class="w">
-  <div class="hd"><div><h1>Kunjungan Alamat</h1><p class="mu" id="who"></p></div><button class="b" id="out" hidden>Keluar</button></div>
+  <div class="hd"><div><h1>Kunjungan Alamat</h1><p class="mu" id="who"></p></div>
+    <button class="ib" id="out" title="Keluar" aria-label="Keluar" hidden><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button></div>
 
   <section id="login" class="sec" style="margin-top:0">
     <h3>Masuk</h3>
@@ -53,40 +60,75 @@ textarea{min-height:70px;resize:vertical}
   </section>
 
   <section id="app" hidden>
-    <div class="row">
-      <button class="b" id="reload" title="Muat ulang dari spreadsheet" style="flex:none">↻ Muat ulang</button>
-      <select id="fk" aria-label="Kota"></select>
-      <select id="fc" aria-label="Kecamatan"></select>
-      <select id="fp" aria-label="Perumahan"></select>
-      <select id="fs" aria-label="Status"><option value="all">Semua status</option><option value="belum">Belum dikunjungi</option><option value="sudah">Sudah dikunjungi</option></select>
-    </div>
-    <input id="q" placeholder="Cari… pisah dengan / (contoh: BNR / Bogor nirwana)" style="margin-bottom:6px">
-    <p class="mu" id="sum"></p>
-    <div id="list"></div>
-    <div class="pg"><span></span><button class="b" id="more" hidden>Tampilkan lagi</button></div>
+    <nav class="nav" aria-label="Menu">
+      <button data-t="db" title="Database Alamat" aria-label="Database Alamat"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></button>
+      <button data-t="kj" title="Kunjungan" aria-label="Kunjungan"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
+      <button data-t="hs" title="Hasil Kunjungan" aria-label="Hasil Kunjungan"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 13l2 2 4-4"/></svg></button>
+    </nav>
 
-    <section class="sec" id="gabungSec" hidden>
-      <h3>Gabung nama perumahan yang mirip</h3>
-      <p class="mu">Pilih nama tujuan untuk tiap kelompok. Nama lain di kelompok itu akan diganti menjadi nama tujuan di seluruh data.</p>
-      <div id="gabung"></div>
-      <h3 style="margin-top:12px">Sudah digabung</h3>
-      <p class="mu">Hapus nama yang tidak ingin digabung. Isi Nama Pencarian agar kata itu juga menemukan alamat di kelompok ini.</p>
-      <div id="grup"></div>
-      <button class="b" id="cariMirip">Cari nama mirip</button>
+    <!-- DATABASE ALAMAT -->
+    <section id="tDb" hidden>
+      <div class="row">
+        <select id="fk" aria-label="Kota"></select><select id="fc" aria-label="Kecamatan"></select><select id="fp" aria-label="Perumahan"></select>
+        <select id="fs" aria-label="Status"><option value="all">Semua</option><option value="belum">Belum dikunjungi</option><option value="sudah">Sudah dikunjungi</option></select>
+        <button class="ib" id="reload" title="Muat ulang tampilan" aria-label="Muat ulang tampilan"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg></button>
+        <button class="ib" id="rebuild" title="Perbarui database dari order" aria-label="Perbarui database dari order"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3"/><path d="M4 11v6c0 1.7 3.6 3 8 3"/><path d="M16 14v6M13 17l3 3 3-3"/></svg></button>
+      </div>
+      <input id="q" placeholder="Cari… pisah dengan / (contoh: BNR / Bogor nirwana)" style="margin-bottom:6px">
+      <p class="mu" id="sum"></p>
+      <div id="listDb"></div>
+      <div class="pg" id="pgDb"></div>
+      <section class="sec" id="gabungSec">
+        <h3>Gabung nama perumahan yang mirip</h3>
+        <p class="mu">Pilih nama tujuan untuk tiap kelompok. Nama lain di kelompok itu diganti menjadi nama tujuan di seluruh data.</p>
+        <div id="gabung"></div>
+        <button class="b" id="cariMirip">Cari nama mirip</button>
+        <h3 style="margin-top:12px">Sudah digabung</h3>
+        <p class="mu">Hapus nama yang tidak ingin digabung. Isi Nama Pencarian agar kata itu juga menemukan alamat di kelompok ini.</p>
+        <div id="grup"></div>
+      </section>
+    </section>
+
+    <!-- KUNJUNGAN -->
+    <section id="tKj" hidden>
+      <div class="row">
+        <button class="ib on" id="kjDb" title="Dari database alamat" aria-label="Dari database alamat"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg></button>
+        <button class="ib" id="kjBaru" title="Alamat baru" aria-label="Alamat baru"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><path d="M12 7v6M9 10h6"/></svg></button>
+        <input id="qKj" placeholder="Cari alamat… pisah dengan /" style="flex:1 1 200px">
+      </div>
+      <div id="kjDbPane">
+        <p class="mu" id="sumKj"></p>
+        <div id="listKj"></div>
+        <div class="pg" id="pgKj"></div>
+      </div>
+      <div id="kjBaruPane" hidden>
+        <div id="formBaru"></div>
+      </div>
+    </section>
+
+    <!-- HASIL KUNJUNGAN -->
+    <section id="tHs" hidden>
+      <div class="row"><input id="qHs" placeholder="Cari alamat, sales, hasil, catatan… pisah dengan /" style="flex:1 1 200px"></div>
+      <p class="mu" id="sumHs"></p>
+      <div id="listHs"></div>
+      <div class="pg" id="pgHs"></div>
     </section>
   </section>
 </div>
 
 <div class="sheet" id="sheet" hidden><div class="sc" id="scx"></div></div>
 <input type="file" id="fCam" accept="image/*" capture="environment" hidden>
-<input type="file" id="fGal" accept="image/*" hidden>
+<input type="file" id="fGal" accept="image/*" multiple hidden>
 
 <script>
 (function(){
 var API=(window.API_URL||'').trim();
-var TK=localStorage.getItem('kn_tk')||'', ME={u:'',admin:false}, DATA=null, FIL=[], SHOW=60, CUR=null, PHOTO_KEY=null, PHOTO_INFO=null;
+var TK=localStorage.getItem('kn_tk')||'', ME={u:'',admin:false}, DATA=null, HASIL=null, TAB='db', KJMODE='db', PS=10;
+var PG={db:0,kj:0,hs:0}, FIL={db:[],kj:[],hs:[]}, CUR=null, PEND=[], FORM_KEY='';
 var $=function(s){return document.querySelector(s)};
 var E=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+function todayIso(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function tglTxt(s){if(!s)return '';var b=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];var p=s.split('-');return (+p[2])+' '+b[+p[1]-1]+' '+p[0]}
 
 function call(fn,args){
   if(!API||/ALAMAT_ANDA/.test(API)) return Promise.reject(new Error('Alamat API belum diisi di config.js'));
@@ -98,31 +140,50 @@ function call(fn,args){
 function rpc(fn,args){ return call(fn,[TK].concat(args||[])); }
 
 function show(){ var on=!!TK; $('#login').hidden=on; $('#app').hidden=!on; $('#out').hidden=!on; }
-function logout(msg){ TK=''; localStorage.removeItem('kn_tk'); DATA=null; show(); $('#lm').textContent=msg===true?'Sesi berakhir, silakan masuk lagi.':''; }
-
+function logout(msg){ TK=''; localStorage.removeItem('kn_tk'); DATA=null; HASIL=null; show(); $('#lm').textContent=msg===true?'Sesi berakhir, silakan masuk lagi.':''; }
 $('#lb').onclick=function(){
   var u=$('#lu').value.trim(), p=$('#lp').value;
   if(!u||!p){$('#lm').textContent='Isi username dan password.';return}
-  $('#lb').disabled=true; $('#lm').textContent='Memeriksa login…';
-  call('login',[u,p]).then(function(o){ TK=o.t; localStorage.setItem('kn_tk',o.t); ME={u:o.u,admin:o.r==='admin'}; $('#lp').value=''; $('#lb').disabled=false; $('#lm').textContent=''; show(); load(); })
+  $('#lb').disabled=true; $('#lm').innerHTML='<span class="spn"></span>Memeriksa login…';
+  call('login',[u,p]).then(function(o){ TK=o.t; localStorage.setItem('kn_tk',o.t); ME={u:o.u,admin:o.r==='admin'}; $('#lp').value=''; $('#lb').disabled=false; $('#lm').textContent=''; show(); load(false); })
     .catch(function(e){ $('#lb').disabled=false; $('#lm').textContent=e.message; });
 };
 $('#lp').onkeydown=function(e){ if(e.key==='Enter') $('#lb').click(); };
 $('#out').onclick=function(){ logout(false); };
 
+// ---------- memuat ----------
 function load(force){
-  $('#sum').innerHTML='<span class="spn"></span>Memuat data alamat…';
-  rpc('kunjunganData',[!!force]).then(function(d){
+  $('#sum').innerHTML='<span class="spn"></span>Memuat database alamat…';
+  rpc('kunjunganData',[]).then(function(d){
     DATA=d; ME.admin=!!d.admin; ME.u=d.u;
-    $('#who').textContent=d.u+(d.admin?' · Admin':' · Sales')+' — kunjungan alamat';
-    $('#gabungSec').hidden=false;
-    buildFilters(); render(); loadGrup();
+    $('#who').textContent=d.u+(d.admin?' · Admin':' · Sales');
+    buildFilters(); renderDb(); renderKj(); loadGrup();
+    if(TAB==='hs') loadHasil();
   }).catch(function(e){ $('#sum').textContent=e.message; if(/Sesi/.test(e.message)) logout(true); });
 }
-
-function opts(sel,list,val,all){
-  sel.innerHTML='<option value="">'+all+'</option>'+list.map(function(x){return '<option value="'+E(x)+'"'+(x===val?' selected':'')+'>'+E(x)+'</option>'}).join('');
+function loadHasil(){
+  $('#sumHs').innerHTML='<span class="spn"></span>Memuat hasil kunjungan…';
+  rpc('kunjunganHasil',[]).then(function(h){ HASIL=h; renderHs(); }).catch(function(e){ $('#sumHs').textContent=e.message; });
 }
+function rebuildDb(){
+  var b=$('#rebuild'); b.disabled=true;
+  $('#sum').innerHTML='<span class="spn"></span>Memperbarui database dari order… (bisa beberapa menit)';
+  rpc('kunjunganRebuild',[]).then(function(r){ alert('Database diperbarui: '+r.jumlah+' alamat.'); load(true); }).catch(function(e){ alert(e.message); }).then(function(){ b.disabled=false; });
+}
+$('#rebuild').onclick=rebuildDb;
+$('#reload').onclick=function(){ load(true); };
+
+// ---------- tab ----------
+function setTab(t){
+  TAB=t; ['db','kj','hs'].forEach(function(x){ $('#t'+(x==='db'?'Db':x==='kj'?'Kj':'Hs')).hidden=(x!==t); });
+  document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on',b.dataset.t===t); });
+  if(t==='hs' && !HASIL) loadHasil();
+  if(t==='hs' && HASIL) renderHs();
+}
+document.querySelectorAll('.nav button').forEach(function(b){ b.onclick=function(){ setTab(b.dataset.t); }; });
+
+// ---------- filter database ----------
+function opts(sel,list,val,all){ sel.innerHTML='<option value="">'+all+'</option>'+list.map(function(x){return '<option value="'+E(x)+'"'+(x===val?' selected':'')+'>'+E(x)+'</option>'}).join(''); }
 function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort()}
 function buildFilters(){
   var A=DATA.alamat;
@@ -136,104 +197,191 @@ function buildFilters(){
   var pp=$('#fp').value; if(pp&&per.indexOf(pp)<0) pp='';
   opts($('#fp'),per,pp,'Semua perumahan');
 }
-$('#reload').onclick=function(){ load(true); };
-$('#fk').onchange=function(){ $('#fc').value=''; $('#fp').value=''; buildFilters(); SHOW=60; render(); };
-$('#fc').onchange=function(){ $('#fp').value=''; buildFilters(); SHOW=60; render(); };
-['#fp','#fs'].forEach(function(s){ $(s).onchange=function(){ SHOW=60; render(); }; });
-var qt=null; $('#q').oninput=function(){ clearTimeout(qt); qt=setTimeout(function(){ SHOW=60; render(); },200); };
+$('#fk').onchange=function(){ $('#fc').value=''; $('#fp').value=''; buildFilters(); PG.db=0; renderDb(); };
+$('#fc').onchange=function(){ $('#fp').value=''; buildFilters(); PG.db=0; renderDb(); };
+$('#fp').onchange=function(){ PG.db=0; renderDb(); };
+$('#fs').onchange=function(){ PG.db=0; renderDb(); };
+var qt=null; $('#q').oninput=function(){ clearTimeout(qt); qt=setTimeout(function(){ PG.db=0; renderDb(); },200); };
+$('#qKj').oninput=function(){ clearTimeout(qt); qt=setTimeout(function(){ PG.kj=0; renderKj(); },200); };
+$('#qHs').oninput=function(){ clearTimeout(qt); qt=setTimeout(function(){ PG.hs=0; renderHs(); },200); };
 
-// Pencarian: setiap bagian dipisah "/" (boleh salah satu), dan kata dalam satu bagian harus semuanya ada
-function cocokKeyword(a,q){
-  var teks=(a.alamat+' '+a.perumahan+' '+(a.cari||'')+' '+a.kecamatan+' '+a.kota+' '+a.sales.join(' ')+' '+a.catatan+' '+a.hasil).toLowerCase();
-  var bagian=q.split('/').map(function(s){return s.trim()}).filter(Boolean);
-  return bagian.some(function(b){
-    return b.split(/\s+/).every(function(k){return teks.indexOf(k)>=0});
+// Pencarian: bagian dipisah "/" (salah satu cocok), kata dalam bagian harus semuanya ada
+function cocok(teks,q){
+  if(!q) return true;
+  var t=teks.toLowerCase();
+  return q.toLowerCase().split('/').map(function(s){return s.trim()}).filter(Boolean).some(function(b){
+    return b.split(/\s+/).every(function(k){return t.indexOf(k)>=0});
   });
 }
-function filtered(){
-  var k=$('#fk').value, c=$('#fc').value, p=$('#fp').value, s=$('#fs').value, q=$('#q').value.trim().toLowerCase();
+function filterDb(){
+  var k=$('#fk').value, c=$('#fc').value, p=$('#fp').value, s=$('#fs').value, q=$('#q').value.trim();
   return DATA.alamat.filter(function(a){
-    if(k&&a.kota!==k) return false;
-    if(c&&a.kecamatan!==c) return false;
-    if(p&&a.perumahan!==p) return false;
-    if(s==='belum'&&a.dikunjungi) return false;
-    if(s==='sudah'&&!a.dikunjungi) return false;
-    if(q && !cocokKeyword(a,q)) return false;
-    return true;
+    if(k&&a.kota!==k) return false; if(c&&a.kecamatan!==c) return false; if(p&&a.perumahan!==p) return false;
+    if(s==='belum'&&a.dikunjungi) return false; if(s==='sudah'&&!a.dikunjungi) return false;
+    return cocok(a.alamat+' '+a.perumahan+' '+(a.cari||'')+' '+a.kecamatan+' '+a.kota,q);
   }).sort(function(a,b){return (a.dikunjungi-b.dikunjungi)||a.alamat.localeCompare(b.alamat)});
 }
 
-function render(){
-  FIL=filtered();
-  var sudah=FIL.filter(function(a){return a.dikunjungi}).length;
-  $('#sum').textContent=FIL.length+' alamat · sudah '+sudah+' · belum '+(FIL.length-sudah);
-  var list=FIL.slice(0,SHOW);
-  $('#list').innerHTML=list.map(function(a,i){
-    return '<div class="card"><input type="checkbox" data-i="'+i+'" '+(a.dikunjungi?'checked':'')+' aria-label="Sudah dikunjungi"><div class="inf" data-i="'+i+'">'
-      +'<div class="al">'+E(a.alamat)+'</div>'
-      +'<div class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</div>'
-      +'<div style="margin-top:4px"><span class="tag '+(a.dikunjungi?'ok':'')+'">'+(a.dikunjungi?'✓ Sudah dikunjungi'+(a.tanggal?' · '+a.tanggal:''):'Belum dikunjungi')+'</span>'
-      +(a.sales.length?'<span class="tag">'+E(a.sales.join(', '))+'</span>':'')
-      +(a.hasil?'<span class="tag">'+E(a.hasil)+'</span>':'')
-      +(a.foto.length?'<span class="tag">📷 '+a.foto.length+'</span>':'')+'</div></div></div>';
-  }).join('') || '<p class="mu">Tidak ada alamat yang cocok.</p>';
-  $('#more').hidden=FIL.length<=SHOW;
-  if(FIL.length>SHOW) $('#more').textContent='Tampilkan lagi ('+(FIL.length-SHOW)+' sisa)';
+// ---------- pager (10 per halaman, tidak memanjang ke bawah) ----------
+function pager(el,key,total,onGo){
+  var pages=Math.max(1,Math.ceil(total/PS));
+  if(PG[key]>=pages) PG[key]=pages-1; if(PG[key]<0) PG[key]=0;
+  if(total<=PS){ el.innerHTML=''; return; }
+  var from=PG[key]*PS+1, to=Math.min(total,(PG[key]+1)*PS);
+  el.innerHTML='<button class="ib" data-pg="-1" '+(PG[key]<=0?'disabled':'')+' title="Sebelumnya" aria-label="Sebelumnya"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>'
+    +'<span class="mu">'+from+'–'+to+' dari '+total+'</span>'
+    +'<button class="ib" data-pg="1" '+(PG[key]>=pages-1?'disabled':'')+' title="Berikutnya" aria-label="Berikutnya"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>';
+  el.onclick=function(e){
+    var b=e.target.closest('button[data-pg]'); if(!b||b.disabled) return;
+    PG[key]+=+b.dataset.pg; onGo(); var top=document.getElementById('top-'+key); if(top) top.scrollIntoView({block:'start'});
+  };
 }
-$('#more').onclick=function(){ SHOW+=60; render(); };
 
-// centang cepat: langsung simpan
-$('#list').addEventListener('change',function(e){
+// ---------- kartu alamat (database & kunjungan) ----------
+function kartu(a,i,pfx){
+  return '<div class="card"><input type="checkbox" data-'+pfx+'="'+i+'" '+(a.dikunjungi?'checked':'')+' aria-label="Sudah dikunjungi"><div class="inf" data-'+pfx+'-open="'+i+'">'
+    +'<div class="al">'+E(a.alamat)+'</div>'
+    +'<div class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</div>'
+    +'<div>'+(a.dikunjungi?'<span class="tag ok">✓ '+E(tglTxt(a.terakhir))+' · '+a.jumlahKunjungan+' kunjungan</span>':'<span class="tag">Belum dikunjungi</span>')
+    +(a.spo?'<span class="tag">'+a.spo+' SPO</span>':'')+(a.sumber==='baru'?'<span class="tag s1">Alamat baru</span>':'')+'</div></div></div>';
+}
+function renderDb(){
+  FIL.db=filterDb();
+  var sudah=FIL.db.filter(function(a){return a.dikunjungi}).length;
+  $('#sum').innerHTML=FIL.db.length+' alamat · sudah '+sudah+' · belum '+(FIL.db.length-sudah)+(DATA.waktu?' · database '+E(tglTxt(DATA.waktu.slice(0,10))):'');
+  var list=FIL.db.slice(PG.db*PS,PG.db*PS+PS);
+  $('#listDb').innerHTML='<div id="top-db"></div>'+(list.map(function(a,i){return kartu(a,PG.db*PS+i,'db')}).join('')||'<p class="mu">Tidak ada alamat yang cocok.</p>');
+  pager($('#pgDb'),'db',FIL.db.length,renderDb);
+  $('#gabungSec').hidden=false;
+}
+function renderKj(){
+  var base=DATA.alamat.filter(function(a){return cocok(a.alamat+' '+a.perumahan+' '+a.kecamatan+' '+a.kota,$('#qKj').value.trim())});
+  FIL.kj=base.sort(function(a,b){return (a.dikunjungi-b.dikunjungi)||a.alamat.localeCompare(b.alamat)});
+  $('#sumKj').textContent=FIL.kj.length+' alamat · klik kotak untuk mencatat kunjungan dengan tanggal';
+  var list=FIL.kj.slice(PG.kj*PS,PG.kj*PS+PS);
+  $('#listKj').innerHTML='<div id="top-kj"></div>'+(list.map(function(a,i){return kartu(a,PG.kj*PS+i,'kj')}).join('')||'<p class="mu">Tidak ada alamat yang cocok.</p>');
+  pager($('#pgKj'),'kj',FIL.kj.length,renderKj);
+}
+$('#kjDb').onclick=function(){ KJMODE='db'; setKj(); };
+$('#kjBaru').onclick=function(){ KJMODE='baru'; setKj(); };
+function setKj(){
+  $('#kjDb').classList.toggle('on',KJMODE==='db'); $('#kjBaru').classList.toggle('on',KJMODE==='baru');
+  $('#kjDbPane').hidden=KJMODE!=='db'; $('#kjBaruPane').hidden=KJMODE!=='baru';
+  if(KJMODE==='baru') formBaru();
+}
+$('#listKj').addEventListener('change',function(e){
+  if(e.target.type!=='checkbox'||e.target.dataset.kj===undefined) return;
+  e.target.checked=!e.target.checked;              // status berubah setelah kunjungan tersimpan
+  openForm(FIL.kj[+e.target.dataset.kj]);
+});
+$('#listKj').addEventListener('click',function(e){
+  var t=e.target.closest('[data-kj-open]'); if(!t) return;
+  openForm(FIL.kj[+t.dataset.kjOpen]);
+});
+$('#listDb').addEventListener('click',function(e){
+  var t=e.target.closest('[data-db-open]'); if(!t) return;
+  openForm(FIL.db[+t.dataset.dbOpen]);
+});
+$('#listDb').addEventListener('change',function(e){
   if(e.target.type!=='checkbox') return;
-  var a=FIL[+e.target.dataset.i], on=e.target.checked;
-  e.target.disabled=true;
-  rpc('kunjunganSimpan',[a.key,info(a),{dikunjungi:on,sales:a.sales,hasil:a.hasil,catatan:a.catatan}]).then(function(r){
-    apply(a,{dikunjungi:r.dikunjungi,tanggal:r.tanggal});
-  }).catch(function(err){ e.target.checked=!on; alert(err.message); }).then(function(){ e.target.disabled=false; render(); });
-});
-$('#list').addEventListener('click',function(e){
-  var t=e.target.closest('.inf'); if(!t) return;
-  openSheet(FIL[+t.dataset.i]);
+  e.target.checked=!e.target.checked;
+  openForm(FIL.db[+e.target.dataset.db]);
 });
 
-function info(a){ return {alamat:a.alamat,kota:a.kota,kecamatan:a.kecamatan,perumahan:a.perumahan}; }
-function apply(a,patch){ for(var k in patch) a[k]=patch[k]; }
-
-function openSheet(a){
-  CUR=a;
-  var hasilOpt='<option value="">— pilih —</option>'+DATA.hasilOpsi.map(function(h){return '<option'+(a.hasil===h?' selected':'')+'>'+E(h)+'</option>'}).join('');
-  var chips=DATA.sales.map(function(s){return '<label><input type="checkbox" value="'+E(s)+'" '+(a.sales.indexOf(s)>=0?'checked':'')+'>'+E(s)+'</label>'}).join('');
-  $('#scx').innerHTML=
-    '<div class="hd"><div><h3 style="margin:0">'+E(a.alamat)+'</h3><p class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+' · '+a.spo+' SPO</p></div><button class="b" id="x">Tutup</button></div>'
-    +'<label class="row" style="align-items:center"><input type="checkbox" id="dik" style="width:22px;height:22px;flex:none" '+(a.dikunjungi?'checked':'')+'><span>Sudah dikunjungi</span></label>'
-    +'<p class="mu">Sales yang mengunjungi (boleh lebih dari satu)</p><div class="chips" id="chips">'+chips+'</div>'
-    +'<p class="mu">Hasil kunjungan</p><select id="hasil">'+hasilOpt+'</select>'
-    +'<p class="mu" style="margin-top:8px">Catatan</p><textarea id="catatan" maxlength="500">'+E(a.catatan)+'</textarea>'
-    +'<div class="row" style="margin-top:10px"><button class="b pr" id="simpan">Simpan</button></div><p class="mu" id="sm"></p>'
-    +'<div class="sec" style="margin-top:12px"><h3>Foto kunjungan</h3><div class="row"><button class="b" id="bCam">📷 Ambil foto</button><button class="b" id="bGal">🖼️ Pilih dari galeri</button></div>'
-    +'<div class="fotos" id="fotos">'+a.foto.map(function(u,i){return '<a href="'+E(u)+'" target="_blank" rel="noopener">Foto '+(i+1)+'</a>'}).join('')+'</div>'
-    +'<p class="mu" id="fm"></p></div>';
-  $('#sheet').hidden=false;
-  $('#x').onclick=closeSheet;
-  $('#simpan').onclick=saveSheet;
-  $('#bCam').onclick=function(){ PHOTO_KEY=a.key; PHOTO_INFO=info(a); $('#fCam').click(); };
-  $('#bGal').onclick=function(){ PHOTO_KEY=a.key; PHOTO_INFO=info(a); $('#fGal').click(); };
+// ---------- form kunjungan (dari database) ----------
+function chipsHtml(sel){
+  return DATA.sales.map(function(s){return '<label><input type="checkbox" value="'+E(s)+'" '+(sel.indexOf(s)>=0?'checked':'')+'>'+E(s)+'</label>'}).join('');
 }
-function closeSheet(){ $('#sheet').hidden=true; CUR=null; }
+function hasilHtml(v){
+  return '<option value="">— pilih —</option>'+DATA.hasilOpsi.map(function(h){return '<option'+(v===h?' selected':'')+'>'+E(h)+'</option>'}).join('');
+}
+function formFields(a,editable){
+  return (editable
+    ? '<div class="row"><input id="fAl" placeholder="Alamat lengkap" value="'+E(a.alamat||'')+'"></div>'
+      +'<div class="row"><input id="fKo" placeholder="Kota" value="'+E(a.kota||'')+'"><input id="fKc" placeholder="Kecamatan" value="'+E(a.kecamatan||'')+'"></div>'
+      +'<div class="row"><input id="fPr" list="dlPr" placeholder="Perumahan (pilih atau ketik)" value="'+E(a.perumahan||'')+'"></div>'
+      +'<datalist id="dlPr">'+uniq(DATA.alamat.map(function(x){return x.perumahan})).map(function(p){return '<option value="'+E(p)+'">'}).join('')+'</datalist>'
+    : '<div class="al" style="font-weight:600">'+E(a.alamat)+'</div><p class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</p>')
+    +'<p class="mu" style="margin-top:8px">Tanggal kunjungan</p><input type="date" id="fTgl" value="'+todayIso()+'">'
+    +'<p class="mu" style="margin-top:8px">Sales yang mengunjungi (boleh lebih dari satu)</p><div class="chips" id="chips">'+chipsHtml([])+'</div>'
+    +'<p class="mu">Hasil kunjungan</p><select id="fHasil">'+hasilHtml('')+'</select>'
+    +'<p class="mu" style="margin-top:8px">Catatan</p><textarea id="fCat" maxlength="500"></textarea>'
+    +'<div class="sec" style="margin-top:10px"><h3>Foto</h3><div class="row"><button class="ib" id="bCam" title="Ambil foto" aria-label="Ambil foto"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button><button class="ib" id="bGal" title="Pilih dari galeri" aria-label="Pilih dari galeri"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button></div><div class="pend" id="pend"></div></div>';
+}
+function pendHtml(){ $('#pend').innerHTML=PEND.map(function(f,i){return '<span>'+E(f.name)+' <a href="#" data-rm="'+i+'" style="color:var(--s0);text-decoration:none">✕</a></span>'}).join(''); }
+function openForm(a){
+  CUR=a; PEND=[];
+  $('#scx').innerHTML='<div class="row" style="justify-content:space-between"><h3 style="margin:0">Catat kunjungan</h3><button class="ib" id="x" title="Tutup" aria-label="Tutup"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>'
+    +formFields(a,false)
+    +'<div class="row" style="margin-top:12px"><button class="b pr" id="simpan" style="width:100%">Simpan kunjungan</button></div><p class="mu" id="sm"></p>';
+  $('#sheet').hidden=false; bindForm(false);
+}
+function bindForm(baru){
+  $('#x') && ($('#x').onclick=closeSheet);
+  $('#bCam').onclick=function(){ $('#fCam').click(); };
+  $('#bGal').onclick=function(){ $('#fGal').click(); };
+  $('#simpan').onclick=function(){ saveVisit(baru); };
+  pendHtml();
+}
+function closeSheet(){ $('#sheet').hidden=true; CUR=null; PEND=[]; }
 $('#sheet').addEventListener('click',function(e){ if(e.target.id==='sheet') closeSheet(); });
+$('#scx').addEventListener('click',function(e){ var rm=e.target.dataset.rm; if(rm===undefined) return; e.preventDefault(); PEND.splice(+rm,1); pendHtml(); });
+function pilihFoto(e){ [].forEach.call(e.target.files,function(f){ if(PEND.length<10) PEND.push(f); }); e.target.value=''; pendHtml(); }
+$('#fCam').onchange=pilihFoto; $('#fGal').onchange=pilihFoto;
 
-function saveSheet(){
-  var a=CUR; if(!a) return;
+function ambilIsi(baru){
   var sales=[].map.call(document.querySelectorAll('#chips input:checked'),function(i){return i.value});
-  var data={dikunjungi:$('#dik').checked,sales:sales,hasil:$('#hasil').value,catatan:$('#catatan').value.trim()};
-  $('#simpan').disabled=true; $('#sm').textContent='Menyimpan…';
-  rpc('kunjunganSimpan',[a.key,info(a),data]).then(function(r){
-    apply(a,{dikunjungi:r.dikunjungi,tanggal:r.tanggal,sales:r.sales,hasil:r.hasil,catatan:r.catatan});
-    $('#sm').textContent='Tersimpan.'; render();
-  }).catch(function(e){ $('#sm').textContent=e.message; }).then(function(){ $('#simpan').disabled=false; });
+  var base=baru?{alamat:$('#fAl').value.trim(),kota:$('#fKo').value.trim(),kecamatan:$('#fKc').value.trim(),perumahan:$('#fPr').value.trim(),sumber:'Baru'}
+              :{alamat:CUR.alamat,kota:CUR.kota,kecamatan:CUR.kecamatan,perumahan:CUR.perumahan,sumber:'Database'};
+  base.tanggal=$('#fTgl').value; base.sales=sales; base.hasil=$('#fHasil').value; base.catatan=$('#fCat').value.trim();
+  return base;
+}
+function saveVisit(baru){
+  var it=ambilIsi(baru), files=PEND.slice(), btn=$(baru?'#simpanBaru':'#simpan'), msg=$(baru?'#smBaru':'#sm');
+  if(!it.alamat){ msg.textContent='Alamat wajib diisi.'; return; }
+  btn.disabled=true; msg.innerHTML='<span class="spn"></span>Menyimpan kunjungan…';
+  rpc('kunjunganSimpanKunjungan',[it]).then(function(r){
+    if(!files.length) return r;
+    return files.reduce(function(p,f,i){
+      return p.then(function(){ msg.innerHTML='<span class="spn"></span>Mengunggah foto '+(i+1)+' dari '+files.length+'…'; return kecil(f).then(function(b64){ return rpc('kunjunganFotoHasil',[r.id,b64,'image/jpeg',f.name.replace(/\.[^.]+$/,'')]); }); });
+    },Promise.resolve()).then(function(){ return r; });
+  }).then(function(){
+    closeSheet(); if(baru){ $('#fAl').value=''; PEND=[]; }
+    alert('Kunjungan tersimpan.'); load(false); if(TAB==='hs') loadHasil();
+  }).catch(function(e){ msg.textContent=e.message; }).then(function(){ btn.disabled=false; });
 }
 
-// foto: kecilkan dulu di browser agar ringan, lalu kirim
+// ---------- kunjungan alamat baru (form di tab) ----------
+function formBaru(){
+  var a={alamat:'',kota:'',kecamatan:'',perumahan:''};
+  $('#formBaru').innerHTML='<div class="sec" style="margin-top:0"><h3>Alamat baru</h3>'+formFields(a,true)
+    +'<div class="row" style="margin-top:12px"><button class="b pr" id="simpanBaru" style="width:100%">Simpan kunjungan</button></div><p class="mu" id="smBaru"></p></div>';
+  CUR=null; PEND=[];
+  $('#bCam').onclick=function(){ $('#fCam').click(); };
+  $('#bGal').onclick=function(){ $('#fGal').click(); };
+  $('#simpanBaru').onclick=function(){ saveVisit(true); };
+  pendHtml();
+}
+
+// ---------- hasil kunjungan ----------
+function renderHs(){
+  if(!HASIL) return;
+  var q=$('#qHs').value.trim();
+  FIL.hs=HASIL.filter(function(h){return cocok(h.alamat+' '+h.perumahan+' '+h.kecamatan+' '+h.kota+' '+h.sales.join(' ')+' '+h.hasil+' '+h.catatan,q)});
+  $('#sumHs').textContent=FIL.hs.length+' kunjungan';
+  var list=FIL.hs.slice(PG.hs*PS,PG.hs*PS+PS);
+  $('#listHs').innerHTML='<div id="top-hs"></div>'+(list.map(function(h){
+    return '<div class="card" style="display:block"><div class="row" style="justify-content:space-between;margin:0"><span class="tag ok" style="margin:0">'+E(tglTxt(h.tgl))+'</span>'+(h.sumber==='Baru'?'<span class="tag s1">Alamat baru</span>':'')+'</div>'
+      +'<div class="al" style="margin-top:4px">'+E(h.alamat)+'</div><div class="mu">'+E([h.perumahan,h.kecamatan,h.kota].filter(Boolean).join(' · '))+'</div>'
+      +'<div>'+h.sales.map(function(s){return '<span class="tag">'+E(s)+'</span>'}).join('')+(h.hasil?'<span class="tag">'+E(h.hasil)+'</span>':'')+'</div>'
+      +(h.catatan?'<p class="mu" style="margin:6px 0 0">'+E(h.catatan)+'</p>':'')
+      +(h.foto.length?'<p style="margin:6px 0 0">'+h.foto.map(function(u,i){return '<a href="'+E(u)+'" target="_blank" rel="noopener" style="font-size:13px;color:var(--ac);margin-right:10px">Foto '+(i+1)+'</a>'}).join('')+'</p>':'')
+      +'</div>';
+  }).join('')||'<p class="mu">Belum ada hasil kunjungan.</p>');
+  pager($('#pgHs'),'hs',FIL.hs.length,renderHs);
+}
+
+// ---------- foto (kecilkan dulu) ----------
 function kecil(file){
   return new Promise(function(res,rej){
     var img=new Image(), url=URL.createObjectURL(file);
@@ -241,78 +389,53 @@ function kecil(file){
       var m=1280, s=Math.min(1,m/Math.max(img.width,img.height)), c=document.createElement('canvas');
       c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
       c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-      URL.revokeObjectURL(url);
-      res(c.toDataURL('image/jpeg',0.75).split(',')[1]);
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg',0.75).split(',')[1]);
     };
-    img.onerror=function(){rej(new Error('Foto tidak bisa dibaca.'))};
-    img.src=url;
+    img.onerror=function(){ rej(new Error('Foto tidak bisa dibaca.')) }; img.src=url;
   });
 }
-function unggah(file){
-  if(!file||!PHOTO_KEY) return;
-  $('#fm').textContent='Mengunggah foto…';
-  kecil(file).then(function(b64){
-    return rpc('kunjunganFoto',[PHOTO_KEY,PHOTO_INFO,b64,'image/jpeg',file.name.replace(/\.[^.]+$/,'')]);
-  }).then(function(r){
-    var a=DATA.alamat.filter(function(x){return x.key===PHOTO_KEY})[0];
-    if(a){ a.foto=r.foto; }
-    if(CUR && CUR.key===PHOTO_KEY){ openSheet(CUR); }
-    $('#fm').textContent='Foto tersimpan.'; render();
-  }).catch(function(e){ $('#fm').textContent=e.message; });
-}
-$('#fCam').onchange=function(e){ unggah(e.target.files[0]); e.target.value=''; };
-$('#fGal').onchange=function(e){ unggah(e.target.files[0]); e.target.value=''; };
 
+// ---------- gabung perumahan (semua user) ----------
 function loadGrup(){
   rpc('kunjunganDaftarGabung',[]).then(function(d){
     window.__grupData=d;
     if(!d.grup.length){ $('#grup').innerHTML='<p class="mu">Belum ada nama yang digabung.</p>'; return; }
     $('#grup').innerHTML=d.grup.map(function(g,gi){
       var cari=d.cari[g.tujuan]||'';
-      return '<div class="grp" data-tuj="'+E(g.tujuan)+'"><div style="font-weight:600">'+E(g.tujuan)+'</div>'
+      return '<div class="grp"><div style="font-weight:600">'+E(g.tujuan)+'</div>'
         +'<div class="row" style="margin:6px 0"><input data-cari="'+gi+'" placeholder="Nama pencarian (contoh: BNR)" value="'+E(cari)+'"><button class="b" data-simpancari="'+gi+'">Simpan</button></div>'
-        +g.anggota.map(function(a){return '<label style="justify-content:space-between"><span>'+E(a)+'</span><button class="x" data-hapus="'+E(a)+'" style="border:1px solid var(--s0);color:var(--s0);background:none;border-radius:8px;padding:3px 9px;font:inherit;font-size:12px;cursor:pointer">Hapus</button></label>'}).join('')
-        +'</div>';
+        +g.anggota.map(function(a){return '<label><span>'+E(a)+'</span><button class="b" data-hapus="'+E(a)+'" style="color:var(--s0);border-color:var(--s0);padding:3px 9px;font-size:12px">Hapus</button></label>'}).join('')+'</div>';
     }).join('');
   }).catch(function(e){ $('#grup').textContent=e.message; });
 }
 $('#grup').addEventListener('click',function(e){
   var hp=e.target.dataset.hapus, sc=e.target.dataset.simpancari;
-  if(hp!==undefined){
-    if(!confirm('Keluarkan "'+hp+'" dari gabungan?')) return;
-    rpc('kunjunganHapusGabung',[hp]).then(function(){ load(); }).catch(function(err){ alert(err.message); });
-  }
-  if(sc!==undefined){
-    var g=window.__grupData.grup[+sc], inp=document.querySelector('input[data-cari="'+sc+'"]');
-    rpc('kunjunganSimpanCari',[g.tujuan,inp.value.trim()]).then(function(){ load(); }).catch(function(err){ alert(err.message); });
-  }
+  if(hp!==undefined){ if(!confirm('Keluarkan "'+hp+'" dari gabungan?')) return;
+    rpc('kunjunganHapusGabung',[hp]).then(function(){ load(false); }).catch(function(err){ alert(err.message); }); }
+  if(sc!==undefined){ var g=window.__grupData.grup[+sc], inp=document.querySelector('input[data-cari="'+sc+'"]');
+    rpc('kunjunganSimpanCari',[g.tujuan,inp.value.trim()]).then(function(){ load(false); }).catch(function(err){ alert(err.message); }); }
 });
-
-// admin: gabung perumahan mirip
 $('#cariMirip').onclick=function(){
   $('#gabung').innerHTML='<span class="spn"></span>Mencari…';
   rpc('kunjunganSaran',[]).then(function(g){
     if(!g.length){ $('#gabung').innerHTML='<p class="mu">Tidak ada nama perumahan yang mirip.</p>'; return; }
+    window.__saran=g;
     $('#gabung').innerHTML=g.map(function(grp,gi){
-      return '<div class="grp" data-g="'+gi+'">'+grp.map(function(x,xi){
-        return '<label><input type="radio" name="g'+gi+'" value="'+E(x.nama)+'"'+(xi===0?' checked':'')+'>'+E(x.nama)+' <span class="mu">('+x.jumlah+' alamat)</span></label>';
+      return '<div class="grp">'+grp.map(function(x,xi){
+        return '<label><span><input type="radio" name="g'+gi+'" value="'+E(x.nama)+'"'+(xi===0?' checked':'')+' style="width:auto;accent-color:var(--ac)"> '+E(x.nama)+' <span class="mu">('+x.jumlah+' alamat)</span></span></label>';
       }).join('')+'<button class="b pr" style="margin-top:6px" data-gab="'+gi+'">Gabungkan ke yang dipilih</button></div>';
     }).join('');
-    window.__grp=g;
   }).catch(function(e){ $('#gabung').textContent=e.message; });
 };
 $('#gabung').addEventListener('click',function(e){
   var gi=e.target.dataset.gab; if(gi===undefined) return;
-  var g=window.__grp[+gi], pilih=document.querySelector('input[name="g'+gi+'"]:checked');
-  if(!pilih) return;
-  var daftar=g.map(function(x){return x.nama});
-  rpc('kunjunganGabung',[daftar,pilih.value]).then(function(r){
-    alert('Digabung ke "'+r.tujuan+'" ('+r.digabung+' nama).');
-    load();
+  var g=window.__saran[+gi], pilih=document.querySelector('input[name="g'+gi+'"]:checked'); if(!pilih) return;
+  rpc('kunjunganGabung',[g.map(function(x){return x.nama}),pilih.value]).then(function(r){
+    alert('Digabung ke "'+r.tujuan+'" ('+r.digabung+' nama).'); load(false);
   }).catch(function(err){ alert(err.message); });
 });
 
-show(); if(TK) load();
+show(); if(TK) load(false); setTab('db');
 })();
 </script>
 </body></html>
