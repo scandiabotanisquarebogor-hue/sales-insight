@@ -226,7 +226,7 @@ return `<div class="f">${ysel()}${msel()}</div><div class="mc">${cards}</div>`+`
 
 function draw(){const S=[...new Set(rows.map(r=>r.sa).filter(Boolean))].sort();if(ME.r=='admin'&&sp&&!S.includes(sp))sp='';$('#spf').innerHTML='<option value="">Semua Sales Person</option>'+S.map(s=>`<option ${s==sp?'selected':''}>${E(s)}</option>`).join('');$('#v').innerHTML=({dash,ord,hist,prod,cus})[tab]();if(tab=='ord')ft();if(tab=='cus')cl();if(tab=='prod')pl();
 document.querySelectorAll('#nv button').forEach(b=>b.classList.toggle('on',b.dataset.t==tab));
-$('#info').textContent=`${rows.length} SPO · ${cap(ME.u)} (${ME.r=='admin'?'Admin · Store Leader':'Sales Person'}) · data per ${TS?new Date(TS).toLocaleTimeString(LANG=='en'?'en-GB':'id-ID',{hour:'2-digit',minute:'2-digit'}):'-'}`}
+$('#info').textContent=`${rows.length} SPO · ${cap(ME.u)} (${ME.r=='admin'?'Admin · Store Leader':'Sales Person'}) · ${ubahTxt()}`}
 document.querySelectorAll('#nv button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;PG=0;draw()});
 function dv(k){const A=k=='all',mm=months().filter(x=>DT[x]),D=sp?null:A?(mm.length?{d:mm.reduce((o,x)=>{Object.entries(DT[x].d).forEach(([n,v])=>o[n]=(o[n]||0)+v);return o},{})}:null):DT[k],py=A?'':(+k.slice(0,4)-1)+k.slice(4),pv=!D||A?null:DT[py]&&DT[py].d;
 const c=D?D.d:dep(L.filter(x=>(A||x.d.startsWith(k))&&(!sp||x.sa==sp))),tot=Object.values(c).reduce((s,x)=>s+x,0)||1,e=Object.entries(c).sort((a,b)=>b[1]-a[1]),m=e[0]?e[0][1]:1;
@@ -271,7 +271,7 @@ function saveP(){busy('Menyimpan perubahan ke spreadsheet…');const items=Objec
 function discardP(){if(!confirm('Batalkan '+pendN()+' perubahan yang belum disimpan?'))return;PEND={};load()}
 
 function load(f){if(f&&pendN()&&!confirm('Ada '+pendN()+' perubahan belum disimpan. Muat ulang akan membatalkannya. Lanjut?'))return;if(f)PEND={};$('#v').innerHTML='<p class="mu"><span class="spn"></span>Memuat data…</p>';busy(f?'Memuat ulang data dari spreadsheet…':'Memuat data dari spreadsheet…');
-rpc('getAll',[!!f],o=>{if(o.open!==undefined&&ME.r!=='admin'&&!!o.open!==!!ME.open){ME.open=!!o.open;applyMe()}CUSTDB=o.cust||[];const d=o.d;L=d;DT=o.dept||{};PR=o.prod||[];TS=o.ts||0;SLS=o.sl||[];YR=o.th||'2026';BASE=o.base||[];buildRows();draw();idle()},e=>{idle();$('#v').innerHTML='<p class="mu">Gagal memuat: '+E(e.message)+'</p>'})}
+rpc('getAll',[!!f],o=>{UBAH=o.ubah||null;if(o.open!==undefined&&ME.r!=='admin'&&!!o.open!==!!ME.open){ME.open=!!o.open;applyMe()}CUSTDB=o.cust||[];const d=o.d;L=d;DT=o.dept||{};PR=o.prod||[];TS=o.ts||0;SLS=o.sl||[];YR=o.th||'2026';BASE=o.base||[];buildRows();draw();idle()},e=>{idle();$('#v').innerHTML='<p class="mu">Gagal memuat: '+E(e.message)+'</p>'})}
 const SL=String.fromCharCode(47,47);
 let TK='';
 let API=(window.API_URL||'').trim();try{API=API||(localStorage.getItem('si_api')||'')}catch(e){}
@@ -337,6 +337,16 @@ const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):'';
 function show(){document.documentElement.classList.remove('chk');const on=!!TK&&!!ME.u;$('#lg').hidden=on;$('#app').hidden=!on}
 function applyMe(){const a=ME.r=='admin';$('#gear').hidden=!a;$('#spf').hidden=!a;sp=(a||ME.open)?'':ME.sa}
 function enter(){applyMe();show();load()}
+let UBAH=null;
+function ubahTxt(){
+  if(!UBAH||!UBAH.t)return LANG=='en'?'no change recorded yet':'belum ada perubahan tercatat';
+  const d=new Date(UBAH.t),en=LANG=='en',pad=n=>String(n).padStart(2,'0');
+  const H=en?['Sun','Mon','Tue','Wed','Thu','Fri','Sat']:['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const B=en?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']:['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const tgl=H[d.getDay()]+', '+d.getDate()+' '+B[d.getMonth()]+' '+d.getFullYear()+' '+pad(d.getHours())+'.'+pad(d.getMinutes());
+  const dari=UBAH.s==='spreadsheet'?'spreadsheet':('aplikasi'+(UBAH.u?' · '+cap(UBAH.u):''));
+  return (en?'data last changed ':'data terakhir berubah ')+tgl+' ('+dari+')';
+}
 let LDT=null,LDS=0,LDM='';
 function busy(m){LDM=m;LDS=Date.now();clearInterval(LDT);
   const up=()=>{const s=Math.floor((Date.now()-LDS)/1000);let x=LDM+(s?' · '+s+' dtk':'');if(s>=15)x+=' · masih bekerja, mohon tunggu';x=(typeof T==='function'?T(x):x);
