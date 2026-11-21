@@ -4,31 +4,39 @@
 <title>Kunjungan Alamat · SCANDIA BOTANI</title>
 <script src="../config.js"></script>
 <style>
-:root{--bg:#f6f5f1;--cd:#fff;--tx:#1d1d1b;--mu:#6b6a65;--ac:#0f6e56;--ln:#e4e2db;--s0:#b91c1c;--s1:#b45309;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#161615;--cd:#212120;--tx:#efeee9;--mu:#9a9990;--ac:#3fb98f;--ln:#34342f;--s0:#f87171;--s1:#fbbf24;color-scheme:dark}}
+:root{--bg:#f6f5f1;--cd:#fff;--tx:#1d1d1b;--mu:#6b6a65;--ac:#0f6e56;--ln:#e4e2db;--s0:#b91c1c;--s1:#b45309;--logo-filter:none;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--cd:#212120;--tx:#efeee9;--mu:#9a9990;--ac:#3fb98f;--ln:#34342f;--s0:#f87171;--s1:#fbbf24;--logo-filter:invert(1) brightness(1.05);color-scheme:dark}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
-.w{max-width:760px;margin:0 auto;padding:14px 14px 40px}
-h1{font-size:20px;margin:0}h3{font-size:14px;margin:0 0 6px}.mu{color:var(--mu);font-size:13px;margin:4px 0}
-.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.ib{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:10px;width:40px;height:40px;display:inline-grid;place-items:center;cursor:pointer;padding:0;flex:none}
-.ib svg,.nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.ib.on,.nav button.on{color:var(--ac);border-color:var(--ac)}
+.w{max-width:760px;margin:0 auto;padding:14px 14px 72px}
+h1{font-size:19px;margin:0;line-height:1.25}h3{font-size:14px;margin:0 0 6px}.mu{color:var(--mu);font-size:13px;margin:4px 0}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-logo{height:38px;width:auto;max-width:128px;object-fit:contain;filter:var(--logo-filter);flex:none}
+.ib{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:10px;min-width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:0 10px;flex:none;font:inherit;font-size:13px}
+.ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ib.on{color:var(--ac);border-color:var(--ac);background:color-mix(in srgb,var(--ac) 10%,var(--cd))}
 .ib:disabled{opacity:.5}
 .b{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:9px;padding:9px 13px;font:inherit;font-size:14px;cursor:pointer}
 .b.pr{background:var(--ac);border-color:var(--ac);color:#fff}.b:disabled{opacity:.5}
 input,select,textarea{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:9px;padding:9px 11px;font:inherit;font-size:14px;width:100%}
 textarea{min-height:64px;resize:vertical}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center}.row>*{flex:1 1 150px;min-width:0}.row>.ib{flex:none;width:40px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center}.row>*{flex:1 1 140px;min-width:0}.row>.ib{flex:none}
 .nav{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:5px;margin-bottom:12px}
-.nav button{border:0;background:none;border-radius:10px;padding:9px 0;color:var(--mu);cursor:pointer;display:grid;place-items:center}
-.nav button.on{background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac)}
+.nav button{border:0;background:none;border-radius:10px;padding:8px 6px;color:var(--mu);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:inherit;font-size:12px;font-weight:500}
+.nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav button.on{background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac);font-weight:600}
 .card{background:var(--cd);border:1px solid var(--ln);border-radius:12px;padding:11px 13px;margin:8px 0;display:flex;gap:11px;align-items:flex-start}
-.card .inf{flex:1;min-width:0;cursor:pointer}
+.card .inf{flex:1;min-width:0}
+.card .inf.click{cursor:pointer}
 .card .al{font-weight:600;overflow-wrap:anywhere}
 .card input[type=checkbox]{width:22px;height:22px;margin-top:2px;flex:none;accent-color:var(--ac)}
 .tag{display:inline-block;font-size:11px;border:1px solid var(--ln);border-radius:9px;padding:0 7px;color:var(--mu);margin:2px 4px 0 0}
-.tag.ok{color:var(--ac);border-color:var(--ac)}.tag.s1{color:var(--s1);border-color:var(--s1)}
+.tag.ok{color:var(--ac);border-color:var(--ac)}.tag.s1{color:var(--s1);border-color:var(--s1)}.tag.sk{color:var(--tx);background:color-mix(in srgb,var(--tx) 6%,transparent)}
+.kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}
+.kpi .box{background:var(--cd);border:1px solid var(--ln);border-radius:11px;padding:9px 11px}
+.kpi .val{font-size:18px;font-weight:700;line-height:1.2}
+.kpi .lbl{font-size:12px;color:var(--mu)}
 .pg{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:12px 0}
 .pg .mu{margin:0}
 .pg .ib:disabled{opacity:.35}
@@ -38,19 +46,26 @@ textarea{min-height:64px;resize:vertical}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 .chips label{border:1px solid var(--ln);background:var(--cd);border-radius:18px;padding:5px 11px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px}
 .chips input{width:auto;accent-color:var(--ac)}
-.grp{border:1px solid var(--ln);border-radius:10px;padding:9px;margin:8px 0;background:var(--cd)}
-.grp label{display:flex;align-items:center;gap:7px;font-size:14px;margin:3px 0;justify-content:space-between}
 .sec{background:var(--cd);border:1px solid var(--ln);border-radius:12px;padding:12px;margin-top:14px}
 .pend{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 .pend span{font-size:12px;border:1px solid var(--ln);border-radius:8px;padding:3px 8px}
 .spn{display:inline-block;width:12px;height:12px;border:2px solid var(--ln);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:7px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:100;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--s0);color:#fff}
 @keyframes spin{to{transform:rotate(360deg)}}
 [hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--ac);outline-offset:2px}:focus:not(:focus-visible){outline:none}
 </style></head><body>
 <div class="w">
-  <div class="hd"><div><h1>Kunjungan Alamat</h1><p class="mu" id="who"></p></div>
-    <button class="ib" id="out" title="Keluar" aria-label="Keluar" hidden><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button></div>
+  <div class="hd">
+    <div class="brand">
+      <!-- Ganti src="./logo.png" sesuai nama file logo yang Anda upload ke repo GitHub -->
+      <img class="brand-logo" src="./logo.png" alt="SCANDIA Lifestyle & Home">
+      <div><h1>Kunjungan Alamat</h1><p class="mu" id="who"></p></div>
+    </div>
+    <button class="ib" id="out" title="Keluar" aria-label="Keluar" hidden><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg><span>Keluar</span></button>
+  </div>
 
   <section id="login" class="sec" style="margin-top:0">
     <h3>Masuk</h3>
@@ -60,43 +75,47 @@ textarea{min-height:64px;resize:vertical}
   </section>
 
   <section id="app" hidden>
-    <nav class="nav" aria-label="Menu">
-      <button data-t="db" title="Database Alamat" aria-label="Database Alamat"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></button>
-      <button data-t="kj" title="Kunjungan" aria-label="Kunjungan"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
-      <button data-t="hs" title="Hasil Kunjungan" aria-label="Hasil Kunjungan"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 13l2 2 4-4"/></svg></button>
+    <nav class="nav" aria-label="Menu utama">
+      <button data-t="db" title="Database" aria-label="Database">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+        <span>Database</span>
+      </button>
+      <button data-t="kj" title="Kunjungan" aria-label="Kunjungan">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <span>Kunjungan</span>
+      </button>
+      <button data-t="hs" title="Hasil" aria-label="Hasil">
+        <svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 13l2 2 4-4"/></svg>
+        <span>Hasil</span>
+      </button>
     </nav>
 
     <!-- DATABASE ALAMAT -->
     <section id="tDb" hidden>
       <div class="row">
-        <select id="fk" aria-label="Kota"></select><select id="fc" aria-label="Kecamatan"></select><select id="fp" aria-label="Perumahan"></select>
-        <select id="fs" aria-label="Status"><option value="all">Semua</option><option value="belum">Belum dikunjungi</option><option value="sudah">Sudah dikunjungi</option></select>
-        <button class="ib" id="reload" title="Muat ulang tampilan" aria-label="Muat ulang tampilan"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg></button>
-        <button class="ib" id="rebuild" title="Perbarui database dari order" aria-label="Perbarui database dari order"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3"/><path d="M4 11v6c0 1.7 3.6 3 8 3"/><path d="M16 14v6M13 17l3 3 3-3"/></svg></button>
+        <select id="fk" aria-label="Kota"></select>
+        <select id="fc" aria-label="Kecamatan"></select>
+        <select id="fp" aria-label="Perumahan"></select>
+        <select id="fsk" aria-label="Sektor/Blok/Cluster"></select>
       </div>
-      <input id="q" placeholder="Cari… pisah dengan / (contoh: BNR / Bogor nirwana)" style="margin-bottom:6px">
+      <div class="row">
+        <input id="q" placeholder="Cari alamat, perumahan, sektor/blok/cluster… pisah dengan / (contoh: BNR / Cluster 1)" style="flex:1 1 200px">
+        <button class="ib" id="reload" title="Muat ulang tampilan" aria-label="Muat ulang tampilan"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg><span>Muat Ulang</span></button>
+        <button class="ib" id="rebuild" title="Perbarui database dari order" aria-label="Perbarui database dari order"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3"/><path d="M4 11v6c0 1.7 3.6 3 8 3"/><path d="M16 14v6M13 17l3 3 3-3"/></svg><span>Perbarui DB</span></button>
+      </div>
       <p class="mu" id="sum"></p>
       <div id="listDb"></div>
       <div class="pg" id="pgDb"></div>
-      <section class="sec" id="gabungSec">
-        <h3>Gabung nama perumahan yang mirip</h3>
-        <p class="mu">Pilih nama tujuan untuk tiap kelompok. Nama lain di kelompok itu diganti menjadi nama tujuan di seluruh data.</p>
-        <div id="gabung"></div>
-        <button class="b" id="cariMirip">Cari nama mirip</button>
-        <h3 style="margin-top:12px">Sudah digabung</h3>
-        <p class="mu">Hapus nama yang tidak ingin digabung. Isi Nama Pencarian agar kata itu juga menemukan alamat di kelompok ini.</p>
-        <div id="grup"></div>
-      </section>
     </section>
 
     <!-- KUNJUNGAN -->
     <section id="tKj" hidden>
       <div class="row">
-        <button class="ib on" id="kjDb" title="Dari database alamat" aria-label="Dari database alamat"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg></button>
-        <button class="ib" id="kjBaru" title="Alamat baru" aria-label="Alamat baru"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><path d="M12 7v6M9 10h6"/></svg></button>
-        <input id="qKj" placeholder="Cari alamat… pisah dengan /" style="flex:1 1 200px">
+        <button class="ib on" id="kjDb" title="Dari database alamat" aria-label="Dari database alamat"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg><span>Dari Database</span></button>
+        <button class="ib" id="kjBaru" title="Alamat baru" aria-label="Alamat baru"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><path d="M12 7v6M9 10h6"/></svg><span>Alamat Baru</span></button>
       </div>
       <div id="kjDbPane">
+        <div class="row"><input id="qKj" placeholder="Cari alamat, perumahan, sektor/blok/cluster… pisah dengan /" style="flex:1 1 200px"></div>
         <p class="mu" id="sumKj"></p>
         <div id="listKj"></div>
         <div class="pg" id="pgKj"></div>
@@ -108,7 +127,16 @@ textarea{min-height:64px;resize:vertical}
 
     <!-- HASIL KUNJUNGAN -->
     <section id="tHs" hidden>
-      <div class="row"><input id="qHs" placeholder="Cari alamat, sales, hasil, catatan… pisah dengan /" style="flex:1 1 200px"></div>
+      <div class="kpi">
+        <div class="box"><div class="val" id="kpiTotal">0</div><div class="lbl">Total Kunjungan</div></div>
+        <div class="box"><div class="val" id="kpiUnik">0</div><div class="lbl">Alamat Unik</div></div>
+      </div>
+      <div class="row">
+        <select id="hsSales" aria-label="Filter Sales"></select>
+        <input type="date" id="hsDari" title="Dari tanggal" aria-label="Dari tanggal">
+        <input type="date" id="hsSampai" title="Sampai tanggal" aria-label="Sampai tanggal">
+      </div>
+      <div class="row"><input id="qHs" placeholder="Cari alamat, perumahan, sektor/blok/cluster, hasil, catatan… pisah dengan /" style="flex:1 1 200px"></div>
       <p class="mu" id="sumHs"></p>
       <div id="listHs"></div>
       <div class="pg" id="pgHs"></div>
@@ -117,6 +145,7 @@ textarea{min-height:64px;resize:vertical}
 </div>
 
 <div class="sheet" id="sheet" hidden><div class="sc" id="scx"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="fCam" accept="image/*" capture="environment" hidden>
 <input type="file" id="fGal" accept="image/*" multiple hidden>
 
@@ -124,11 +153,16 @@ textarea{min-height:64px;resize:vertical}
 (function(){
 var API=(window.API_URL||'').trim();
 var TK=localStorage.getItem('kn_tk')||'', ME={u:'',admin:false}, DATA=null, HASIL=null, TAB='db', KJMODE='db', PS=10;
-var PG={db:0,kj:0,hs:0}, FIL={db:[],kj:[],hs:[]}, CUR=null, PEND=[], FORM_KEY='';
+var PG={db:0,kj:0,hs:0}, FIL={db:[],kj:[],hs:[]}, CUR=null, PEND=[], toastTimer=null;
 var $=function(s){return document.querySelector(s)};
 var E=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
 function todayIso(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function tglTxt(s){if(!s)return '';var b=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];var p=s.split('-');return (+p[2])+' '+b[+p[1]-1]+' '+p[0]}
+
+function toast(msg,isErr){
+  var t=$('#toast'); t.textContent=msg; t.className='toast show'+(isErr?' err':'');
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },3200);
+}
 
 function call(fn,args){
   if(!API||/ALAMAT_ANDA/.test(API)) return Promise.reject(new Error('Alamat API belum diisi di config.js'));
@@ -145,19 +179,18 @@ $('#lb').onclick=function(){
   var u=$('#lu').value.trim(), p=$('#lp').value;
   if(!u||!p){$('#lm').textContent='Isi username dan password.';return}
   $('#lb').disabled=true; $('#lm').innerHTML='<span class="spn"></span>Memeriksa login…';
-  call('login',[u,p]).then(function(o){ TK=o.t; localStorage.setItem('kn_tk',o.t); ME={u:o.u,admin:o.r==='admin'}; $('#lp').value=''; $('#lb').disabled=false; $('#lm').textContent=''; show(); load(false); })
+  call('login',[u,p]).then(function(o){ TK=o.t; localStorage.setItem('kn_tk',o.t); ME={u:o.u,admin:o.r==='admin'}; $('#lp').value=''; $('#lb').disabled=false; $('#lm').textContent=''; show(); load(); })
     .catch(function(e){ $('#lb').disabled=false; $('#lm').textContent=e.message; });
 };
 $('#lp').onkeydown=function(e){ if(e.key==='Enter') $('#lb').click(); };
 $('#out').onclick=function(){ logout(false); };
 
-// ---------- memuat ----------
-function load(force){
+function load(){
   $('#sum').innerHTML='<span class="spn"></span>Memuat database alamat…';
   rpc('kunjunganData',[]).then(function(d){
     DATA=d; ME.admin=!!d.admin; ME.u=d.u;
     $('#who').textContent=d.u+(d.admin?' · Admin':' · Sales');
-    buildFilters(); renderDb(); renderKj(); loadGrup();
+    buildFilters(); buildHsFilters(); renderDb(); renderKj();
     if(TAB==='hs') loadHasil();
   }).catch(function(e){ $('#sum').textContent=e.message; if(/Sesi/.test(e.message)) logout(true); });
 }
@@ -167,13 +200,12 @@ function loadHasil(){
 }
 function rebuildDb(){
   var b=$('#rebuild'); b.disabled=true;
-  $('#sum').innerHTML='<span class="spn"></span>Memperbarui database dari order… (bisa beberapa menit)';
-  rpc('kunjunganRebuild',[]).then(function(r){ alert('Database diperbarui: '+r.jumlah+' alamat.'); load(true); }).catch(function(e){ alert(e.message); }).then(function(){ b.disabled=false; });
+  $('#sum').innerHTML='<span class="spn"></span>Memperbarui database dari order…';
+  rpc('kunjunganRebuild',[]).then(function(r){ toast('Database diperbarui: '+r.jumlah+' alamat.'); load(); }).catch(function(e){ toast(e.message,true); }).then(function(){ b.disabled=false; });
 }
 $('#rebuild').onclick=rebuildDb;
-$('#reload').onclick=function(){ load(true); };
+$('#reload').onclick=function(){ load(); toast('Memuat ulang data…'); };
 
-// ---------- tab ----------
 function setTab(t){
   TAB=t; ['db','kj','hs'].forEach(function(x){ $('#t'+(x==='db'?'Db':x==='kj'?'Kj':'Hs')).hidden=(x!==t); });
   document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on',b.dataset.t===t); });
@@ -182,7 +214,6 @@ function setTab(t){
 }
 document.querySelectorAll('.nav button').forEach(function(b){ b.onclick=function(){ setTab(b.dataset.t); }; });
 
-// ---------- filter database ----------
 function opts(sel,list,val,all){ sel.innerHTML='<option value="">'+all+'</option>'+list.map(function(x){return '<option value="'+E(x)+'"'+(x===val?' selected':'')+'>'+E(x)+'</option>'}).join(''); }
 function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort()}
 function buildFilters(){
@@ -190,22 +221,36 @@ function buildFilters(){
   var kota=uniq(A.map(function(a){return a.kota}));
   var kk=$('#fk').value; if(kk&&kota.indexOf(kk)<0) kk='';
   opts($('#fk'),kota,kk,'Semua kota');
+
   var kec=uniq(A.filter(function(a){return !kk||a.kota===kk}).map(function(a){return a.kecamatan}));
   var kc=$('#fc').value; if(kc&&kec.indexOf(kc)<0) kc='';
   opts($('#fc'),kec,kc,'Semua kecamatan');
+
   var per=uniq(A.filter(function(a){return (!kk||a.kota===kk)&&(!kc||a.kecamatan===kc)}).map(function(a){return a.perumahan}));
   var pp=$('#fp').value; if(pp&&per.indexOf(pp)<0) pp='';
   opts($('#fp'),per,pp,'Semua perumahan');
+
+  var sek=uniq(A.filter(function(a){return (!kk||a.kota===kk)&&(!kc||a.kecamatan===kc)&&(!pp||a.perumahan===pp)}).map(function(a){return a.sektor}));
+  var sk=$('#fsk').value; if(sk&&sek.indexOf(sk)<0) sk='';
+  opts($('#fsk'),sek,sk,'Semua sektor/blok/cluster');
 }
-$('#fk').onchange=function(){ $('#fc').value=''; $('#fp').value=''; buildFilters(); PG.db=0; renderDb(); };
-$('#fc').onchange=function(){ $('#fp').value=''; buildFilters(); PG.db=0; renderDb(); };
-$('#fp').onchange=function(){ PG.db=0; renderDb(); };
-$('#fs').onchange=function(){ PG.db=0; renderDb(); };
+$('#fk').onchange=function(){ $('#fc').value=''; $('#fp').value=''; $('#fsk').value=''; buildFilters(); PG.db=0; renderDb(); };
+$('#fc').onchange=function(){ $('#fp').value=''; $('#fsk').value=''; buildFilters(); PG.db=0; renderDb(); };
+$('#fp').onchange=function(){ $('#fsk').value=''; buildFilters(); PG.db=0; renderDb(); };
+$('#fsk').onchange=function(){ PG.db=0; renderDb(); };
 var qt=null; $('#q').oninput=function(){ clearTimeout(qt); qt=setTimeout(function(){ PG.db=0; renderDb(); },200); };
 $('#qKj').oninput=function(){ clearTimeout(qt); qt=setTimeout(function(){ PG.kj=0; renderKj(); },200); };
+
+function buildHsFilters(){
+  if(!DATA) return;
+  var cur=$('#hsSales').value;
+  opts($('#hsSales'),DATA.sales||[],cur,'Semua sales');
+}
+$('#hsSales').onchange=function(){ PG.hs=0; renderHs(); };
+$('#hsDari').onchange=function(){ PG.hs=0; renderHs(); };
+$('#hsSampai').onchange=function(){ PG.hs=0; renderHs(); };
 $('#qHs').oninput=function(){ clearTimeout(qt); qt=setTimeout(function(){ PG.hs=0; renderHs(); },200); };
 
-// Pencarian: bagian dipisah "/" (salah satu cocok), kata dalam bagian harus semuanya ada
 function cocok(teks,q){
   if(!q) return true;
   var t=teks.toLowerCase();
@@ -214,52 +259,62 @@ function cocok(teks,q){
   });
 }
 function filterDb(){
-  var k=$('#fk').value, c=$('#fc').value, p=$('#fp').value, s=$('#fs').value, q=$('#q').value.trim();
+  var k=$('#fk').value, c=$('#fc').value, p=$('#fp').value, sk=$('#fsk').value, q=$('#q').value.trim();
   return DATA.alamat.filter(function(a){
-    if(k&&a.kota!==k) return false; if(c&&a.kecamatan!==c) return false; if(p&&a.perumahan!==p) return false;
-    if(s==='belum'&&a.dikunjungi) return false; if(s==='sudah'&&!a.dikunjungi) return false;
-    return cocok(a.alamat+' '+a.perumahan+' '+(a.cari||'')+' '+a.kecamatan+' '+a.kota,q);
-  }).sort(function(a,b){return (a.dikunjungi-b.dikunjungi)||a.alamat.localeCompare(b.alamat)});
+    if(k&&a.kota!==k) return false;
+    if(c&&a.kecamatan!==c) return false;
+    if(p&&a.perumahan!==p) return false;
+    if(sk&&a.sektor!==sk) return false;
+    return cocok(a.alamat+' '+a.perumahan+' '+(a.sektor||'')+' '+a.kecamatan+' '+a.kota,q);
+  }).sort(function(a,b){return a.alamat.localeCompare(b.alamat)});
 }
 
-// ---------- pager (10 per halaman, tidak memanjang ke bawah) ----------
 function pager(el,key,total,onGo){
   var pages=Math.max(1,Math.ceil(total/PS));
   if(PG[key]>=pages) PG[key]=pages-1; if(PG[key]<0) PG[key]=0;
   if(total<=PS){ el.innerHTML=''; return; }
   var from=PG[key]*PS+1, to=Math.min(total,(PG[key]+1)*PS);
-  el.innerHTML='<button class="ib" data-pg="-1" '+(PG[key]<=0?'disabled':'')+' title="Sebelumnya" aria-label="Sebelumnya"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>'
+  el.innerHTML='<button class="ib" data-pg="-1" '+(PG[key]<=0?'disabled':'')+' title="Sebelumnya" aria-label="Sebelumnya"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Prev</span></button>'
     +'<span class="mu">'+from+'–'+to+' dari '+total+'</span>'
-    +'<button class="ib" data-pg="1" '+(PG[key]>=pages-1?'disabled':'')+' title="Berikutnya" aria-label="Berikutnya"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>';
+    +'<button class="ib" data-pg="1" '+(PG[key]>=pages-1?'disabled':'')+' title="Berikutnya" aria-label="Berikutnya"><span>Next</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>';
   el.onclick=function(e){
     var b=e.target.closest('button[data-pg]'); if(!b||b.disabled) return;
     PG[key]+=+b.dataset.pg; onGo(); var top=document.getElementById('top-'+key); if(top) top.scrollIntoView({block:'start'});
   };
 }
 
-// ---------- kartu alamat (database & kunjungan) ----------
-function kartu(a,i,pfx){
-  return '<div class="card"><input type="checkbox" data-'+pfx+'="'+i+'" '+(a.dikunjungi?'checked':'')+' aria-label="Sudah dikunjungi"><div class="inf" data-'+pfx+'-open="'+i+'">'
+function kartuDb(a){
+  return '<div class="card"><div class="inf">'
+    +'<div class="al">'+E(a.alamat)+'</div>'
+    +'<div class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</div>'
+    +'<div>'
+    +(a.sektor?'<span class="tag sk">'+E(a.sektor)+'</span>':'')
+    +(a.spo?'<span class="tag">'+a.spo+' SPO</span>':'')
+    +(a.sumber==='baru'?'<span class="tag s1">Alamat baru</span>':'')
+    +'</div></div></div>';
+}
+function kartuKj(a,i){
+  return '<div class="card"><input type="checkbox" data-kj="'+i+'" '+(a.dikunjungi?'checked':'')+' aria-label="Catat kunjungan"><div class="inf click" data-kj-open="'+i+'">'
     +'<div class="al">'+E(a.alamat)+'</div>'
     +'<div class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</div>'
     +'<div>'+(a.dikunjungi?'<span class="tag ok">✓ '+E(tglTxt(a.terakhir))+' · '+a.jumlahKunjungan+' kunjungan</span>':'<span class="tag">Belum dikunjungi</span>')
-    +(a.spo?'<span class="tag">'+a.spo+' SPO</span>':'')+(a.sumber==='baru'?'<span class="tag s1">Alamat baru</span>':'')+'</div></div></div>';
+    +(a.sektor?'<span class="tag sk">'+E(a.sektor)+'</span>':'')
+    +(a.spo?'<span class="tag">'+a.spo+' SPO</span>':'')
+    +(a.sumber==='baru'?'<span class="tag s1">Alamat baru</span>':'')+'</div></div></div>';
 }
 function renderDb(){
   FIL.db=filterDb();
-  var sudah=FIL.db.filter(function(a){return a.dikunjungi}).length;
-  $('#sum').innerHTML=FIL.db.length+' alamat · sudah '+sudah+' · belum '+(FIL.db.length-sudah)+(DATA.waktu?' · database '+E(tglTxt(DATA.waktu.slice(0,10))):'');
+  $('#sum').innerHTML=FIL.db.length+' alamat'+(DATA.waktu?' · diperbarui '+E(tglTxt(DATA.waktu.slice(0,10))):'');
   var list=FIL.db.slice(PG.db*PS,PG.db*PS+PS);
-  $('#listDb').innerHTML='<div id="top-db"></div>'+(list.map(function(a,i){return kartu(a,PG.db*PS+i,'db')}).join('')||'<p class="mu">Tidak ada alamat yang cocok.</p>');
+  $('#listDb').innerHTML='<div id="top-db"></div>'+(list.map(kartuDb).join('')||'<p class="mu">Tidak ada alamat yang cocok.</p>');
   pager($('#pgDb'),'db',FIL.db.length,renderDb);
-  $('#gabungSec').hidden=false;
 }
 function renderKj(){
-  var base=DATA.alamat.filter(function(a){return cocok(a.alamat+' '+a.perumahan+' '+a.kecamatan+' '+a.kota,$('#qKj').value.trim())});
+  var base=DATA.alamat.filter(function(a){return cocok(a.alamat+' '+a.perumahan+' '+(a.sektor||'')+' '+a.kecamatan+' '+a.kota,$('#qKj').value.trim())});
   FIL.kj=base.sort(function(a,b){return (a.dikunjungi-b.dikunjungi)||a.alamat.localeCompare(b.alamat)});
-  $('#sumKj').textContent=FIL.kj.length+' alamat · klik kotak untuk mencatat kunjungan dengan tanggal';
+  $('#sumKj').textContent=FIL.kj.length+' alamat · klik kartu atau kotak untuk mencatat kunjungan';
   var list=FIL.kj.slice(PG.kj*PS,PG.kj*PS+PS);
-  $('#listKj').innerHTML='<div id="top-kj"></div>'+(list.map(function(a,i){return kartu(a,PG.kj*PS+i,'kj')}).join('')||'<p class="mu">Tidak ada alamat yang cocok.</p>');
+  $('#listKj').innerHTML='<div id="top-kj"></div>'+(list.map(function(a,i){return kartuKj(a,PG.kj*PS+i)}).join('')||'<p class="mu">Tidak ada alamat yang cocok.</p>');
   pager($('#pgKj'),'kj',FIL.kj.length,renderKj);
 }
 $('#kjDb').onclick=function(){ KJMODE='db'; setKj(); };
@@ -271,24 +326,14 @@ function setKj(){
 }
 $('#listKj').addEventListener('change',function(e){
   if(e.target.type!=='checkbox'||e.target.dataset.kj===undefined) return;
-  e.target.checked=!e.target.checked;              // status berubah setelah kunjungan tersimpan
+  e.target.checked=!e.target.checked;
   openForm(FIL.kj[+e.target.dataset.kj]);
 });
 $('#listKj').addEventListener('click',function(e){
   var t=e.target.closest('[data-kj-open]'); if(!t) return;
   openForm(FIL.kj[+t.dataset.kjOpen]);
 });
-$('#listDb').addEventListener('click',function(e){
-  var t=e.target.closest('[data-db-open]'); if(!t) return;
-  openForm(FIL.db[+t.dataset.dbOpen]);
-});
-$('#listDb').addEventListener('change',function(e){
-  if(e.target.type!=='checkbox') return;
-  e.target.checked=!e.target.checked;
-  openForm(FIL.db[+e.target.dataset.db]);
-});
 
-// ---------- form kunjungan (dari database) ----------
 function chipsHtml(sel){
   return DATA.sales.map(function(s){return '<label><input type="checkbox" value="'+E(s)+'" '+(sel.indexOf(s)>=0?'checked':'')+'>'+E(s)+'</label>'}).join('');
 }
@@ -296,22 +341,26 @@ function hasilHtml(v){
   return '<option value="">— pilih —</option>'+DATA.hasilOpsi.map(function(h){return '<option'+(v===h?' selected':'')+'>'+E(h)+'</option>'}).join('');
 }
 function formFields(a,editable){
+  var dlSektor='<datalist id="dlSk">'+uniq(DATA.alamat.map(function(x){return x.sektor})).map(function(s){return '<option value="'+E(s)+'">'}).join('')+'</datalist>';
+  var inputSektor='<p class="mu" style="margin-top:8px">Sektor/Blok/Cluster</p><input id="fSk" list="dlSk" placeholder="Contoh: Sektor 1, Blok A, Cluster Melati" value="'+E(a.sektor||'')+'">'+dlSektor;
   return (editable
     ? '<div class="row"><input id="fAl" placeholder="Alamat lengkap" value="'+E(a.alamat||'')+'"></div>'
       +'<div class="row"><input id="fKo" placeholder="Kota" value="'+E(a.kota||'')+'"><input id="fKc" placeholder="Kecamatan" value="'+E(a.kecamatan||'')+'"></div>'
       +'<div class="row"><input id="fPr" list="dlPr" placeholder="Perumahan (pilih atau ketik)" value="'+E(a.perumahan||'')+'"></div>'
       +'<datalist id="dlPr">'+uniq(DATA.alamat.map(function(x){return x.perumahan})).map(function(p){return '<option value="'+E(p)+'">'}).join('')+'</datalist>'
-    : '<div class="al" style="font-weight:600">'+E(a.alamat)+'</div><p class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</p>')
+      +inputSektor
+    : '<div class="al" style="font-weight:600">'+E(a.alamat)+'</div><p class="mu">'+E([a.perumahan,a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</p>'
+      +inputSektor)
     +'<p class="mu" style="margin-top:8px">Tanggal kunjungan</p><input type="date" id="fTgl" value="'+todayIso()+'">'
     +'<p class="mu" style="margin-top:8px">Sales yang mengunjungi (boleh lebih dari satu)</p><div class="chips" id="chips">'+chipsHtml([])+'</div>'
     +'<p class="mu">Hasil kunjungan</p><select id="fHasil">'+hasilHtml('')+'</select>'
     +'<p class="mu" style="margin-top:8px">Catatan</p><textarea id="fCat" maxlength="500"></textarea>'
-    +'<div class="sec" style="margin-top:10px"><h3>Foto</h3><div class="row"><button class="ib" id="bCam" title="Ambil foto" aria-label="Ambil foto"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button><button class="ib" id="bGal" title="Pilih dari galeri" aria-label="Pilih dari galeri"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button></div><div class="pend" id="pend"></div></div>';
+    +'<div class="sec" style="margin-top:10px"><h3>Foto</h3><div class="row"><button class="ib" id="bCam" title="Ambil foto" aria-label="Ambil foto"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Kamera</span></button><button class="ib" id="bGal" title="Pilih dari galeri" aria-label="Pilih dari galeri"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Galeri</span></button></div><div class="pend" id="pend"></div></div>';
 }
 function pendHtml(){ $('#pend').innerHTML=PEND.map(function(f,i){return '<span>'+E(f.name)+' <a href="#" data-rm="'+i+'" style="color:var(--s0);text-decoration:none">✕</a></span>'}).join(''); }
 function openForm(a){
   CUR=a; PEND=[];
-  $('#scx').innerHTML='<div class="row" style="justify-content:space-between"><h3 style="margin:0">Catat kunjungan</h3><button class="ib" id="x" title="Tutup" aria-label="Tutup"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>'
+  $('#scx').innerHTML='<div class="row" style="justify-content:space-between"><h3 style="margin:0">Catat kunjungan</h3><button class="ib" id="x" title="Tutup" aria-label="Tutup"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg><span>Tutup</span></button></div>'
     +formFields(a,false)
     +'<div class="row" style="margin-top:12px"><button class="b pr" id="simpan" style="width:100%">Simpan kunjungan</button></div><p class="mu" id="sm"></p>';
   $('#sheet').hidden=false; bindForm(false);
@@ -331,29 +380,35 @@ $('#fCam').onchange=pilihFoto; $('#fGal').onchange=pilihFoto;
 
 function ambilIsi(baru){
   var sales=[].map.call(document.querySelectorAll('#chips input:checked'),function(i){return i.value});
-  var base=baru?{alamat:$('#fAl').value.trim(),kota:$('#fKo').value.trim(),kecamatan:$('#fKc').value.trim(),perumahan:$('#fPr').value.trim(),sumber:'Baru'}
-              :{alamat:CUR.alamat,kota:CUR.kota,kecamatan:CUR.kecamatan,perumahan:CUR.perumahan,sumber:'Database'};
+  var sk=($('#fSk')&&$('#fSk').value.trim())||'';
+  var base=baru?{alamat:$('#fAl').value.trim(),kota:$('#fKo').value.trim(),kecamatan:$('#fKc').value.trim(),perumahan:$('#fPr').value.trim(),sektor:sk,sumber:'Baru'}
+              :{alamat:CUR.alamat,kota:CUR.kota,kecamatan:CUR.kecamatan,perumahan:CUR.perumahan,sektor:sk,sumber:'Database'};
   base.tanggal=$('#fTgl').value; base.sales=sales; base.hasil=$('#fHasil').value; base.catatan=$('#fCat').value.trim();
   return base;
 }
 function saveVisit(baru){
   var it=ambilIsi(baru), files=PEND.slice(), btn=$(baru?'#simpanBaru':'#simpan'), msg=$(baru?'#smBaru':'#sm');
   if(!it.alamat){ msg.textContent='Alamat wajib diisi.'; return; }
+  if(!it.sales.length){ msg.textContent='Pilih minimal satu sales.'; return; }
   btn.disabled=true; msg.innerHTML='<span class="spn"></span>Menyimpan kunjungan…';
   rpc('kunjunganSimpanKunjungan',[it]).then(function(r){
     if(!files.length) return r;
-    return files.reduce(function(p,f,i){
-      return p.then(function(){ msg.innerHTML='<span class="spn"></span>Mengunggah foto '+(i+1)+' dari '+files.length+'…'; return kecil(f).then(function(b64){ return rpc('kunjunganFotoHasil',[r.id,b64,'image/jpeg',f.name.replace(/\.[^.]+$/,'')]); }); });
-    },Promise.resolve()).then(function(){ return r; });
+    msg.innerHTML='<span class="spn"></span>Menyiapkan dan mengunggah '+files.length+' foto…';
+    return Promise.all(files.map(function(f){
+      return kecil(f).then(function(b64){
+        return { b64: b64, mime: 'image/jpeg', nama: f.name.replace(/\.[^.]+$/,'') };
+      });
+    })).then(function(payloads){
+      return rpc('kunjunganFotoBatch',[r.id, payloads]);
+    });
   }).then(function(){
-    closeSheet(); if(baru){ $('#fAl').value=''; PEND=[]; }
-    alert('Kunjungan tersimpan.'); load(false); if(TAB==='hs') loadHasil();
-  }).catch(function(e){ msg.textContent=e.message; }).then(function(){ btn.disabled=false; });
+    closeSheet(); if(baru){ $('#fAl').value=''; if($('#fSk')) $('#fSk').value=''; PEND=[]; }
+    toast('Kunjungan berhasil tersimpan.'); load(); if(TAB==='hs') loadHasil();
+  }).catch(function(e){ msg.textContent=e.message; toast(e.message,true); }).then(function(){ btn.disabled=false; });
 }
 
-// ---------- kunjungan alamat baru (form di tab) ----------
 function formBaru(){
-  var a={alamat:'',kota:'',kecamatan:'',perumahan:''};
+  var a={alamat:'',kota:'',kecamatan:'',perumahan:'',sektor:''};
   $('#formBaru').innerHTML='<div class="sec" style="margin-top:0"><h3>Alamat baru</h3>'+formFields(a,true)
     +'<div class="row" style="margin-top:12px"><button class="b pr" id="simpanBaru" style="width:100%">Simpan kunjungan</button></div><p class="mu" id="smBaru"></p></div>';
   CUR=null; PEND=[];
@@ -363,25 +418,31 @@ function formBaru(){
   pendHtml();
 }
 
-// ---------- hasil kunjungan ----------
 function renderHs(){
   if(!HASIL) return;
-  var q=$('#qHs').value.trim();
-  FIL.hs=HASIL.filter(function(h){return cocok(h.alamat+' '+h.perumahan+' '+h.kecamatan+' '+h.kota+' '+h.sales.join(' ')+' '+h.hasil+' '+h.catatan,q)});
-  $('#sumHs').textContent=FIL.hs.length+' kunjungan';
+  var q=$('#qHs').value.trim(), fs=$('#hsSales').value, fd=$('#hsDari').value, fsp=$('#hsSampai').value;
+  FIL.hs=HASIL.filter(function(h){
+    if(fs && h.sales.indexOf(fs)<0) return false;
+    if(fd && h.tgl < fd) return false;
+    if(fsp && h.tgl > fsp) return false;
+    return cocok(h.alamat+' '+h.perumahan+' '+(h.sektor||'')+' '+h.kecamatan+' '+h.kota+' '+h.sales.join(' ')+' '+h.hasil+' '+h.catatan,q);
+  });
+  var unikAlamat=new Set(FIL.hs.map(function(h){return h.key})).size;
+  $('#kpiTotal').textContent=FIL.hs.length;
+  $('#kpiUnik').textContent=unikAlamat;
+  $('#sumHs').textContent='Menampilkan '+FIL.hs.length+' riwayat kunjungan';
   var list=FIL.hs.slice(PG.hs*PS,PG.hs*PS+PS);
   $('#listHs').innerHTML='<div id="top-hs"></div>'+(list.map(function(h){
     return '<div class="card" style="display:block"><div class="row" style="justify-content:space-between;margin:0"><span class="tag ok" style="margin:0">'+E(tglTxt(h.tgl))+'</span>'+(h.sumber==='Baru'?'<span class="tag s1">Alamat baru</span>':'')+'</div>'
       +'<div class="al" style="margin-top:4px">'+E(h.alamat)+'</div><div class="mu">'+E([h.perumahan,h.kecamatan,h.kota].filter(Boolean).join(' · '))+'</div>'
-      +'<div>'+h.sales.map(function(s){return '<span class="tag">'+E(s)+'</span>'}).join('')+(h.hasil?'<span class="tag">'+E(h.hasil)+'</span>':'')+'</div>'
+      +'<div>'+(h.sektor?'<span class="tag sk">'+E(h.sektor)+'</span>':'')+h.sales.map(function(s){return '<span class="tag">'+E(s)+'</span>'}).join('')+(h.hasil?'<span class="tag">'+E(h.hasil)+'</span>':'')+'</div>'
       +(h.catatan?'<p class="mu" style="margin:6px 0 0">'+E(h.catatan)+'</p>':'')
       +(h.foto.length?'<p style="margin:6px 0 0">'+h.foto.map(function(u,i){return '<a href="'+E(u)+'" target="_blank" rel="noopener" style="font-size:13px;color:var(--ac);margin-right:10px">Foto '+(i+1)+'</a>'}).join('')+'</p>':'')
       +'</div>';
-  }).join('')||'<p class="mu">Belum ada hasil kunjungan.</p>');
+  }).join('')||'<p class="mu">Belum ada hasil kunjungan yang cocok.</p>');
   pager($('#pgHs'),'hs',FIL.hs.length,renderHs);
 }
 
-// ---------- foto (kecilkan dulu) ----------
 function kecil(file){
   return new Promise(function(res,rej){
     var img=new Image(), url=URL.createObjectURL(file);
@@ -395,47 +456,7 @@ function kecil(file){
   });
 }
 
-// ---------- gabung perumahan (semua user) ----------
-function loadGrup(){
-  rpc('kunjunganDaftarGabung',[]).then(function(d){
-    window.__grupData=d;
-    if(!d.grup.length){ $('#grup').innerHTML='<p class="mu">Belum ada nama yang digabung.</p>'; return; }
-    $('#grup').innerHTML=d.grup.map(function(g,gi){
-      var cari=d.cari[g.tujuan]||'';
-      return '<div class="grp"><div style="font-weight:600">'+E(g.tujuan)+'</div>'
-        +'<div class="row" style="margin:6px 0"><input data-cari="'+gi+'" placeholder="Nama pencarian (contoh: BNR)" value="'+E(cari)+'"><button class="b" data-simpancari="'+gi+'">Simpan</button></div>'
-        +g.anggota.map(function(a){return '<label><span>'+E(a)+'</span><button class="b" data-hapus="'+E(a)+'" style="color:var(--s0);border-color:var(--s0);padding:3px 9px;font-size:12px">Hapus</button></label>'}).join('')+'</div>';
-    }).join('');
-  }).catch(function(e){ $('#grup').textContent=e.message; });
-}
-$('#grup').addEventListener('click',function(e){
-  var hp=e.target.dataset.hapus, sc=e.target.dataset.simpancari;
-  if(hp!==undefined){ if(!confirm('Keluarkan "'+hp+'" dari gabungan?')) return;
-    rpc('kunjunganHapusGabung',[hp]).then(function(){ load(false); }).catch(function(err){ alert(err.message); }); }
-  if(sc!==undefined){ var g=window.__grupData.grup[+sc], inp=document.querySelector('input[data-cari="'+sc+'"]');
-    rpc('kunjunganSimpanCari',[g.tujuan,inp.value.trim()]).then(function(){ load(false); }).catch(function(err){ alert(err.message); }); }
-});
-$('#cariMirip').onclick=function(){
-  $('#gabung').innerHTML='<span class="spn"></span>Mencari…';
-  rpc('kunjunganSaran',[]).then(function(g){
-    if(!g.length){ $('#gabung').innerHTML='<p class="mu">Tidak ada nama perumahan yang mirip.</p>'; return; }
-    window.__saran=g;
-    $('#gabung').innerHTML=g.map(function(grp,gi){
-      return '<div class="grp">'+grp.map(function(x,xi){
-        return '<label><span><input type="radio" name="g'+gi+'" value="'+E(x.nama)+'"'+(xi===0?' checked':'')+' style="width:auto;accent-color:var(--ac)"> '+E(x.nama)+' <span class="mu">('+x.jumlah+' alamat)</span></span></label>';
-      }).join('')+'<button class="b pr" style="margin-top:6px" data-gab="'+gi+'">Gabungkan ke yang dipilih</button></div>';
-    }).join('');
-  }).catch(function(e){ $('#gabung').textContent=e.message; });
-};
-$('#gabung').addEventListener('click',function(e){
-  var gi=e.target.dataset.gab; if(gi===undefined) return;
-  var g=window.__saran[+gi], pilih=document.querySelector('input[name="g'+gi+'"]:checked'); if(!pilih) return;
-  rpc('kunjunganGabung',[g.map(function(x){return x.nama}),pilih.value]).then(function(r){
-    alert('Digabung ke "'+r.tujuan+'" ('+r.digabung+' nama).'); load(false);
-  }).catch(function(err){ alert(err.message); });
-});
-
-show(); if(TK) load(false); setTab('db');
+show(); if(TK) load(); setTab('db');
 })();
 </script>
 </body></html>
