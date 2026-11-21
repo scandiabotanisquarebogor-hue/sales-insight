@@ -332,6 +332,9 @@ function cocok(teks,q){
   });
 }
 
+function cmpName(a,b){
+  return a.name<b.name?-1:(a.name>b.name?1:0);
+}
 function renderDash(){
   if(!DATA) return;
   var k=$('#dk').value, c=$('#dc').value, p=$('#dp').value, q=$('#dq').value.trim();
@@ -346,7 +349,8 @@ function renderDash(){
     var nm=(a.perumahan||'').trim()||'Non-Perumahan / Belum Diisi';
     map[nm]=(map[nm]||0)+1;
   });
-  var ranked=Object.keys(map).map(function(nm){return {name:nm,count:map[nm]}).sort(function(a,b){return b.count-a.count||a.name.localeCompare(b.name)});
+  var ranked=Object.keys(map).map(function(nm){return {name:nm,count:map[nm]}});
+  ranked.sort(function(a,b){return (b.count-a.count)||cmpName(a,b)});
   $('#dKpiAddr').textContent=filtered.length;
   $('#dKpiEst').textContent=ranked.length;
   $('#dSum').textContent=ranked.length+' perumahan terdata dari '+filtered.length+' alamat aktif (menampilkan 15 teratas)';
@@ -366,7 +370,7 @@ function filterDb(){
     if(p&&a.perumahan!==p) return false;
     if(sk&&a.sektor!==sk) return false;
     return cocok(a.alamat+' '+a.perumahan+' '+(a.sektor||'')+' '+a.kecamatan+' '+a.kota,q);
-  }).sort(function(a,b){return a.alamat.localeCompare(b.alamat)});
+  }).sort(function(a,b){return a.alamat<b.alamat?-1:(a.alamat>b.alamat?1:0)});
 }
 
 function pager(el,key,total,onGo){
@@ -417,7 +421,7 @@ function updateBatchBar(){
 }
 function renderKj(){
   var base=DATA.alamat.filter(function(a){return cocok(a.alamat+' '+a.perumahan+' '+(a.sektor||'')+' '+a.kecamatan+' '+a.kota,$('#qKj').value.trim())});
-  FIL.kj=base.sort(function(a,b){return (a.dikunjungi-b.dikunjungi)||a.alamat.localeCompare(b.alamat)});
+  FIL.kj=base.sort(function(a,b){return (a.dikunjungi-b.dikunjungi)||(a.alamat<b.alamat?-1:(a.alamat>b.alamat?1:0))});
   $('#sumKj').textContent=FIL.kj.length+' alamat · centang kotak pilih untuk catat banyak sekaligus, atau klik kartu untuk 1 alamat';
   updateBatchBar();
   var list=FIL.kj.slice(PG.kj*PS,PG.kj*PS+PS);
