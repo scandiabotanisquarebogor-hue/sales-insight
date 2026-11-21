@@ -86,7 +86,7 @@ textarea{min-height:64px;resize:vertical}
     <div class="brand">
       <img class="brand-logo" src="./logo.png" alt="SCANDIA Lifestyle &amp; Home">
       <div class="brand-title">
-        <h1 id="appTitle">Catatan Kunjungan &amp; Alamat</h1>
+        <h1 id="appTitle">Kunjungan &amp; Alamat</h1>
         <p class="mu" id="who"></p>
       </div>
     </div>
@@ -100,7 +100,7 @@ textarea{min-height:64px;resize:vertical}
   </div>
 
   <section id="login" class="sec" style="margin-top:4px">
-    <h3 id="hLogin">Silakan Masuk</h3>
+    <h3 id="hLogin">Masuk</h3>
     <div class="row"><input id="lu" placeholder="Username" autocapitalize="none" autocomplete="username"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"></div>
     <button type="button" class="b pr" id="lb" style="width:100%">Masuk</button>
     <p class="mu" id="lm"></p>
@@ -230,16 +230,16 @@ var HASIL_CHECKLIST=[
 
 var I18N={
   id:{
-    docTitle:'Catatan Kunjungan & Alamat · SCANDIA BOTANI',
-    appTitle:'Catatan Kunjungan & Alamat',
+    docTitle:'Kunjungan & Alamat · SCANDIA BOTANI',
+    appTitle:'Kunjungan & Alamat',
     out:'Keluar',
-    loginTitle:'Silakan Masuk',
+    loginTitle:'Masuk',
     userPh:'Username',
     passPh:'Password',
     loginBtn:'Masuk',
-    needLogin:'Silakan isi username dan password terlebih dahulu.',
+    needLogin:'Silakan isi username dan password.',
     checking:'Memeriksa akun…',
-    sessionEnd:'Sesi telah berakhir, silakan masuk kembali.',
+    sessionEnd:'Sesi berakhir, silakan masuk kembali.',
     roleAdmin:'Admin',
     roleSales:'Sales',
     nav:{ds:'Dashboard',db:'Database',kj:'Kunjungan',hs:'Hasil'},
@@ -253,7 +253,7 @@ var I18N={
     kpiAddr:'Total Alamat',
     kpiEst:'Perumahan Terdata',
     topEst:'Perumahan dengan Alamat Terbanyak',
-    noDash:'Belum ada data perumahan yang sesuai dengan filter ini.',
+    noDash:'Belum ada data perumahan yang cocok dengan filter ini.',
     dashSum:function(est,addr){return est+' perumahan terdata dari '+addr+' alamat aktif (menampilkan 15 teratas)'},
     loadingAddr:'Memuat database alamat…',
     rebuilding:'Memperbarui database dari data order…',
@@ -274,11 +274,11 @@ var I18N={
     kpiTotal:'Total Kunjungan',
     kpiUnik:'Alamat Unik',
     hsSum:function(n){return 'Menampilkan '+n+' riwayat kunjungan'},
-    noHs:'Belum ada riwayat kunjungan yang sesuai.',
+    noHs:'Belum ada riwayat kunjungan yang cocok.',
     photoLink:function(i){return 'Foto '+i},
     close:'Tutup',
     saveVisit:'Simpan Kunjungan',
-    newAddrTitle:'Catat Alamat Baru',
+    newAddrTitle:'Alamat Baru',
     singleVisitTitle:'Catat Kunjungan',
     batchVisitTitle:function(n){return 'Catat Kunjungan ('+n+' alamat)'},
     cityLbl:'Kota (wajib dipilih)',
@@ -314,8 +314,8 @@ var I18N={
     badImg:'File foto tidak dapat dibaca.'
   },
   en:{
-    docTitle:'Visit & Address Log · SCANDIA BOTANI',
-    appTitle:'Visit & Address Log',
+    docTitle:'Visits & Addresses · SCANDIA BOTANI',
+    appTitle:'Visits & Addresses',
     out:'Sign Out',
     loginTitle:'Sign In',
     userPh:'Username',
@@ -362,7 +362,7 @@ var I18N={
     photoLink:function(i){return 'Photo '+i},
     close:'Close',
     saveVisit:'Save Visit',
-    newAddrTitle:'Log New Address',
+    newAddrTitle:'New Address',
     singleVisitTitle:'Log Visit',
     batchVisitTitle:function(n){return 'Log Visits ('+n+' addresses)'},
     cityLbl:'City (required)',
