@@ -54,6 +54,7 @@ textarea{min-height:70px;resize:vertical}
 
   <section id="app" hidden>
     <div class="row">
+      <button class="b" id="reload" title="Muat ulang dari spreadsheet" style="flex:none">↻ Muat ulang</button>
       <select id="fk" aria-label="Kota"></select>
       <select id="fc" aria-label="Kecamatan"></select>
       <select id="fp" aria-label="Perumahan"></select>
@@ -109,9 +110,9 @@ $('#lb').onclick=function(){
 $('#lp').onkeydown=function(e){ if(e.key==='Enter') $('#lb').click(); };
 $('#out').onclick=function(){ logout(false); };
 
-function load(){
+function load(force){
   $('#sum').innerHTML='<span class="spn"></span>Memuat data alamat…';
-  rpc('kunjunganData',[]).then(function(d){
+  rpc('kunjunganData',[!!force]).then(function(d){
     DATA=d; ME.admin=!!d.admin; ME.u=d.u;
     $('#who').textContent=d.u+(d.admin?' · Admin':' · Sales')+' — kunjungan alamat';
     $('#gabungSec').hidden=false;
@@ -135,6 +136,7 @@ function buildFilters(){
   var pp=$('#fp').value; if(pp&&per.indexOf(pp)<0) pp='';
   opts($('#fp'),per,pp,'Semua perumahan');
 }
+$('#reload').onclick=function(){ load(true); };
 $('#fk').onchange=function(){ $('#fc').value=''; $('#fp').value=''; buildFilters(); SHOW=60; render(); };
 $('#fc').onchange=function(){ $('#fp').value=''; buildFilters(); SHOW=60; render(); };
 ['#fp','#fs'].forEach(function(s){ $(s).onchange=function(){ SHOW=60; render(); }; });
