@@ -111,16 +111,8 @@ textarea{min-height:64px;resize:vertical}
         <button type="button" data-lang="id" class="on">ID</button>
         <button type="button" data-lang="en">EN</button>
       </div>
-      <button type="button" class="ib" id="out" hidden><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg><span id="lblOut">Keluar</span></button>
     </div>
   </div>
-
-  <section id="login" class="sec" style="margin-top:4px">
-    <h3 id="hLogin">Silakan Masuk</h3>
-    <div class="row"><input id="lu" placeholder="Username" autocapitalize="none" autocomplete="username"><input id="lp" type="password" placeholder="Password" autocomplete="current-password"></div>
-    <button type="button" class="b pr" id="lb" style="width:100%">Masuk</button>
-    <p class="mu" id="lm"></p>
-  </section>
 
   <section id="app" hidden>
     <nav class="nav" aria-label="Menu utama">
@@ -437,7 +429,7 @@ function normPrm(p){ var s=String(p==null?'':p).trim(); return (!s||/^[\s\-\u201
 
 function todayIso(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function tglTxt(s){if(!s)return '';var b=LANG==='en'?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']:['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];var p=s.split('-');return (+p[2])+' '+b[+p[1]-1]+' '+p[0]}
-function rp(n){return 'Rp '+Math.round(Number(n)||0).toLocaleString(LANG==='en'?'en-US':'id-ID')}
+function rp(n){return Math.round(Number(n)||0).toLocaleString(LANG==='en'?'en-US':'id-ID')}
 
 function toast(msg,isErr){
   var t=$('#toast'); t.textContent=msg; t.className='toast show'+(isErr?' err':'');
@@ -449,20 +441,15 @@ function call(fn,args){
   return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args}),redirect:'follow',credentials:'omit'})
     .catch(function(){throw new Error(T().noNet)})
     .then(function(r){return r.json().catch(function(){throw new Error(T().badRes)})})
-    .then(function(j){ if(!j.ok){ if(/Sesi/i.test(j.e||'')) logout(true); throw new Error(j.e||'Error'); } return j.v; });
+    .then(function(j){ if(!j.ok) throw new Error(j.e||'Error'); return j.v; });
 }
-function rpc(fn,args){ return call(fn,[TK].concat(args||[])); }
+function rpc(fn,args){ return call(fn,[''].concat(args||[])); }
 
 function applyLang(){
   document.documentElement.lang=LANG;
   document.title=T().docTitle;
   document.querySelectorAll('.lang button').forEach(function(b){ b.classList.toggle('on',b.dataset.lang===LANG); });
   $('#appTitle').textContent=T().appTitle;
-  $('#lblOut').textContent=T().out;
-  $('#hLogin').textContent=T().loginTitle;
-  $('#lu').placeholder=T().userPh;
-  $('#lp').placeholder=T().passPh;
-  $('#lb').textContent=T().loginBtn;
   document.querySelectorAll('[data-nav]').forEach(function(el){
     var k=el.getAttribute('data-nav');
     if(T().nav[k]) el.textContent=T().nav[k];
@@ -495,17 +482,7 @@ document.querySelectorAll('.lang button').forEach(function(b){
   });
 });
 
-function show(){ var on=!!TK; $('#login').hidden=on; $('#app').hidden=!on; $('#out').hidden=!on; }
-function logout(msg){ TK=''; localStorage.removeItem('kn_tk'); DATA=null; HASIL=null; SEL_KEYS={}; DETAIL={}; show(); $('#lm').textContent=msg===true?T().sessionEnd:''; }
-$('#lb').onclick=function(){
-  var u=$('#lu').value.trim(), p=$('#lp').value;
-  if(!u||!p){$('#lm').textContent=T().needLogin;return}
-  $('#lb').disabled=true; $('#lm').innerHTML='<span class="spn"></span>'+E(T().checking);
-  call('login',[u,p]).then(function(o){ TK=o.t; localStorage.setItem('kn_tk',o.t); ME={u:o.u,admin:o.r==='admin'}; $('#lp').value=''; $('#lb').disabled=false; $('#lm').textContent=''; show(); load(); })
-    .catch(function(e){ $('#lb').disabled=false; $('#lm').textContent=e.message; });
-};
-$('#lp').onkeydown=function(e){ if(e.key==='Enter') $('#lb').click(); };
-$('#out').onclick=function(){ logout(false); };
+function show(){ $('#app').hidden=false; }
 
 function load(){
   $('#sum').innerHTML='<span class="spn"></span>'+E(T().loadingAddr);
@@ -517,7 +494,7 @@ function load(){
     renderDash(); renderDb(); renderKj();
     if(KJMODE==='baru') formBaru();
     if(TAB==='hs') loadHasil();
-  }).catch(function(e){ $('#sum').textContent=e.message; if(/Sesi/i.test(e.message)) logout(true); });
+  }).catch(function(e){ $('#sum').textContent=e.message; });
 }
 function loadHasil(){
   $('#sumHs').innerHTML='<span class="spn"></span>'+E(T().loadingHs);
@@ -541,7 +518,7 @@ function setTab(t){
 }
 document.querySelectorAll('.nav button').forEach(function(b){ b.onclick=function(){ setTab(b.dataset.t); }; });
 
-function opts(sel,list,val,all){ sel.innerHTML='<option value="">'+E(all)+'</option>'+list.map(function(x){return '<option value="'+E(x)+'"'+(x===val?' selected':'')+'>'+E(prmLabel(x))+'</option>'}).join(''); }
+function opts(sel,list,val,all){ if(list.indexOf(NON_PRM)>0){ list=[NON_PRM].concat(list.filter(function(x){return x!==NON_PRM})); } sel.innerHTML='<option value="">'+E(all)+'</option>'+list.map(function(x){return '<option value="'+E(x)+'"'+(x===val?' selected':'')+'>'+E(prmLabel(x))+'</option>'}).join(''); }
 function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort()}
 
 function buildDashFilters(){
@@ -846,7 +823,7 @@ function bindForm(mode){
 }
 function closeSheet(){ $('#sheet').hidden=true; CUR=null; BATCH_LIST=[]; PEND=[]; }
 $('#sheet').addEventListener('click',function(e){ if(e.target.id==='sheet') closeSheet(); });
-$('#scx').addEventListener('click',function(e){ var rm=e.target.dataset.rm; if(rm===undefined) return; e.preventDefault(); PEND.splice(+rm,1); pendHtml(); });
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-rm]'); if(!b) return; e.preventDefault(); PEND.splice(+b.dataset.rm,1); pendHtml(); });
 
 // Maksimal 10 foto per upload; kelebihan dilewati dengan pemberitahuan
 function pilihFoto(e){
@@ -989,7 +966,7 @@ function kecil(file){
   });
 }
 
-applyLang(); show(); if(TK) load(); setTab('ds');
+applyLang(); show(); load(); setTab('ds');
 })();
 </script>
 </body></html>
