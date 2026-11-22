@@ -223,7 +223,7 @@ var I18N={
     dashSum:function(est,addr){return est+' perumahan terdata dari '+addr+' alamat aktif (menampilkan 15 teratas)'},
     loadingAddr:'Memuat database alamat…', rebuilding:'Memperbarui database dari data order…',
     rebuilt:function(n){return 'Database diperbarui: '+n+' alamat.'},
-    rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
+    backConfirm:'Tekan sekali lagi untuk kembali ke Monitoring', rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
     addrCount:function(n,w){return n+' alamat'+(w?' · diperbarui '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'Alamat baru',
     detailLoading:'Memuat transaksi…', detailEmpty:'Tidak ada transaksi ditemukan untuk alamat ini.',
@@ -261,7 +261,7 @@ var I18N={
     dashSum:function(est,addr){return est+' housing estates across '+addr+' active addresses (top 15)'},
     loadingAddr:'Loading address database…', rebuilding:'Syncing database from orders…',
     rebuilt:function(n){return 'Database synced: '+n+' addresses.'},
-    rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
+    backConfirm:'Press back again to return to Monitoring', rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
     addrCount:function(n,w){return n+' addresses'+(w?' · updated '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'New address',
     detailLoading:'Loading transactions…', detailEmpty:'No transactions found for this address.',
@@ -765,6 +765,25 @@ function kecil(file){
     img.onerror=function(){ rej(new Error(T().badImg)) }; img.src=url;
   });
 }
+
+// Tombol back Android: tekan pertama minta konfirmasi, tekan kedua (dalam 2 detik) kembali ke Monitoring
+(function(){
+  var armed=false, timer=null, fallback=null;
+  history.pushState({knApp:1},'');
+  window.addEventListener('popstate', function(e){
+    if(e.state && e.state.knApp) return;
+    if(armed){
+      clearTimeout(timer); armed=false;
+      history.back();
+      fallback=setTimeout(function(){ location.href='../'; },400);
+      return;
+    }
+    history.go(1);
+    armed=true;
+    toast(T().backConfirm);
+    timer=setTimeout(function(){ armed=false; },2000);
+  });
+})();
 
 applyLang(); show(); if(TK) load(); setTab('ds');
 })();
