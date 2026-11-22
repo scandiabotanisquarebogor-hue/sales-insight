@@ -195,7 +195,7 @@ textarea{min-height:64px;resize:vertical}
 var API=(localStorage.getItem('si_api')||window.API_URL||'').trim();
 var LANG=localStorage.getItem('si_lang')==='en'?'en':'id';
 var TK=localStorage.getItem('si_tk')||'', DATA=null, HASIL=null, TAB='ds', PS=10;
-var PG={db:0,hs:0}, FIL={db:[],hs:[]}, PEND=[], EDIT=null, toastTimer=null, DETAIL={}, MAX_FOTO=10, CAT_OPEN={};
+var PG={db:0,hs:0}, FIL={db:[],hs:[]}, PEND=[], EDIT=null, toastTimer=null, DETAIL={}, DETAIL_ALL=null, MAX_FOTO=10, CAT_OPEN={};
 var CAT_MAX=150;
 var $=function(s){return document.querySelector(s)};
 var E=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
@@ -359,7 +359,8 @@ function load(){
   if(!TK){ show(); return; }
   $('#sum').innerHTML='<span class="spn"></span>'+E(T().loadingAddr);
   rpc('kunjunganData',[]).then(function(d){
-    DATA=d; DETAIL={};
+    DATA=d; DETAIL={}; DETAIL_ALL=null;
+    rpc('kunjunganDetailSemua',[]).then(function(m){ DETAIL_ALL=m; renderDb(); }).catch(function(){});
     DATA.alamat.forEach(function(a){ a.perumahan=normPrm(a.perumahan); });
     $('#who').textContent=d.u+' · '+(d.admin?T().roleAdmin:T().roleSales);
     buildDashFilters(); buildFilters(); buildHsFilters();
@@ -504,7 +505,7 @@ function kartuDb(a,i){
     +'</div>';
 }
 function detailHtml(key){
-  var d=DETAIL[key];
+  var d=DETAIL_ALL?{list:DETAIL_ALL[key]||[]}:DETAIL[key];
   if(!d) return '<span class="spn"></span>'+E(T().detailLoading);
   if(d.err) return '<span style="color:var(--s0)">'+E(d.err)+'</span>';
   if(!d.list.length) return '<p class="mu">'+E(T().detailEmpty)+'</p>';
@@ -523,7 +524,7 @@ $('#listDb').addEventListener('click',function(e){
   var t=e.target.closest('[data-spo-toggle]'); if(!t) return;
   var a=FIL.db[+t.dataset.spoToggle]; if(!a) return;
   a._open=!a._open;
-  if(a._open && !DETAIL[a.key]){
+  if(a._open && !DETAIL_ALL && !DETAIL[a.key]){
     DETAIL[a.key]=null;
     rpc('kunjunganDetailAlamat',[a.key]).then(function(list){ DETAIL[a.key]={list:list}; }).catch(function(err){ DETAIL[a.key]={err:err.message}; })
       .then(function(){ renderDb(); });
