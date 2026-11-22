@@ -166,9 +166,6 @@ textarea{min-height:64px;resize:vertical}
     </section>
 
     <section id="tHs" hidden>
-      <div class="kpi">
-        <div class="box"><div class="val" id="kpiTotal">0</div><div class="lbl" id="lblKpiTotal">Total Kunjungan</div></div>
-        <div class="box"><div class="val" id="kpiUnik">0</div><div class="lbl" id="lblKpiUnik">Alamat Unik</div></div>
       </div>
       <div class="row">
         <select id="hsSales" aria-label="Filter Sales"></select>
@@ -225,7 +222,6 @@ var I18N={
     spoTag:function(n){return n+' SPO'}, newAddrTag:'Alamat baru',
     detailLoading:'Memuat transaksi…', detailEmpty:'Tidak ada transaksi ditemukan untuk alamat ini.',
     detailTotal:'Total belanja',
-    kpiTotal:'Total Kunjungan', kpiUnik:'Alamat Unik',
     loadingHs:'Memuat riwayat kunjungan…', hsSum:function(n){return 'Menampilkan '+n+' riwayat kunjungan'},
     noHs:'Belum ada riwayat kunjungan yang sesuai.',
     editBtn:'Edit', delBtn:'Hapus', delConfirm:'Hapus kunjungan ini beserta fotonya?', delOk:'Kunjungan dihapus.',
@@ -264,12 +260,11 @@ var I18N={
     spoTag:function(n){return n+' SPO'}, newAddrTag:'New address',
     detailLoading:'Loading transactions…', detailEmpty:'No transactions found for this address.',
     detailTotal:'Total spend',
-    kpiTotal:'Total Visits', kpiUnik:'Unique Addresses',
     loadingHs:'Loading visit history…', hsSum:function(n){return 'Showing '+n+' visit records'},
     noHs:'No matching visit records found.',
     editBtn:'Edit', delBtn:'Delete', delConfirm:'Delete this visit and its photos?', delOk:'Visit deleted.',
     editTitle:'Edit Visit', updateBtn:'Save Changes', photoDelConfirm:'Delete this photo?', photoDelOk:'Photo deleted.',
-    formTitle:'Enter Address', saveVisit:'Save Visit', close:'Close',
+    formTitle:'Input Address', saveVisit:'Save Visit', close:'Close',
     cityLbl:'City (required)', kecLbl:'District (required)', perLbl:'Housing Estate (type freely)', perPh:'Type housing estate name…',
     addrLbl:'Street / Unit Address (optional)', addrPh:'Optional — may leave blank…',
     sekLbl:'Sector / Block / Cluster', sekPh:'e.g. Sector 1, Block A, Cluster Melati',
@@ -325,7 +320,6 @@ function applyLang(){
   document.querySelectorAll('[data-nav]').forEach(function(el){ var k=el.getAttribute('data-nav'); if(T().nav[k]) el.textContent=T().nav[k]; });
   $('#lblRebuild').textContent=T().rebuildBtn;
   $('#lblKpiAddr').textContent=T().kpiAddr; $('#lblKpiEst').textContent=T().kpiEst; $('#hTopEst').textContent=T().topEst;
-  $('#lblKpiTotal').textContent=T().kpiTotal; $('#lblKpiUnik').textContent=T().kpiUnik;
   if(DATA){
     $('#who').textContent=DATA.u+' · '+(DATA.admin?T().roleAdmin:T().roleSales);
     buildDashFilters(); buildFilters(); buildHsFilters();
@@ -699,8 +693,6 @@ function renderHs(){
     if(fsp && h.tgl > fsp) return false;
     return cocok(h.alamat+' '+h.perumahan+' '+(h.sektor||'')+' '+h.kecamatan+' '+h.kota+' '+h.sales.join(' ')+' '+h.hasil+' '+h.catatan,q);
   });
-  $('#kpiTotal').textContent=FIL.hs.length;
-  $('#kpiUnik').textContent=new Set(FIL.hs.map(function(h){return h.key})).size;
   $('#sumHs').textContent=T().hsSum(FIL.hs.length);
   var list=FIL.hs.slice(PG.hs*PS,PG.hs*PS+PS);
   $('#listHs').innerHTML='<div id="top-hs"></div>'+(list.map(function(h){
