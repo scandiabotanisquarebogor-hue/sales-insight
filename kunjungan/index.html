@@ -99,6 +99,7 @@ textarea{min-height:64px;resize:vertical}
 </style></head><body>
 <div class="w">
   <div class="hd">
+    <a class="ib" href="../" title="Kembali ke Monitoring" aria-label="Kembali ke Monitoring" style="text-decoration:none"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span id="lblBack">Monitoring</span></a>
     <div class="brand">
       <img class="brand-logo" src="./logo.png" alt="SCANDIA Lifestyle &amp; Home">
       <div class="brand-title">
@@ -113,6 +114,12 @@ textarea{min-height:64px;resize:vertical}
       </div>
     </div>
   </div>
+
+  <section id="gate" class="sec" hidden style="margin-top:4px">
+    <h3 id="gateTitle">Silakan masuk dulu</h3>
+    <p class="mu" id="gateTxt">Halaman ini memakai login Monitoring Database. Masuk di Monitoring, lalu kembali ke sini.</p>
+    <a class="b pr" href="../" style="display:inline-block;text-decoration:none;margin-top:6px" id="gateBtn">Buka Monitoring Database</a>
+  </section>
 
   <section id="app" hidden>
     <nav class="nav" aria-label="Menu utama">
@@ -217,9 +224,9 @@ textarea{min-height:64px;resize:vertical}
 
 <script>
 (function(){
-var API=(window.API_URL||'').trim();
-var LANG=localStorage.getItem('kn_lang')==='en'?'en':'id';
-var TK=localStorage.getItem('kn_tk')||'', ME={u:'',admin:false}, DATA=null, HASIL=null, TAB='ds', KJMODE='db', PS=10;
+var API=(localStorage.getItem('si_api')||window.API_URL||'').trim();
+var LANG=localStorage.getItem('si_lang')==='en'?'en':'id';
+var TK=localStorage.getItem('si_tk')||'', ME={u:'',admin:false}, DATA=null, HASIL=null, TAB='ds', KJMODE='db', PS=10;
 var PG={db:0,kj:0,hs:0}, FIL={db:[],kj:[],hs:[]}, CUR=null, BATCH_LIST=[], SEL_KEYS={}, PEND=[], toastTimer=null, DETAIL={}, MAX_FOTO=10;
 var $=function(s){return document.querySelector(s)};
 var E=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
@@ -237,6 +244,7 @@ var HASIL_CHECKLIST=[
 var I18N={
   id:{
     docTitle:'Aktivitas Sales · SCANDIA BOTANI',
+    backMon:'Monitoring',gateTitle:'Silakan masuk dulu',gateTxt:'Halaman ini memakai login Monitoring Database. Masuk di Monitoring, lalu kembali ke sini.',gateBtn:'Buka Monitoring Database',
     appTitle:'Aktivitas Sales',
     out:'Keluar',
     loginTitle:'Silakan Masuk',
@@ -330,6 +338,7 @@ var I18N={
   },
   en:{
     docTitle:'Sales Activity · SCANDIA BOTANI',
+    backMon:'Monitoring',gateTitle:'Please sign in first',gateTxt:'This page uses the Monitoring Database login. Sign in on Monitoring, then come back here.',gateBtn:'Open Monitoring Database',
     appTitle:'Sales Activity',
     out:'Sign Out',
     loginTitle:'Sign In',
@@ -441,9 +450,9 @@ function call(fn,args){
   return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args}),redirect:'follow',credentials:'omit'})
     .catch(function(){throw new Error(T().noNet)})
     .then(function(r){return r.json().catch(function(){throw new Error(T().badRes)})})
-    .then(function(j){ if(!j.ok) throw new Error(j.e||'Error'); return j.v; });
+    .then(function(j){ if(!j.ok){ if(/Sesi/i.test(j.e||'')){ TK=''; localStorage.removeItem('si_tk'); show(); } throw new Error(j.e||'Error'); } return j.v; });
 }
-function rpc(fn,args){ return call(fn,[''].concat(args||[])); }
+function rpc(fn,args){ return call(fn,[TK].concat(args||[])); }
 
 function applyLang(){
   document.documentElement.lang=LANG;
@@ -455,6 +464,10 @@ function applyLang(){
     if(T().nav[k]) el.textContent=T().nav[k];
   });
   $('#lblRebuild').textContent=T().rebuild||'Perbarui DB';
+  $('#lblBack').textContent=T().backMon;
+  $('#gateTitle').textContent=T().gateTitle;
+  $('#gateTxt').textContent=T().gateTxt;
+  $('#gateBtn').textContent=T().gateBtn;
   $('#lblKpiAddr').textContent=T().kpiAddr;
   $('#lblKpiEst').textContent=T().kpiEst;
   $('#hTopEst').textContent=T().topEst;
@@ -477,14 +490,15 @@ document.querySelectorAll('.lang button').forEach(function(b){
   b.addEventListener('click',function(){
     var next=b.dataset.lang;
     if(!next||next===LANG) return;
-    LANG=next; localStorage.setItem('kn_lang',LANG);
+    LANG=next; localStorage.setItem('si_lang',LANG);
     applyLang();
   });
 });
 
-function show(){ $('#app').hidden=false; }
+function show(){ var on=!!TK; $('#app').hidden=!on; $('#gate').hidden=on; }
 
 function load(){
+  if(!TK){ show(); return; }
   $('#sum').innerHTML='<span class="spn"></span>'+E(T().loadingAddr);
   rpc('kunjunganData',[]).then(function(d){
     DATA=d; ME.admin=!!d.admin; ME.u=d.u; DETAIL={};
@@ -966,7 +980,7 @@ function kecil(file){
   });
 }
 
-applyLang(); show(); load(); setTab('ds');
+applyLang(); show(); if(TK) load(); setTab('ds');
 })();
 </script>
 </body></html>
