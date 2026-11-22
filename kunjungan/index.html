@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kunjungan Sales · SCANDIA BOTANI</title>
+<title>Aktivitas Sales · SCANDIA BOTANI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -88,6 +88,7 @@ textarea{min-height:64px;resize:vertical}
 .fotolist span{font-size:12px;border:1px solid var(--ln);border-radius:8px;padding:3px 6px 3px 9px;display:inline-flex;align-items:center;gap:6px}
 .fotolist a{color:var(--ac);text-decoration:none}
 .fotolist button{border:0;background:none;color:var(--s0);cursor:pointer;font-size:13px;padding:0 2px}
+.hapus-btn{border:1px solid var(--s0)!important;color:var(--s0)!important;border-radius:7px;padding:1px 8px!important;font-size:11px!important;font-weight:600}
 .spn{display:inline-block;width:12px;height:12px;border:2px solid var(--ln);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:7px}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:100;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -101,7 +102,7 @@ textarea{min-height:64px;resize:vertical}
     <div class="brand">
       <img class="brand-logo" src="./logo.png" alt="SCANDIA Lifestyle &amp; Home">
       <div class="brand-title">
-        <h1 id="appTitle">Kunjungan Sales</h1>
+        <h1 id="appTitle">Aktivitas Sales</h1>
         <p class="mu" id="who"></p>
       </div>
     </div>
@@ -243,8 +244,8 @@ var HASIL_CHECKLIST=[
 
 var I18N={
   id:{
-    docTitle:'Kunjungan Sales · SCANDIA BOTANI',
-    appTitle:'Kunjungan Sales',
+    docTitle:'Aktivitas Sales · SCANDIA BOTANI',
+    appTitle:'Aktivitas Sales',
     out:'Keluar',
     loginTitle:'Silakan Masuk',
     userPh:'Username',
@@ -294,6 +295,7 @@ var I18N={
     noHs:'Belum ada riwayat kunjungan yang sesuai.',
     photoLink:function(i){return 'Foto '+i},
     photoDel:'Hapus foto ini?',
+    delBtn:'Hapus',
     photoDelOk:'Foto dihapus.',
     close:'Tutup',
     saveVisit:'Simpan Kunjungan',
@@ -335,8 +337,8 @@ var I18N={
     badImg:'File foto tidak dapat dibaca.'
   },
   en:{
-    docTitle:'Sales Visits · SCANDIA BOTANI',
-    appTitle:'Sales Visits',
+    docTitle:'Sales Activity · SCANDIA BOTANI',
+    appTitle:'Sales Activity',
     out:'Sign Out',
     loginTitle:'Sign In',
     userPh:'Username',
@@ -386,6 +388,7 @@ var I18N={
     noHs:'No matching visit records found.',
     photoLink:function(i){return 'Photo '+i},
     photoDel:'Delete this photo?',
+    delBtn:'Delete',
     photoDelOk:'Photo deleted.',
     close:'Close',
     saveVisit:'Save Visit',
@@ -430,6 +433,7 @@ var I18N={
 function T(){ return I18N[LANG]||I18N.id; }
 function hasilLabel(item){ return LANG==='en'?item.enLabel:item.idLabel; }
 function prmLabel(p){ return p===NON_PRM?T().nonPrm:p; }
+function normPrm(p){ var s=String(p==null?'':p).trim(); return (!s||/^[\s\-\u2013\u2014.,_*?]+$/.test(s))?NON_PRM:s; }
 
 function todayIso(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function tglTxt(s){if(!s)return '';var b=LANG==='en'?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']:['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];var p=s.split('-');return (+p[2])+' '+b[+p[1]-1]+' '+p[0]}
@@ -507,6 +511,7 @@ function load(){
   $('#sum').innerHTML='<span class="spn"></span>'+E(T().loadingAddr);
   rpc('kunjunganData',[]).then(function(d){
     DATA=d; ME.admin=!!d.admin; ME.u=d.u; DETAIL={};
+    DATA.alamat.forEach(function(a){ a.perumahan=normPrm(a.perumahan); });
     $('#who').textContent=d.u+' · '+(d.admin?T().roleAdmin:T().roleSales);
     buildDashFilters(); buildFilters(); buildHsFilters();
     renderDash(); renderDb(); renderKj();
@@ -813,7 +818,7 @@ function syncLainnyaField(){
   if(!cb.checked && $('#fLainnya')) $('#fLainnya').value='';
 }
 
-function pendHtml(){ var el=$('#pend'); if(el) el.innerHTML=PEND.map(function(f,i){return '<span>'+E(f.name)+' <a href="#" data-rm="'+i+'" style="color:var(--s0);text-decoration:none">✕</a></span>'}).join(''); }
+function pendHtml(){ var el=$('#pend'); if(el) el.innerHTML=PEND.map(function(f,i){return '<span>'+E(f.name)+' <button type="button" data-rm="'+i+'" class="hapus-btn">'+E(T().delBtn)+'</button></span>'}).join(''); }
 function openForm(a){
   CUR=a; BATCH_LIST=[]; PEND=[];
   $('#scx').innerHTML='<div class="row" style="justify-content:space-between"><h3 style="margin:0">'+E(T().singleVisitTitle)+'</h3><button type="button" class="ib" id="x"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg><span>'+E(T().close)+'</span></button></div>'
@@ -953,7 +958,7 @@ function renderHs(){
       +'<div>'+(h.sektor?'<span class="tag sk">'+E(h.sektor)+'</span>':'')+h.sales.map(function(s){return '<span class="tag">'+E(s)+'</span>'}).join('')+(h.hasil?'<span class="tag">'+E(h.hasil)+'</span>':'')+'</div>'
       +(h.catatan?'<p class="mu" style="margin:6px 0 0">'+E(h.catatan)+'</p>':'')
       +(h.foto.length?'<div class="fotolist">'+h.foto.map(function(u,i){
-          return '<span><a href="'+E(u)+'" target="_blank" rel="noopener">'+E(T().photoLink(i+1))+'</a><button type="button" data-foto-del="'+E(u)+'" data-id="'+E(h.id)+'" title="'+E(T().photoDel)+'" aria-label="'+E(T().photoDel)+'">✕</button></span>';
+          return '<span><a href="'+E(u)+'" target="_blank" rel="noopener">'+E(T().photoLink(i+1))+'</a><button type="button" class="hapus-btn" data-foto-del="'+E(u)+'" data-id="'+E(h.id)+'" title="'+E(T().photoDel)+'" aria-label="'+E(T().photoDel)+'">'+E(T().delBtn)+'</button></span>';
         }).join('')+'</div>':'')
       +'</div>';
   }).join('')||'<p class="mu">'+E(T().noHs)+'</p>');
