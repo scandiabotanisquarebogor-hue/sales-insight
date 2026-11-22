@@ -174,8 +174,8 @@ textarea{min-height:64px;resize:vertical}
     <section id="tHs" hidden>
       <div class="row3">
         <label><span class="mu" style="display:block;margin:0 0 4px" id="lblSales">Sales</span><select id="hsSales"></select></label>
-        <label><span class="mu" style="display:block;margin:0 0 4px" id="lblDari">Dari tanggal</span><input type="date" id="hsDari"></label>
-        <label><span class="mu" style="display:block;margin:0 0 4px" id="lblSampai">Sampai tanggal</span><input type="date" id="hsSampai"></label>
+        <label><span class="mu" style="display:block;margin:0 0 4px" id="lblDari">Dari tanggal</span><input type="text" id="hsDari" placeholder="Pilih tanggal" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></label>
+        <label><span class="mu" style="display:block;margin:0 0 4px" id="lblSampai">Sampai tanggal</span><input type="text" id="hsSampai" placeholder="Pilih tanggal" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'"></label>
       </div>
       <div class="row"><input id="qHs" placeholder="Cari alamat, perumahan, sektor, hasil, catatan… pisah dengan /" style="flex:1 1 200px"></div>
       <p class="mu" id="sumHs"></p>
@@ -223,7 +223,7 @@ var I18N={
     dashSum:function(est,addr){return est+' perumahan terdata dari '+addr+' alamat aktif (menampilkan 15 teratas)'},
     loadingAddr:'Memuat database alamat…', rebuilding:'Memperbarui database dari data order…',
     rebuilt:function(n){return 'Database diperbarui: '+n+' alamat.'},
-    rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
+    rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
     addrCount:function(n,w){return n+' alamat'+(w?' · diperbarui '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'Alamat baru',
     detailLoading:'Memuat transaksi…', detailEmpty:'Tidak ada transaksi ditemukan untuk alamat ini.',
@@ -234,7 +234,7 @@ var I18N={
     editTitle:'Edit Kunjungan', updateBtn:'Simpan Perubahan', photoDelConfirm:'Hapus foto ini?', photoDelOk:'Foto dihapus.',
     formTitle:'Masukan Alamat', saveVisit:'Simpan Kunjungan', close:'Tutup',
     cityLbl:'Kota (wajib dipilih)', kecLbl:'Kecamatan (wajib dipilih)', perLbl:'Nama Perumahan (cukup ketik)', perPh:'Ketik nama perumahan…',
-    addrLbl:'Alamat (opsional, boleh dikosongkan)', addrPh:'Boleh diisi atau dikosongkan…',
+    addrLbl:'Alamat (wajib)', addrPh:'Wajib diisi, contoh: Jl. Melati No. 5',
     sekLbl:'Keterangan', sekPh:'Contoh: Sector 1 / Block A / Cluster Melati / Marketing Gallery', mapsLbl:'Maps', lihatMaps:'Lihat Maps',
     tglLbl:'Tanggal Kunjungan', salesLbl:'Sales yang Bertugas (boleh lebih dari satu)',
     hasilLbl:'Hasil Kunjungan (boleh pilih lebih dari satu)', lainnyaPh:'Tuliskan hasil kunjungan lainnya…',
@@ -242,7 +242,7 @@ var I18N={
     fotoMax:'Maksimal 10 foto dalam satu kali upload. Kelebihan foto dilewati.',
     camBtn:'Kamera', galBtn:'Galeri', delBtn2:'Hapus',
     needCity:'Silakan pilih Kota terlebih dahulu.', needKec:'Silakan pilih Kecamatan terlebih dahulu.',
-    needAlamat:'Isi alamat atau nama perumahan.', needSales:'Pilih minimal satu nama sales.',
+    needAlamat:'Alamat wajib diisi.', needSales:'Pilih minimal satu nama sales.',
     saving:'Menyimpan data…', uploading:function(n){return 'Mengunggah '+n+' foto…'},
     savedOne:'Kunjungan berhasil disimpan.', updated:'Kunjungan berhasil diperbarui.',
     prev:'Sebelumnya', next:'Berikutnya', pageInfo:function(a,b,t){return a+'–'+b+' dari '+t},
@@ -261,7 +261,7 @@ var I18N={
     dashSum:function(est,addr){return est+' housing estates across '+addr+' active addresses (top 15)'},
     loadingAddr:'Loading address database…', rebuilding:'Syncing database from orders…',
     rebuilt:function(n){return 'Database synced: '+n+' addresses.'},
-    rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
+    rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
     addrCount:function(n,w){return n+' addresses'+(w?' · updated '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'New address',
     detailLoading:'Loading transactions…', detailEmpty:'No transactions found for this address.',
@@ -272,7 +272,7 @@ var I18N={
     editTitle:'Edit Visit', updateBtn:'Save Changes', photoDelConfirm:'Delete this photo?', photoDelOk:'Photo deleted.',
     formTitle:'Input Address', saveVisit:'Save Visit', close:'Close',
     cityLbl:'City (required)', kecLbl:'District (required)', perLbl:'Housing Estate (type freely)', perPh:'Type housing estate name…',
-    addrLbl:'Street / Unit Address (optional)', addrPh:'Optional — may leave blank…',
+    addrLbl:'Street / Unit Address (required)', addrPh:'Required, e.g. Jl. Melati No. 5',
     sekLbl:'Description', sekPh:'e.g. Sector 1 / Block A / Cluster Melati / Marketing Gallery', mapsLbl:'Maps', lihatMaps:'View on Maps',
     tglLbl:'Visit Date', salesLbl:'Sales Reps (select one or more)',
     hasilLbl:'Visit Outcomes (select one or more)', lainnyaPh:'Specify other visit outcome…',
@@ -280,7 +280,7 @@ var I18N={
     fotoMax:'Maximum 10 photos per upload. Extra photos were skipped.',
     camBtn:'Camera', galBtn:'Gallery', delBtn2:'Delete',
     needCity:'Please select a City.', needKec:'Please select a District.',
-    needAlamat:'Enter an address or housing estate name.', needSales:'Please select at least one sales rep.',
+    needAlamat:'Address is required.', needSales:'Please select at least one sales rep.',
     saving:'Saving…', uploading:function(n){return 'Uploading '+n+' photo(s)…'},
     savedOne:'Visit saved.', updated:'Visit updated.',
     prev:'Prev', next:'Next', pageInfo:function(a,b,t){return a+'–'+b+' of '+t},
@@ -294,6 +294,11 @@ function prmLabel(p){ return p===NON_PRM?T().nonPrm:p; }
 function normPrm(p){ var s=String(p==null?'':p).trim(); return (!s||/^[\s\-\u2013\u2014.,_*?]+$/.test(s))?NON_PRM:s; }
 function todayIso(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function tglTxt(s){if(!s)return '';var b=LANG==='en'?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']:['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];var p=s.split('-');return (+p[2])+' '+b[+p[1]-1]+' '+p[0]}
+var BULAN_ID=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+var BULAN_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var HARI_ID=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+var HARI_EN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function tglPanjang(s){ if(!s) return ''; var p=s.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); if(isNaN(d)) return s; var en=LANG==='en'; return (en?HARI_EN:HARI_ID)[d.getDay()]+(en?', ':', ')+(+p[2])+' '+(en?BULAN_EN:BULAN_ID)[+p[1]-1]+' '+p[0]; }
 function angka(n){return Math.round(Number(n)||0).toLocaleString(LANG==='en'?'en-US':'id-ID')}
 function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort()}
 function fileId(u){ var m=/[?&]id=([^&#]+)/.exec(u)||/\/d\/([^\/?#]+)/.exec(u); return m?m[1]:''; }
@@ -330,6 +335,7 @@ function applyLang(){
   document.querySelectorAll('[data-nav]').forEach(function(el){ var k=el.getAttribute('data-nav'); if(T().nav[k]) el.textContent=T().nav[k]; });
   $('#lblRebuild').textContent=T().rebuildBtn;
   $('#lblSales').textContent=T().salesLbl2; $('#lblDari').textContent=T().dariTgl; $('#lblSampai').textContent=T().sampaiTgl;
+  $('#hsDari').placeholder=T().pilihTgl; $('#hsSampai').placeholder=T().pilihTgl;
   $('#lblKpiAddr').textContent=T().kpiAddr; $('#lblKpiEst').textContent=T().kpiEst; $('#hTopEst').textContent=T().topEst;
   if(DATA){
     $('#who').textContent=DATA.u+' · '+(DATA.admin?T().roleAdmin:T().roleSales);
@@ -617,7 +623,7 @@ function collect(P){
 function validasi(it){
   if(!it.kota) return T().needCity;
   if(!it.kecamatan) return T().needKec;
-  if(!it.alamat && !it.perumahan) return T().needAlamat;
+  if(!it.alamat) return T().needAlamat;
   if(!it.sales.length) return T().needSales;
   return '';
 }
@@ -722,7 +728,7 @@ function renderHs(){
   $('#sumHs').textContent=T().hsSum(FIL.hs.length);
   var list=FIL.hs.slice(PG.hs*PS,PG.hs*PS+PS);
   $('#listHs').innerHTML='<div id="top-hs"></div>'+(list.map(function(h){
-    return '<div class="card" data-id="'+E(h.id)+'"><div class="row" style="justify-content:space-between;margin:0"><span class="tag ok" style="margin:0">'+E(tglTxt(h.tgl))+'</span></div>'
+    return '<div class="card" data-id="'+E(h.id)+'"><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span class="tag ok" style="margin:0;flex:none;width:auto;display:inline-block;white-space:nowrap">'+E(tglPanjang(h.tgl))+'</span></div>'
       +'<div class="al" style="margin-top:4px">'+E(h.alamat)+'</div><div class="mu">'+E([prmLabel(h.perumahan),h.kecamatan,h.kota].filter(Boolean).join(' · '))+'</div>'
       +(h.sumber==='Baru'?'<p style="margin:4px 0 0"><a class="tag s1" href="'+E(mapsUrl([h.alamat,prmAsli(h.perumahan),h.kecamatan,h.kota]))+'" target="_blank" rel="noopener">'+PIN+' '+E(T().lihatMaps)+'</a></p>':'')
       +'<div>'+(h.sektor?'<span class="tag sk">'+E(h.sektor)+'</span>':'')+h.sales.map(function(s){return '<span class="tag">'+E(s)+'</span>'}).join('')+(h.hasil?'<span class="tag">'+E(h.hasil)+'</span>':'')+'</div>'
