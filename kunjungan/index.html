@@ -235,7 +235,7 @@ var I18N={
     formTitle:'Masukan Alamat', saveVisit:'Simpan Kunjungan', close:'Tutup',
     cityLbl:'Kota (wajib dipilih)', kecLbl:'Kecamatan (wajib dipilih)', perLbl:'Nama Perumahan (cukup ketik)', perPh:'Ketik nama perumahan…',
     addrLbl:'Alamat (opsional, boleh dikosongkan)', addrPh:'Boleh diisi atau dikosongkan…',
-    sekLbl:'Sektor / Blok / Cluster', sekPh:'Contoh: Sektor 1, Blok A, Cluster Melati',
+    sekLbl:'Keterangan', sekPh:'Contoh: Sector 1 / Block A / Cluster Melati / Marketing Gallery', mapsLbl:'Maps', lihatMaps:'Lihat Maps',
     tglLbl:'Tanggal Kunjungan', salesLbl:'Sales yang Bertugas (boleh lebih dari satu)',
     hasilLbl:'Hasil Kunjungan (boleh pilih lebih dari satu)', lainnyaPh:'Tuliskan hasil kunjungan lainnya…',
     catLbl:'Catatan', fotoTitle:'Foto Kunjungan', fotoNote:'Maksimal 10 foto dalam satu kali upload.',
@@ -273,7 +273,7 @@ var I18N={
     formTitle:'Input Address', saveVisit:'Save Visit', close:'Close',
     cityLbl:'City (required)', kecLbl:'District (required)', perLbl:'Housing Estate (type freely)', perPh:'Type housing estate name…',
     addrLbl:'Street / Unit Address (optional)', addrPh:'Optional — may leave blank…',
-    sekLbl:'Sector / Block / Cluster', sekPh:'e.g. Sector 1, Block A, Cluster Melati',
+    sekLbl:'Description', sekPh:'e.g. Sector 1 / Block A / Cluster Melati / Marketing Gallery', mapsLbl:'Maps', lihatMaps:'View on Maps',
     tglLbl:'Visit Date', salesLbl:'Sales Reps (select one or more)',
     hasilLbl:'Visit Outcomes (select one or more)', lainnyaPh:'Specify other visit outcome…',
     catLbl:'Notes', fotoTitle:'Visit Photos', fotoNote:'Maximum 10 photos per upload.',
@@ -298,6 +298,10 @@ function angka(n){return Math.round(Number(n)||0).toLocaleString(LANG==='en'?'en
 function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort()}
 function fileId(u){ var m=/[?&]id=([^&#]+)/.exec(u)||/\/d\/([^\/?#]+)/.exec(u); return m?m[1]:''; }
 function thumb(u){ var id=fileId(u); return id?'https://drive.google.com/thumbnail?id='+id+'&sz=w200':u; }
+
+var PIN='<svg viewBox="0 0 24 24" aria-hidden="true" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+function mapsUrl(parts){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(parts.filter(Boolean).join(', ')); }
+function prmAsli(p){ return p&&p!==NON_PRM?p:''; }
 
 function toast(msg,isErr){
   var t=$('#toast'); t.textContent=msg; t.className='toast show'+(isErr?' err':'');
@@ -488,6 +492,7 @@ function kartuDb(a,i){
     +'<div class="mu">'+E([prmLabel(a.perumahan),a.kecamatan,a.kota].filter(Boolean).join(' · '))+'</div>'
     +'<div>'+(a.sektor?'<span class="tag sk">'+E(a.sektor)+'</span>':'')
     +(a.spo?'<button type="button" class="tag btn" data-spo-toggle="'+i+'" aria-expanded="'+open+'">'+E(T().spoTag(a.spo))+' <span class="chev">▾</span></button>':'')
+    +'<a class="tag btn" href="'+E(mapsUrl([a.alamat,prmAsli(a.perumahan),a.kecamatan,a.kota]))+'" target="_blank" rel="noopener">'+PIN+' '+E(T().mapsLbl)+'</a>'
     +(a.sumber==='baru'?'<span class="tag s1">'+E(T().newAddrTag)+'</span>':'')+'</div>'
     +(open?'<div class="dd">'+detailHtml(a.key)+'</div>':'')
     +'</div>';
@@ -556,7 +561,7 @@ function formHtml(P,a,edit){
     +'<div class="row"><div style="flex:1 1 160px"><p class="mu" style="margin:0 0 4px">'+E(T().cityLbl)+'</p><select id="'+P+'Ko"><option value="">'+E(T().allCity)+'</option>'+cities.map(function(c){return '<option value="'+E(c)+'"'+(c===kota?' selected':'')+'>'+E(c)+'</option>'}).join('')+'</select></div>'
     +'<div style="flex:1 1 160px"><p class="mu" style="margin:0 0 4px">'+E(T().kecLbl)+'</p><select id="'+P+'Kc"><option value="">'+E(T().allKec)+'</option>'+kecList.map(function(k){return '<option value="'+E(k)+'"'+(k===kec?' selected':'')+'>'+E(k)+'</option>'}).join('')+'</select></div></div>'
     +'<div class="row"><div style="flex:1 1 100%"><p class="mu" style="margin:0 0 4px">'+E(T().perLbl)+'</p><input id="'+P+'Pr" placeholder="'+E(T().perPh)+'" value="'+E(a.perumahan&&a.perumahan!==NON_PRM?a.perumahan:'')+'"></div></div>'
-    +'<div class="row"><div style="flex:1 1 100%"><p class="mu" style="margin:0 0 4px">'+E(T().addrLbl)+'</p><input id="'+P+'Al" placeholder="'+E(T().addrPh)+'" value="'+E(a.alamat||'')+'"></div></div>'
+    +'<div class="row"><div style="flex:1 1 100%"><p class="mu" style="margin:0 0 4px">'+E(T().addrLbl)+'</p><div style="display:flex;gap:8px"><input id="'+P+'Al" style="flex:1;min-width:0" placeholder="'+E(T().addrPh)+'" value="'+E(a.alamat||'')+'"><button type="button" class="ib" data-maps-from="'+P+'" title="'+E(T().mapsLbl)+'" aria-label="'+E(T().mapsLbl)+'" style="height:40px">'+PIN+'<span>'+E(T().mapsLbl)+'</span></button></div></div></div>'
     +'<p class="mu" style="margin-top:8px">'+E(T().sekLbl)+'</p><input id="'+P+'Sk" placeholder="'+E(T().sekPh)+'" value="'+E(a.sektor||'')+'">'
     +'<p class="mu" style="margin-top:8px">'+E(T().tglLbl)+'</p><input type="date" id="'+P+'Tgl" value="'+E(a.tgl||todayIso())+'">'
     +'<p class="mu" style="margin-top:8px">'+E(T().salesLbl)+'</p><div class="chips" id="'+P+'Chips">'
@@ -662,6 +667,10 @@ $('#sheet').addEventListener('click',function(e){ if(e.target.id==='sheet') clos
 
 // ---------- pilih & hapus foto (sebelum diunggah) ----------
 document.addEventListener('click',function(e){
+  var mp=e.target.closest&&e.target.closest('[data-maps-from]');
+  if(mp){ var P0=mp.dataset.mapsFrom, v=function(k){var el=document.getElementById(P0+k); return el?el.value.trim():'';};
+    var q=[v('Al'),v('Pr'),v('Kc'),v('Ko')].filter(Boolean); if(!q.length){ toast(T().needAlamat,true); return; }
+    window.open(mapsUrl(q),'_blank','noopener'); return; }
   var cam=e.target.closest&&e.target.closest('[data-cam]'); if(cam){ PFX_ACTIVE=cam.dataset.cam; $('#fCam').click(); return; }
   var gal=e.target.closest&&e.target.closest('[data-gal]'); if(gal){ PFX_ACTIVE=gal.dataset.gal; $('#fGal').click(); return; }
   var rm=e.target.closest&&e.target.closest('[data-rm]'); if(rm){ e.preventDefault(); var P=rm.dataset.pfx; PEND_BY[P].splice(+rm.dataset.rm,1); pendHtml(P); return; }
@@ -713,8 +722,9 @@ function renderHs(){
   $('#sumHs').textContent=T().hsSum(FIL.hs.length);
   var list=FIL.hs.slice(PG.hs*PS,PG.hs*PS+PS);
   $('#listHs').innerHTML='<div id="top-hs"></div>'+(list.map(function(h){
-    return '<div class="card" data-id="'+E(h.id)+'"><div class="row" style="justify-content:space-between;margin:0"><span class="tag ok" style="margin:0">'+E(tglTxt(h.tgl))+'</span>'+(h.sumber==='Baru'?'<span class="tag s1">'+E(T().newAddrTag)+'</span>':'')+'</div>'
+    return '<div class="card" data-id="'+E(h.id)+'"><div class="row" style="justify-content:space-between;margin:0"><span class="tag ok" style="margin:0">'+E(tglTxt(h.tgl))+'</span></div>'
       +'<div class="al" style="margin-top:4px">'+E(h.alamat)+'</div><div class="mu">'+E([prmLabel(h.perumahan),h.kecamatan,h.kota].filter(Boolean).join(' · '))+'</div>'
+      +(h.sumber==='Baru'?'<p style="margin:4px 0 0"><a class="tag s1" href="'+E(mapsUrl([h.alamat,prmAsli(h.perumahan),h.kecamatan,h.kota]))+'" target="_blank" rel="noopener">'+PIN+' '+E(T().lihatMaps)+'</a></p>':'')
       +'<div>'+(h.sektor?'<span class="tag sk">'+E(h.sektor)+'</span>':'')+h.sales.map(function(s){return '<span class="tag">'+E(s)+'</span>'}).join('')+(h.hasil?'<span class="tag">'+E(h.hasil)+'</span>':'')+'</div>'
       +(h.catatan?catatanHtml(h):'')
       +(h.foto.length?'<div class="thumbs">'+h.foto.map(function(u){return '<a href="'+E(u)+'" target="_blank" rel="noopener"><img src="'+E(thumb(u))+'" alt="" loading="lazy"></a>'}).join('')+'</div>':'')
