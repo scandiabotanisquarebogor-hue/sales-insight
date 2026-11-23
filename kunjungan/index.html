@@ -33,7 +33,7 @@ h3{font-size:14px;margin:0 0 8px;font-weight:700}
 .b.pr{background:var(--ac);border-color:var(--ac);color:#fff}.b:disabled{opacity:.5}
 .b.danger{color:var(--s0);border-color:var(--s0)}
 input,select,textarea{border:1px solid var(--ln);background:var(--cd);color:var(--tx);border-radius:9px;padding:9px 11px;font:inherit;font-size:14px;width:100%}
-textarea{min-height:64px;resize:vertical}
+textarea{min-height:120px;resize:vertical;font-size:15px}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;align-items:center}.row>*{flex:1 1 140px;min-width:0}
 .row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px;align-items:end}
 .row3 label{min-width:0}
@@ -161,6 +161,7 @@ textarea{min-height:64px;resize:vertical}
       <div class="row">
         <input id="q" placeholder="Cari alamat, perumahan, kota, kecamatan… pisah dengan /" style="flex:1 1 200px">
         <button type="button" class="ib" id="rebuild"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3"/><path d="M4 11v6c0 1.7 3.6 3 8 3"/><path d="M16 14v6M13 17l3 3 3-3"/></svg><span id="lblRebuild">Perbarui DB</span></button>
+        <button type="button" class="ib" id="backup" title="Buat cadangan spreadsheet" aria-label="Buat cadangan spreadsheet"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span id="lblBackup">Cadangan</span></button>
       </div>
       <p class="mu" id="sum"></p>
       <div id="listDb"></div>
@@ -223,7 +224,7 @@ var I18N={
     dashSum:function(est,addr){return est+' perumahan terdata dari '+addr+' alamat aktif (menampilkan 15 teratas)'},
     loadingAddr:'Memuat database alamat…', rebuilding:'Memperbarui database dari data order…',
     rebuilt:function(n){return 'Database diperbarui: '+n+' alamat.'},
-    backConfirm:'Tekan sekali lagi untuk kembali ke Monitoring', rebuildWait:'Sedang memperbarui database… bisa memakan waktu 10–30 detik.', adminOnly:'Hanya Admin yang dapat mengedit alamat.', editAlamatTitle:'Edit Alamat', editAlamatNote:'Perubahan hanya tampil di aplikasi ini dan tidak mengubah order di spreadsheet.', saveEdit:'Simpan', editOk:'Alamat diperbarui.', rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
+    backConfirm:'Tekan sekali lagi untuk kembali ke Monitoring', backupBtn:'Cadangan', backupWait:'Membuat cadangan spreadsheet… bisa memakan waktu beberapa detik.', backupOk:function(n){return 'Cadangan dibuat: '+n}, delAlamat:'Hapus alamat', delAlamatConfirm:'Hapus alamat ini dari aplikasi? Order di spreadsheet tidak berubah.', delAlamatOk:'Alamat dihapus dari aplikasi.', rebuildWait:'Sedang memperbarui database… bisa memakan waktu 10–30 detik.', adminOnly:'Hanya Admin yang dapat mengedit alamat.', editAlamatTitle:'Edit Alamat', editAlamatNote:'Perubahan hanya tampil di aplikasi ini dan tidak mengubah order di spreadsheet.', saveEdit:'Simpan', editOk:'Alamat diperbarui.', rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
     addrCount:function(n,w){return n+' alamat'+(w?' · diperbarui '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'Alamat baru',
     detailLoading:'Memuat transaksi…', detailEmpty:'Tidak ada transaksi ditemukan untuk alamat ini.',
@@ -261,7 +262,7 @@ var I18N={
     dashSum:function(est,addr){return est+' housing estates across '+addr+' active addresses (top 15)'},
     loadingAddr:'Loading address database…', rebuilding:'Syncing database from orders…',
     rebuilt:function(n){return 'Database synced: '+n+' addresses.'},
-    backConfirm:'Press back again to return to Monitoring', rebuildWait:'Updating database… this may take 10–30 seconds.', adminOnly:'Only Admin can edit addresses.', editAlamatTitle:'Edit Address', editAlamatNote:'Changes are shown in this app only and do not change orders in the spreadsheet.', saveEdit:'Save', editOk:'Address updated.', rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
+    backConfirm:'Press back again to return to Monitoring', backupBtn:'Backup', backupWait:'Creating spreadsheet backup… this may take a few seconds.', backupOk:function(n){return 'Backup created: '+n}, delAlamat:'Delete address', delAlamatConfirm:'Delete this address from the app? Orders in the spreadsheet are not changed.', delAlamatOk:'Address removed from the app.', rebuildWait:'Updating database… this may take 10–30 seconds.', adminOnly:'Only Admin can edit addresses.', editAlamatTitle:'Edit Address', editAlamatNote:'Changes are shown in this app only and do not change orders in the spreadsheet.', saveEdit:'Save', editOk:'Address updated.', rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
     addrCount:function(n,w){return n+' addresses'+(w?' · updated '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'New address',
     detailLoading:'Loading transactions…', detailEmpty:'No transactions found for this address.',
@@ -333,7 +334,7 @@ function applyLang(){
   $('#lblBack').textContent=T().back;
   $('#gateTitle').textContent=T().gateTitle; $('#gateTxt').textContent=T().gateTxt; $('#gateBtn').textContent=T().gateBtn;
   document.querySelectorAll('[data-nav]').forEach(function(el){ var k=el.getAttribute('data-nav'); if(T().nav[k]) el.textContent=T().nav[k]; });
-  $('#lblRebuild').textContent=T().rebuildBtn;
+  $('#lblRebuild').textContent=T().rebuildBtn; $('#lblBackup').textContent=T().backupBtn;
   $('#lblSales').textContent=T().salesLbl2; $('#lblDari').textContent=T().dariTgl; $('#lblSampai').textContent=T().sampaiTgl;
   $('#hsDari').placeholder=T().pilihTgl; $('#hsSampai').placeholder=T().pilihTgl;
   $('#lblKpiAddr').textContent=T().kpiAddr; $('#lblKpiEst').textContent=T().kpiEst; $('#hTopEst').textContent=T().topEst;
@@ -359,8 +360,10 @@ function load(){
   if(!TK){ show(); return; }
   $('#sum').innerHTML='<span class="spn"></span>'+E(T().loadingAddr);
   rpc('kunjunganData',[]).then(function(d){
-    DATA=d;
+    DATA=d; DATA.detail=undefined;
     DATA.alamat.forEach(function(a){ a.perumahan=normPrm(a.perumahan); });
+    $('#rebuild').hidden=!d.admin; $('#backup').hidden=!d.admin;
+    rpc('kunjunganDetailSemua',[]).then(function(m){ DATA.detail=m; renderDb(); }).catch(function(){ DATA.detail={}; renderDb(); });
     $('#who').textContent=d.u+' · '+(d.admin?T().roleAdmin:T().roleSales);
     buildDashFilters(); buildFilters(); buildHsFilters();
     renderDash(); renderDb(); formMasuk();
@@ -371,6 +374,10 @@ function loadHasil(){
   $('#sumHs').innerHTML='<span class="spn"></span>'+E(T().loadingHs);
   rpc('kunjunganHasil',[]).then(function(h){ HASIL=h; renderHs(); }).catch(function(e){ $('#sumHs').textContent=e.message; });
 }
+$('#backup').onclick=function(){
+  var b=$('#backup'); b.disabled=true; toast(T().backupWait);
+  rpc('kunjunganCadangan',[]).then(function(r){ toast(T().backupOk(r.nama)); if(r.url) window.open(r.url,'_blank','noopener'); }).catch(function(e){ toast(e.message,true); }).then(function(){ b.disabled=false; });
+};
 $('#rebuild').onclick=function(){
   var b=$('#rebuild'); b.disabled=true; toast(T().rebuildWait);
   $('#sum').innerHTML='<span class="spn"></span>'+E(T().rebuilding);
@@ -505,6 +512,7 @@ function kartuDb(a,i){
     +'</div>';
 }
 function detailHtml(key){
+  if(DATA.detail===undefined) return '<span class="spn"></span>'+E(T().detailLoading);
   var list=(DATA.detail&&DATA.detail[key])||[];
   if(!list.length) return '<p class="mu">'+E(T().detailEmpty)+'</p>';
   var grand=0;
@@ -535,9 +543,18 @@ function openEditAlamat(a){
     +'<p class="mu" style="margin-top:8px">'+E(T().kecLbl)+'</p><input id="eaKc" value="'+E(a.kecamatan)+'">'
     +'<p class="mu" style="margin-top:8px">'+E(T().perLbl)+'</p><input id="eaPr" value="'+E(prmAsli(a.perumahan))+'">'
     +'<p class="mu" style="margin-top:8px">'+E(T().sekLbl)+'</p><input id="eaSk" value="'+E(a.sektor||'')+'">'
-    +'<div class="row" style="margin-top:12px"><button type="button" class="b pr" id="eaSave" style="width:100%">'+E(T().saveEdit)+'</button></div><p class="mu" id="eaMsg"></p>';
+    +'<div class="row" style="margin-top:12px"><button type="button" class="b pr" id="eaSave" style="width:100%">'+E(T().saveEdit)+'</button></div>'
+    +'<div class="row" style="margin-top:8px"><button type="button" class="b danger" id="eaDel" style="width:100%">'+E(T().delAlamat)+'</button></div><p class="mu" id="eaMsg"></p>';
   $('#sheet').hidden=false;
   document.getElementById('eaClose').onclick=closeSheet;
+  document.getElementById('eaDel').onclick=function(){
+    if(!confirm(T().delAlamatConfirm)) return;
+    rpc('kunjunganHapusAlamat',[a.key]).then(function(){
+      DATA.alamat=DATA.alamat.filter(function(x){return x.key!==a.key});
+      closeSheet(); toast(T().delAlamatOk);
+      buildDashFilters(); buildFilters(); buildHsFilters(); renderDash(); renderDb();
+    }).catch(function(err){ document.getElementById('eaMsg').textContent=err.message; });
+  };
   document.getElementById('eaSave').onclick=function(){
     var msg=document.getElementById('eaMsg'), btn=document.getElementById('eaSave');
     var data={alamat:document.getElementById('eaAl').value.trim(),kota:document.getElementById('eaKo').value.trim(),kecamatan:document.getElementById('eaKc').value.trim(),perumahan:document.getElementById('eaPr').value.trim(),sektor:document.getElementById('eaSk').value.trim()};
@@ -754,7 +771,7 @@ function renderHs(){
       +'<div>'+(h.sektor?'<span class="tag sk">'+E(h.sektor)+'</span>':'')+h.sales.map(function(s){return '<span class="tag">'+E(s)+'</span>'}).join('')+(h.hasil?'<span class="tag">'+E(h.hasil)+'</span>':'')+'</div>'
       +(h.catatan?catatanHtml(h):'')
       +(h.foto.length?'<div class="thumbs">'+h.foto.map(function(u){return '<a href="'+E(u)+'" target="_blank" rel="noopener"><img src="'+E(thumb(u))+'" alt="" loading="lazy"></a>'}).join('')+'</div>':'')
-      +'<div class="row" style="margin:8px 0 0"><button type="button" class="b" data-edit="'+E(h.id)+'">'+E(T().editBtn)+'</button><button type="button" class="b danger" data-del="'+E(h.id)+'">'+E(T().delBtn)+'</button></div>'
+      +(DATA.admin||h.oleh===DATA.u?'<div class="row" style="margin:8px 0 0"><button type="button" class="b" data-edit="'+E(h.id)+'">'+E(T().editBtn)+'</button><button type="button" class="b danger" data-del="'+E(h.id)+'">'+E(T().delBtn)+'</button></div>':'')
       +'</div>';
   }).join('')||'<p class="mu">'+E(T().noHs)+'</p>');
   pager($('#pgHs'),'hs',FIL.hs.length,renderHs);
