@@ -223,7 +223,7 @@ var I18N={
     dashSum:function(est,addr){return est+' perumahan terdata dari '+addr+' alamat aktif (menampilkan 15 teratas)'},
     loadingAddr:'Memuat database alamat…', rebuilding:'Memperbarui database dari data order…',
     rebuilt:function(n){return 'Database diperbarui: '+n+' alamat.'},
-    backConfirm:'Tekan sekali lagi untuk kembali ke Monitoring', rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
+    backConfirm:'Tekan sekali lagi untuk kembali ke Monitoring', adminOnly:'Hanya Admin yang dapat mengedit alamat.', editAlamatTitle:'Edit Alamat', editAlamatNote:'Perubahan hanya tampil di aplikasi ini dan tidak mengubah order di spreadsheet.', saveEdit:'Simpan', editOk:'Alamat diperbarui.', rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
     addrCount:function(n,w){return n+' alamat'+(w?' · diperbarui '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'Alamat baru',
     detailLoading:'Memuat transaksi…', detailEmpty:'Tidak ada transaksi ditemukan untuk alamat ini.',
@@ -261,7 +261,7 @@ var I18N={
     dashSum:function(est,addr){return est+' housing estates across '+addr+' active addresses (top 15)'},
     loadingAddr:'Loading address database…', rebuilding:'Syncing database from orders…',
     rebuilt:function(n){return 'Database synced: '+n+' addresses.'},
-    backConfirm:'Press back again to return to Monitoring', rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
+    backConfirm:'Press back again to return to Monitoring', adminOnly:'Only Admin can edit addresses.', editAlamatTitle:'Edit Address', editAlamatNote:'Changes are shown in this app only and do not change orders in the spreadsheet.', saveEdit:'Save', editOk:'Address updated.', rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
     addrCount:function(n,w){return n+' addresses'+(w?' · updated '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'New address',
     detailLoading:'Loading transactions…', detailEmpty:'No transactions found for this address.',
@@ -499,6 +499,7 @@ function kartuDb(a,i){
     +'<div>'+(a.sektor?'<span class="tag sk">'+E(a.sektor)+'</span>':'')
     +(a.spo?'<button type="button" class="tag btn" data-spo-toggle="'+i+'" aria-expanded="'+open+'">'+E(T().spoTag(a.spo))+' <span class="chev">▾</span></button>':'')
     +'<a class="tag btn" href="'+E(mapsUrl([a.alamat,prmAsli(a.perumahan),a.kecamatan,a.kota]))+'" target="_blank" rel="noopener">'+PIN+' '+E(T().mapsLbl)+'</a>'
+    +(DATA&&DATA.admin?'<button type="button" class="tag btn" data-edit-alamat="'+i+'">'+E(T().editBtn)+'</button>':'')
     +(a.sumber==='baru'?'<span class="tag s1">'+E(T().newAddrTag)+'</span>':'')+'</div>'
     +(open?'<div class="dd">'+detailHtml(a.key)+'</div>':'')
     +'</div>';
@@ -518,10 +519,37 @@ function detailHtml(key){
   return html+'<p class="mu" style="font-weight:700;color:var(--tx)">'+E(T().detailTotal)+' ('+list.length+' SPO): '+E(angka(grand))+'</p>';
 }
 $('#listDb').addEventListener('click',function(e){
+  var eb=e.target.closest('[data-edit-alamat]');
+  if(eb){ var ea=FIL.db[+eb.dataset.editAlamat]; if(ea) openEditAlamat(ea); return; }
   var t=e.target.closest('[data-spo-toggle]'); if(!t) return;
   var a=FIL.db[+t.dataset.spoToggle]; if(!a) return;
   a._open=!a._open; renderDb();
 });
+function openEditAlamat(a){
+  if(!DATA||!DATA.admin){ toast(T().adminOnly,true); return; }
+  EDIT=null;
+  $('#scx').innerHTML='<div class="row" style="justify-content:space-between"><h3 style="margin:0">'+E(T().editAlamatTitle)+'</h3><button type="button" class="ib" id="eaClose">'+E(T().close)+'</button></div>'
+    +'<p class="mu">'+E(T().editAlamatNote)+'</p>'
+    +'<p class="mu" style="margin-top:8px">'+E(T().addrLbl)+'</p><input id="eaAl" value="'+E(a.alamat)+'">'
+    +'<p class="mu" style="margin-top:8px">'+E(T().cityLbl)+'</p><input id="eaKo" value="'+E(a.kota)+'">'
+    +'<p class="mu" style="margin-top:8px">'+E(T().kecLbl)+'</p><input id="eaKc" value="'+E(a.kecamatan)+'">'
+    +'<p class="mu" style="margin-top:8px">'+E(T().perLbl)+'</p><input id="eaPr" value="'+E(prmAsli(a.perumahan))+'">'
+    +'<p class="mu" style="margin-top:8px">'+E(T().sekLbl)+'</p><input id="eaSk" value="'+E(a.sektor||'')+'">'
+    +'<div class="row" style="margin-top:12px"><button type="button" class="b pr" id="eaSave" style="width:100%">'+E(T().saveEdit)+'</button></div><p class="mu" id="eaMsg"></p>';
+  $('#sheet').hidden=false;
+  document.getElementById('eaClose').onclick=closeSheet;
+  document.getElementById('eaSave').onclick=function(){
+    var msg=document.getElementById('eaMsg'), btn=document.getElementById('eaSave');
+    var data={alamat:document.getElementById('eaAl').value.trim(),kota:document.getElementById('eaKo').value.trim(),kecamatan:document.getElementById('eaKc').value.trim(),perumahan:document.getElementById('eaPr').value.trim(),sektor:document.getElementById('eaSk').value.trim()};
+    if(!data.alamat){ msg.textContent=T().needAlamat; return; }
+    btn.disabled=true; msg.innerHTML='<span class="spn"></span>'+E(T().saving);
+    rpc('kunjunganEditAlamat',[a.key,data]).then(function(r){
+      a.alamat=r.alamat; a.kota=r.kota; a.kecamatan=r.kecamatan; a.perumahan=normPrm(r.perumahan); a.sektor=r.sektor;
+      closeSheet(); toast(T().editOk);
+      buildDashFilters(); buildFilters(); buildHsFilters(); renderDash(); renderDb();
+    }).catch(function(err){ msg.textContent=err.message; }).then(function(){ btn.disabled=false; });
+  };
+}
 function renderDb(){
   if(!DATA) return;
   FIL.db=filterDb();
