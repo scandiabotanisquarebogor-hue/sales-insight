@@ -223,7 +223,7 @@ var I18N={
     dashSum:function(est,addr){return est+' perumahan terdata dari '+addr+' alamat aktif (menampilkan 15 teratas)'},
     loadingAddr:'Memuat database alamat…', rebuilding:'Memperbarui database dari data order…',
     rebuilt:function(n){return 'Database diperbarui: '+n+' alamat.'},
-    backConfirm:'Tekan sekali lagi untuk kembali ke Monitoring', adminOnly:'Hanya Admin yang dapat mengedit alamat.', editAlamatTitle:'Edit Alamat', editAlamatNote:'Perubahan hanya tampil di aplikasi ini dan tidak mengubah order di spreadsheet.', saveEdit:'Simpan', editOk:'Alamat diperbarui.', rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
+    backConfirm:'Tekan sekali lagi untuk kembali ke Monitoring', rebuildWait:'Sedang memperbarui database… bisa memakan waktu 10–30 detik.', adminOnly:'Hanya Admin yang dapat mengedit alamat.', editAlamatTitle:'Edit Alamat', editAlamatNote:'Perubahan hanya tampil di aplikasi ini dan tidak mengubah order di spreadsheet.', saveEdit:'Simpan', editOk:'Alamat diperbarui.', rebuildBtn:'Perbarui DB', salesLbl2:'Sales', dariTgl:'Dari tanggal', sampaiTgl:'Sampai tanggal', pilihTgl:'Pilih tanggal', more:'Selengkapnya', less:'Tutup', noMatchAddr:'Tidak ada alamat yang cocok.',
     addrCount:function(n,w){return n+' alamat'+(w?' · diperbarui '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'Alamat baru',
     detailLoading:'Memuat transaksi…', detailEmpty:'Tidak ada transaksi ditemukan untuk alamat ini.',
@@ -261,7 +261,7 @@ var I18N={
     dashSum:function(est,addr){return est+' housing estates across '+addr+' active addresses (top 15)'},
     loadingAddr:'Loading address database…', rebuilding:'Syncing database from orders…',
     rebuilt:function(n){return 'Database synced: '+n+' addresses.'},
-    backConfirm:'Press back again to return to Monitoring', adminOnly:'Only Admin can edit addresses.', editAlamatTitle:'Edit Address', editAlamatNote:'Changes are shown in this app only and do not change orders in the spreadsheet.', saveEdit:'Save', editOk:'Address updated.', rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
+    backConfirm:'Press back again to return to Monitoring', rebuildWait:'Updating database… this may take 10–30 seconds.', adminOnly:'Only Admin can edit addresses.', editAlamatTitle:'Edit Address', editAlamatNote:'Changes are shown in this app only and do not change orders in the spreadsheet.', saveEdit:'Save', editOk:'Address updated.', rebuildBtn:'Sync DB', salesLbl2:'Sales', dariTgl:'From date', sampaiTgl:'To date', pilihTgl:'Select date', more:'More', less:'Close', noMatchAddr:'No matching addresses found.',
     addrCount:function(n,w){return n+' addresses'+(w?' · updated '+w:'')},
     spoTag:function(n){return n+' SPO'}, newAddrTag:'New address',
     detailLoading:'Loading transactions…', detailEmpty:'No transactions found for this address.',
@@ -372,7 +372,7 @@ function loadHasil(){
   rpc('kunjunganHasil',[]).then(function(h){ HASIL=h; renderHs(); }).catch(function(e){ $('#sumHs').textContent=e.message; });
 }
 $('#rebuild').onclick=function(){
-  var b=$('#rebuild'); b.disabled=true;
+  var b=$('#rebuild'); b.disabled=true; toast(T().rebuildWait);
   $('#sum').innerHTML='<span class="spn"></span>'+E(T().rebuilding);
   rpc('kunjunganRebuild',[]).then(function(r){ toast(T().rebuilt(r.jumlah)); load(); }).catch(function(e){ toast(e.message,true); }).then(function(){ b.disabled=false; });
 };
