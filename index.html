@@ -211,10 +211,20 @@ const ov=`<div class="c"><small class="mu">Total keseluruhan · ${act.length} bu
 const sel=`<select onchange="dm=this.value;draw()"><option value="all" ${A?'selected':''}>Semua bulan tercatat</option>${[...new Set([...ms,cm()])].sort().map(x=>`<option value="${x}" ${x==k?'selected':''}>${mname(x)}${x==cm()?' (bulan berjalan)':''}</option>`).join('')}</select>`;
 const hero=`<div class="c"><small class="mu">Total penjualan ${mname(k)}${k==cm()?' · bulan berjalan':''}${sp?' · '+E(sp):''} · include tax</small><div class="big">${R(c)}</div><p class="mu">${D.omset?'Omset include tax'+(D.upd?' · '+E(D.upd):'')+' · ':''}Order DO: ${a.n} SPO (${J(a.tot)})${cx(cn)} ${dl}${lyTxt(k,c)}</p></div>`;
 return ov+`<div class="f">${sel}</div>`+(A?'':hero)+(l.length?kpi(a,cn)+`<div class="c"><h3>Penjualan per ${LBL[lv]}</h3>${loc(l)}<p class="mu" style="margin:6px 0 0">Nilai ÷ 1,11 · jangan lupa (include tax)</p></div><div class="c"><h3>Status pengiriman</h3>${stbar(a)}</div><div class="c"><h3>Penjualan per Sales Person</h3>${bars(sc(a.sa))}<p class="mu" style="margin:6px 0 0">Nilai ÷ 1,11 · jangan lupa (include tax)</p></div>`:'<p class="mu">Belum ada order DO pada bulan ini.</p>')+`<div class="c"><h3>Penjualan per department <small class="mu">(include tax)</small></h3>${dv(k)}</div><div class="c"><h3>Penjualan per bulan</h3><div class="f pf">${msel()}<select onchange="mso=this.value;draw()"><option value="b" ${mso=='b'?'selected':''}>Urut: Bulan</option><option value="v" ${mso=='v'?'selected':''}>Urut: Value</option></select></div>${mchart()}</div>`}
-function ord(){return pendBar()+`<div class="f pf"><input id="q" style="flex:1 1 100%" placeholder="Cari customer, SPO, sales person, atau nama barang…" value="${E(q)}" oninput="q=this.value;ft()"><select onchange="om=this.value;ft()"><option value="all">Semua bulan</option><option value="carry" ${om=='carry'?'selected':''}>Belum terkirim tahun lalu</option>${oms().map(k=>`<option value="${k}" ${om==k?'selected':''}>${mname(k)}</option>`).join('')}</select><select onchange="fs=this.value;ft()">${[['all','Semua status'],[0,ST[0]],[2,ST[2]]].map(([v,t])=>`<option value="${v}" ${fs==v?'selected':''}>${t}</option>`).join('')}</select><select onchange="fb=this.value;ft()"><option value="all">Semua status barang</option>${[...new Set(L.map(x=>x.sb).filter(Boolean))].sort().map(v=>`<option value="${E(v)}" ${fb==v?'selected':''}>${E(v)}</option>`).join('')}</select></div><div id="tb"></div>`}
+function ord(){return pendBar()+`<div class="f pf"><button class="b" style="flex:none" onclick="expCsv()">Ekspor CSV</button><input id="q" style="flex:1 1 100%" placeholder="Cari customer, SPO, sales person, atau nama barang…" value="${E(q)}" oninput="q=this.value;ft()"><select onchange="om=this.value;ft()"><option value="all">Semua bulan</option><option value="carry" ${om=='carry'?'selected':''}>Belum terkirim tahun lalu</option>${oms().map(k=>`<option value="${k}" ${om==k?'selected':''}>${mname(k)}</option>`).join('')}</select><select onchange="fs=this.value;ft()">${[['all','Semua status'],[0,ST[0]],[2,ST[2]]].map(([v,t])=>`<option value="${v}" ${fs==v?'selected':''}>${t}</option>`).join('')}</select><select onchange="fb=this.value;ft()"><option value="all">Semua status barang</option>${[...new Set(L.map(x=>x.sb).filter(Boolean))].sort().map(v=>`<option value="${E(v)}" ${fb==v?'selected':''}>${E(v)}</option>`).join('')}</select></div><div id="tb"></div>`}
 function oms(){const l=[...new Set(rows.filter(r=>!sp||r.sa==sp).map(r=>r.d.slice(0,7)))].sort();if(om!='all'&&om!='carry'&&!l.includes(om))om='all';return l}
 const lalu=r=>r.d.slice(0,4)<YR&&r.st!=2;
-function ft(){const kk=[q,fs,om,fb,nos,sp].join('|');if(kk!==PKEY){PKEY=kk;PG=0}const s=q.toLowerCase(),nm=rows.filter(r=>!r.sa).length,l=rows.filter(r=>(!nos||!r.sa)&&(om=='all'||(om=='carry'?lalu(r):r.d.startsWith(om)))&&(fs=='all'||r.st==fs)&&(!sp||r.sa==sp)&&(fb=='all'||r.its.some(x=>x.sb==fb))&&(r.c+(r.tl||'')+r.s+r.sa+r.its.map(x=>x.it+' '+x.sb+' '+x.kt).join(' ')).toLowerCase().includes(s));
+var LASTL=[];
+function expCsv(){
+  var rowsOut=[['Tanggal','SPO','Customer','Sales','Status','Kota','Kecamatan','Perumahan','Artikel','Deskripsi','Qty','Nilai']];
+  (LASTL||[]).forEach(function(r){ r.its.forEach(function(x){ rowsOut.push([r.d,r.s,r.c,r.sa||'',r.st==2?'Terkirim':'Belum terkirim',r.kota||'',r.ko||'',r.prm||'',x.art,x.it,x.q,x.a]); }); });
+  if(rowsOut.length<2){ notify('Tidak ada data untuk diekspor.',true); return; }
+  var csv=rowsOut.map(function(r){ return r.map(function(c){ var s=String(c==null?'':c).replace(/"/g,'""'); return /[",\n;]/.test(s)?'"'+s+'"':s; }).join(','); }).join('\n');
+  var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}), a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='pesanan-'+new Date().toISOString().slice(0,10)+'.csv'; document.body.appendChild(a); a.click(); a.remove();
+  notify('CSV diunduh: '+(rowsOut.length-1)+' baris.');
+}
+function ft(){const kk=[q,fs,om,fb,nos,sp].join('|');if(kk!==PKEY){PKEY=kk;PG=0}const s=q.toLowerCase(),nm=rows.filter(r=>!r.sa).length,l=rows.filter(r=>(!nos||!r.sa)&&(om=='all'||(om=='carry'?lalu(r):r.d.startsWith(om)))&&(fs=='all'||r.st==fs)&&(!sp||r.sa==sp)&&(fb=='all'||r.its.some(x=>x.sb==fb))&&(r.c+(r.tl||'')+r.s+r.sa+r.its.map(x=>x.it+' '+x.sb+' '+x.kt).join(' ')).toLowerCase().includes(s));LASTL=l;
 const nl=new Set(rows.filter(lalu).map(r=>r.s)).size;const carryTxt=nl&&om!='carry'?` · <button class="x warn" onclick="om='carry';ft()">${nl} SPO tahun lalu belum terkirim</button>`:'';
 $('#tb').innerHTML=`<p class="mu">${l.length} SPO · ${R(l.reduce((t,r)=>t+r.a,0))}${carryTxt}${ME.r=='admin'&&nm?` · <button class="x warn" onclick="nos=!nos;ft()">${nos?'Tampilkan semua':'⚠ '+nm+' SPO tanpa Sales Person'}</button>`:''}</p>`+table(l)}
 function hist(){if((hy||YR)!==YR)return ysel()+histBase(hy);const ms=months();if(!mo)mo=[...ms].reverse().find(k=>inM(k).length||DT[k])||ms[0];
@@ -267,8 +277,8 @@ function buildRows(){const M={};L.forEach(x=>{const o=M[x.s]||(M[x.s]={d:x.d,s:x
 function pendN(){return Object.keys(PEND).length}
 let PEND={};
 function pendBar(){const n=pendN();return n?`<div class="pend"><b>${n} perubahan belum disimpan</b><span><button class="b" onclick="discardP()">Batalkan</button> <button class="b pr" onclick="saveP()">Simpan perubahan</button></span></div>`:''}
-function saveP(){busy('Menyimpan perubahan ke spreadsheet…');const items=Object.values(PEND);if(!items.length)return;rpc('saveBatch',[items],()=>{PEND={};load(true)},e=>{idle();alert(e.message)})}
-function discardP(){if(!confirm('Batalkan '+pendN()+' perubahan yang belum disimpan?'))return;PEND={};load()}
+function saveP(){busy('Menyimpan perubahan ke spreadsheet…');const items=Object.values(PEND);if(!items.length)return;rpc('saveBatch',[items],()=>{PEND={};load(true)},e=>{idle();notify(e.message)})}
+function discardP(){askConfirm('Batalkan '+pendN()+' perubahan yang belum disimpan?',function(){PEND={};load()})}
 
 function load(f){if(f&&pendN()&&!confirm('Ada '+pendN()+' perubahan belum disimpan. Muat ulang akan membatalkannya. Lanjut?'))return;if(f)PEND={};$('#v').innerHTML='<p class="mu"><span class="spn"></span>Memuat data…</p>';busy(f?'Memuat ulang data dari spreadsheet…':'Memuat data dari spreadsheet…');
 rpc('getAll',[!!f],o=>{UBAH=o.ubah||null;if(o.open!==undefined&&ME.r!=='admin'&&!!o.open!==!!ME.open){ME.open=!!o.open;applyMe()}CUSTDB=o.cust||[];const d=o.d;L=d;DT=o.dept||{};PR=o.prod||[];TS=o.ts||0;SLS=o.sl||[];YR=o.th||'2026';BASE=o.base||[];buildRows();draw();idle()},e=>{idle();$('#v').innerHTML='<p class="mu">Gagal memuat: '+E(e.message)+'</p>'})}
@@ -284,7 +294,7 @@ if(!/^https:/.test(API))return h+'Alamat API tidak valid (harus diawali https da
 if(!navigator.onLine)return h+'Tidak ada koneksi internet.';
 try{await fetch(API,{mode:'no-cors',credentials:'omit'});return h+'Server terjangkau tetapi permintaan ditolak. Periksa: (1) alamat berakhiran /exec dan benar, (2) akses Web App diatur ke Anyone, (3) sudah Deploy dengan Version: New version.'}
 catch(e){return h+'Alamat API tidak dapat dijangkau. Periksa alamat di config.js dan koneksi internet.'}}
-function rpc(fn,a,ok,bad){call(fn,[TK,...a]).then(ok,e=>{if(/Sesi/.test(e.message)){out(true);return}(bad||(x=>alert(x.message)))(e)})}
+function rpc(fn,a,ok,bad){call(fn,[TK,...a]).then(ok,e=>{if(/Sesi/.test(e.message)){out(true);return}(bad||(x=>notify(x.message)))(e)})}
 function saveApi(){const u=$('#au').value.trim();if(!/^https:/.test(u))return $('#lm').textContent='Alamat API harus diawali https';try{localStorage.setItem('si_api',u)}catch(e){}API=u;$('#ap').hidden=true;$('#lm').textContent='Alamat tersimpan. Silakan masuk.'}
 function instApp(){const d=window.__dp;if(d){d.prompt();window.__dp=null;$('#inst').hidden=true}}
 let ME={u:'',r:'user',sa:''};
@@ -347,6 +357,22 @@ function ubahTxt(){
   const dari=UBAH.s==='spreadsheet'?'spreadsheet':('aplikasi'+(UBAH.u?' · '+cap(UBAH.u):''));
   return (en?'data last changed ':'data terakhir berubah ')+tgl+' ('+dari+')';
 }
+// Notifikasi & konfirmasi di aplikasi (pengganti alert/confirm bawaan browser)
+function notify(msg,isErr){
+  var t=document.getElementById('ntf'); if(!t){ t=document.createElement('div'); t.id='ntf'; t.setAttribute('role','status'); t.style.cssText='position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);padding:10px 16px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:120;max-width:90vw;text-align:center;white-space:pre-line'; document.body.appendChild(t); }
+  t.textContent=msg; t.style.background=isErr?'var(--s0,#b91c1c)':'var(--tx)'; t.style.color=isErr?'#fff':'var(--bg)';
+  t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(t._h); t._h=setTimeout(function(){ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; },3400);
+}
+function askConfirm(msg,yes){
+  var o=document.getElementById('cfm');
+  if(!o){ o=document.createElement('div'); o.id='cfm'; o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:130;padding:16px';
+    o.innerHTML='<div style="background:var(--cd,#fff);color:var(--tx,#1d1d1b);border-radius:14px;max-width:360px;width:100%;padding:16px"><p id="cfmT" style="margin:0 0 14px;font-size:14px;line-height:1.5;white-space:pre-line"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button id="cfmN" class="b">Batal</button><button id="cfmY" class="b pr">Lanjut</button></div></div>';
+    document.body.appendChild(o); }
+  document.getElementById('cfmT').textContent=msg; o.style.display='flex';
+  document.getElementById('cfmN').onclick=function(){ o.style.display='none'; };
+  document.getElementById('cfmY').onclick=function(){ o.style.display='none'; yes(); };
+}
 let LDT=null,LDS=0,LDM='';
 function busy(m){LDM=m;LDS=Date.now();clearInterval(LDT);
   const up=()=>{const s=Math.floor((Date.now()-LDS)/1000);let x=LDM+(s?' · '+s+' dtk':'');if(s>=15)x+=' · masih bekerja, mohon tunggu';x=(typeof T==='function'?T(x):x);
@@ -363,11 +389,11 @@ const EYE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 1
 function eye(id,b){const i=$('#'+id),s=i.type=='password';i.type=s?'text':'password';b.innerHTML=s?EYX:EYE;b.setAttribute('aria-label',s?'Sembunyikan password':'Lihat password')}
 let TTY='';
 function akShow(){const el=$('#ak');if(!el)return;el.innerHTML=`<label class="ln" style="cursor:pointer;align-items:center"><span>Semua data terbuka untuk User Sales</span><input type="checkbox" ${ME.open?'checked':''} onchange="akSet(this.checked)"></label><p class="mu">Aktif: sales melihat dan dapat mengubah semua SPO, customer, dan data toko seperti Admin. Pengaturan user dan Sales Person tetap hanya Admin.<br>Nonaktif: sales kembali hanya melihat datanya sendiri. Sales melihat perubahan saat muat ulang.</p>`}
-function akSet(on){rpc('setAksesSales',[on],r=>{ME.open=!!r;akShow();alert(ME.open?'Akses semua data untuk sales: AKTIF':'Akses semua data untuk sales: NONAKTIF')},e=>{alert(e.message);akShow()})}
+function akSet(on){rpc('setAksesSales',[on],r=>{ME.open=!!r;akShow();notify(ME.open?'Akses semua data untuk sales: AKTIF':'Akses semua data untuk sales: NONAKTIF')},e=>{notify(e.message);akShow()})}
 
 function ttShow(){const y=YR;$('#tt').innerHTML=`<p class="mu">Tahun aktif: <b>${y}</b>. Tutup tahun akan mengarsipkan data ${y} ke file ARSIP, membuat REKAP TAHUNAN sebagai pembanding, lalu mengosongkan order ${y} di tab kerja agar aplikasi mulai dari Januari ${+y+1}.</p><button class="b" onclick="ttPrev()">Lihat pratinjau</button><div id="ttp"></div>`}
 function ttPrev(){rpc('previewTutup',[],p=>{TTY=p.tahun;$('#ttp').innerHTML=`<div class="ln"><span>Order DO ${p.tahun}</span><span>${p.spo} SPO · ${J(p.doTotal)}</span></div><div class="ln"><span>Omset (tab TOTAL)</span><span>${p.omset?J(p.omset):'-'}</span></div><div class="ln"><span>Tab order diarsipkan</span><span>${p.tab.length}</span></div><p class="mu">${E(p.tab.map(t=>t.nama+' ('+t.baris+' baris)').join(', ')||'-')}</p><p class="mu">Setelah ditutup, order bertanggal ${p.tahun} tidak lagi tampil di aplikasi. Pastikan semua order ${p.tahun} sudah masuk.</p><div class="fm"><input id="ttc" placeholder="Ketik TUTUP ${p.tahun}" autocomplete="off"><button class="b pr" onclick="ttRun()">Tutup tahun ${p.tahun} &amp; mulai ${p.tahunBaru}</button></div><p class="mu" id="ttm"></p>`},e=>$('#ttp').textContent=e.message)}
-function ttRun(){const y=TTY,c=($('#ttc')||{value:''}).value.trim();if(c.toUpperCase()!=='TUTUP '+y)return $('#ttm').textContent='Ketik "TUTUP '+y+'" untuk konfirmasi.';if(!confirm('Tutup tahun '+y+'? Order '+y+' di tab kerja akan dikosongkan (sudah diarsipkan).'))return;$('#ttm').textContent='Memproses…';rpc('tutupTahun',[c],r=>{alert('Tahun '+y+' diarsipkan ke: '+r.arsip+'\nAplikasi sekarang tahun '+r.tahun+'.');closeSet();hy='';load(true)},e=>$('#ttm').textContent=e.message)}
+function ttRun(){const y=TTY,c=($('#ttc')||{value:''}).value.trim();if(c.toUpperCase()!=='TUTUP '+y)return $('#ttm').textContent='Ketik "TUTUP '+y+'" untuk konfirmasi.';askConfirm('Tutup tahun '+y+'? Order '+y+' di tab kerja akan dikosongkan (sudah diarsipkan).',function(){$('#ttm').textContent='Memproses…';rpc('tutupTahun',[c],r=>{notify('Tahun '+y+' diarsipkan ke: '+r.arsip+'\nAplikasi sekarang tahun '+r.tahun+'.');closeSet();hy='';load(true)},e=>$('#ttm').textContent=e.message)})}
 let UL=[];
 function openSet(){$('#st').hidden=false;$('#sm').textContent='';clearU();ttShow();akShow();rpc('listUsers',[],u=>{UL=u;rs()})}
 function closeSet(){$('#st').hidden=true}
@@ -379,7 +405,7 @@ function clearU(){$('#su').value='';$('#su').readOnly=false;$('#sw').value='';$(
 function saveU(){const u=$('#su').value.trim();if(!u)return $('#sm').textContent='Isi username.';if($('#sw').value!==$('#sw2').value)return $('#sm').textContent='Konfirmasi password tidak sama. Periksa kembali.';$('#sm').textContent='Menyimpan…';
 rpc('saveUser',[u,$('#sw').value,$('#sr').value,$('#ss').value.trim()],r=>{UL=r.users;clearU();rs();$('#sm').textContent='Tersimpan.';
 if(r.t){TK=r.t;try{localStorage.setItem('si_tk',r.t)}catch(e){}rpc('me',[],s=>{ME=s;if(ME.r!='admin')closeSet();enter()})}},e=>$('#sm').textContent=e.message)}
-function delU(i){const u=UL[i];if(!confirm('Hapus user "'+u.u+'"?'))return;rpc('deleteUser',[u.u],r=>{UL=r;clearU();rs();$('#sm').textContent='User dihapus.'},e=>$('#sm').textContent=e.message)}
+function delU(i){const u=UL[i];askConfirm('Hapus user "'+u.u+'"?',function(){rpc('deleteUser',[u.u],r=>{UL=r;clearU();rs();$('#sm').textContent='User dihapus.'},e=>$('#sm').textContent=e.message)})}
 $('#lgl').appendChild($('.logo').cloneNode());
 $('#lp').onkeydown=e=>{if(e.key=='Enter')lgn()};
 $('#lb').onclick=lgn;
