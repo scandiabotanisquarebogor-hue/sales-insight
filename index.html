@@ -210,7 +210,7 @@ function raceHtml(){
   var rows=RACE.slice().sort(function(x,y){return y.pencapaian-x.pencapaian});
   var scale=Math.max.apply(null,rows.map(function(r){return Math.max(r.pencapaian,r.target)}))||1;
   var items=rows.map(function(r){
-    var linked=!!r.app, spo=linked?(a[r.app]||0):0, cnc=linked?Math.max(r.pencapaian-spo,0):0;
+    var linked=!!r.app, spo=linked?((a[r.app]||0)/1.11):0, cnc=linked?Math.max(r.pencapaian-spo,0):0;
     var pct=r.target?Math.round(r.pencapaian/r.target*100):0;
     return '<div style="margin:10px 0"><div style="display:flex;justify-content:space-between;gap:8px"><b>'+E(r.nama)+'</b><span>'+pct+'%</span></div>'
       +'<div style="display:flex;height:14px;border-radius:99px;overflow:hidden;background:color-mix(in srgb,var(--tx) 8%,transparent);margin:4px 0">'
