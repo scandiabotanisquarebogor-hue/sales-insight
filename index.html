@@ -200,8 +200,8 @@ const F=l.filter(r=>(fk=='all'||v(r,'kota')==fk)&&(fc=='all'||v(r,'ko')==fc)),o=
 const op=(a,b,c)=>`<option value="${E(a)}" ${a==c?'selected':''}>${E(b)}</option>`;
 return `<div class="f pf"><select onchange="lv=this.value;draw()">${['kota','kec','prm'].map(x=>op(x,'Per '+LBL[x],lv)).join('')}</select><select onchange="fk=this.value;fc='all';draw()">${op('all','Semua kota',fk)}${ks.map(x=>op(x,x,fk)).join('')}</select><select onchange="fc=this.value;draw()">${op('all','Semua kecamatan',fc)}${kc.map(x=>op(x,x,fc)).join('')}</select></div>`+cb(o,n)}
 const tv=k=>(!sp&&DT[k]&&DT[k].omset)||agg(inM(k)).tot;
-const cnc=k=>{if(sp||ME.r!='admin')return undefined;const D=DT[k];return D&&D.omset?Math.max(D.omset-agg(inM(k)).tot/TX,0):null};
-const cncAll=()=>{if(sp||ME.r!='admin')return undefined;let t=0,ok=0;months().forEach(k=>{const c=cnc(k);if(c!=null){t+=c;ok=1}});return ok?t:null};
+const cnc=k=>{if(sp||!adminUI())return undefined;const D=DT[k];return D&&D.omset?Math.max(D.omset-agg(inM(k)).tot/TX,0):null};
+const cncAll=()=>{if(sp||!adminUI())return undefined;let t=0,ok=0;months().forEach(k=>{const c=cnc(k);if(c!=null){t+=c;ok=1}});return ok?t:null};
 let AVGB={v:0,l:''};
 var RACE=[];
 function raceHtml(bulan){
@@ -268,7 +268,7 @@ return `<button class="m${k==mo?' on':''}" onclick="mo='${k}';draw()"><small>${m
 const l=inM(mo),a=agg(l),D=sp?{}:DT[mo]||{};
 return `<div class="f">${ysel()}${msel()}</div><div class="mc">${cards}</div>`+`<div class="c"><h3>Rekap ${mname(mo)} <small class="mu">(include tax)</small></h3>`+(D.omset?`<div class="big">${R(D.omset)}</div>`:(l.length?`<div class="big">${R(a.tot)}</div>`:''))+(l.length?`<p class="mu">${D.omset?'Omset include tax'+(D.upd?' · '+E(D.upd):'')+' · ':''}SPO sales: ${a.n} SPO (${J(a.tot/TX)})${cnc(mo)==null?'':' · CNC: '+J(cnc(mo))}</p><p class="mu">Terkirim ${a.st[2]} · Belum terkirim ${a.st[0]}</p>`:'<p class="mu">Belum ada order DO bulan ini.</p>')+`</div>`}
 
-function draw(){const S=[...new Set(rows.map(r=>r.sa).filter(Boolean))].sort();if(ME.r=='admin'&&sp&&!S.includes(sp))sp='';$('#spf').innerHTML='<option value="">Semua Sales Person</option>'+S.map(s=>`<option ${s==sp?'selected':''}>${E(s)}</option>`).join('');$('#v').innerHTML=({dash,ord,hist,prod,cus})[tab]();if(tab=='ord')ft();if(tab=='cus')cl();if(tab=='prod')pl();
+function draw(){const S=[...new Set(rows.map(r=>r.sa).filter(Boolean))].sort();if(adminUI()&&sp&&!S.includes(sp))sp='';$('#spf').innerHTML='<option value="">Semua Sales Person</option>'+S.map(s=>`<option ${s==sp?'selected':''}>${E(s)}</option>`).join('');$('#v').innerHTML=({dash,ord,hist,prod,cus})[tab]();if(tab=='ord')ft();if(tab=='cus')cl();if(tab=='prod')pl();
 document.querySelectorAll('#nv button').forEach(b=>b.classList.toggle('on',b.dataset.t==tab));
 $('#info').textContent=`${cap(ME.u)} (${ME.r=='admin'?'Admin · Store Leader':'Sales Person'}) · ${ubahTxt()}`}
 document.querySelectorAll('#nv button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;PG=0;draw()});
@@ -379,7 +379,8 @@ function setLang(l){if(l==LANG)return;MO.disconnect();restore();LANG=l;MN=l=='en
 
 const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):'';
 function show(){document.documentElement.classList.remove('chk');const on=!!TK&&!!ME.u;$('#lg').hidden=on;$('#app').hidden=!on}
-function applyMe(){const a=ME.r=='admin';$('#gear').hidden=!a;$('#spf').hidden=!a;sp=(a||ME.open)?'':ME.sa}
+function adminUI(){return ME.r=='admin'||!!ME.open}
+function applyMe(){const a=adminUI();$('#gear').hidden=ME.r!='admin';$('#spf').hidden=!a;sp=a?'':ME.sa}
 function enter(){applyMe();show();load()}
 let UBAH=null;
 function ubahTxt(){
@@ -422,7 +423,7 @@ call('login',[u,p]).then(o=>{TK=o.t;ME={u:o.u,r:o.r,sa:o.sa};$('#lb').disabled=f
 const EYE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>',EYX='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>';
 function eye(id,b){const i=$('#'+id),s=i.type=='password';i.type=s?'text':'password';b.innerHTML=s?EYX:EYE;b.setAttribute('aria-label',s?'Sembunyikan password':'Lihat password')}
 let TTY='';
-function akShow(){const el=$('#ak');if(!el)return;el.innerHTML=`<label class="ln" style="cursor:pointer;align-items:center"><span>Semua data terbuka untuk User Sales</span><input type="checkbox" ${ME.open?'checked':''} onchange="akSet(this.checked)"></label><p class="mu">Aktif: sales melihat dan dapat mengubah semua SPO, customer, dan data toko seperti Admin. Pengaturan user dan Sales Person tetap hanya Admin.<br>Nonaktif: sales kembali hanya melihat datanya sendiri. Sales melihat perubahan saat muat ulang.</p>`}
+function akShow(){const el=$('#ak');if(!el)return;const on=!!ME.open;const seg=(v,t)=>`<button type="button" onclick="akSet(${v})" aria-pressed="${on===v}" style="border:0;padding:7px 16px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;background:${on===v?'var(--ac)':'transparent'};color:${on===v?'#fff':'var(--tx)'}">${t}</button>`;el.innerHTML=`<div class="ln" style="align-items:center;justify-content:space-between;gap:12px"><span>Semua data terbuka untuk User Sales</span><div style="display:inline-flex;border:1px solid var(--ln,#d6d3cb);border-radius:10px;overflow:hidden">${seg(true,'ON')}${seg(false,'OFF')}</div></div>`+``;}
 function akSet(on){rpc('setAksesSales',[on],r=>{ME.open=!!r;akShow();notify(ME.open?'Akses semua data untuk sales: AKTIF':'Akses semua data untuk sales: NONAKTIF')},e=>{notify(e.message);akShow()})}
 
 function ttShow(){const y=YR;$('#tt').innerHTML=`<p class="mu">Tahun aktif: <b>${y}</b>. Tutup tahun akan mengarsipkan data ${y} ke file ARSIP, membuat REKAP TAHUNAN sebagai pembanding, lalu mengosongkan order ${y} di tab kerja agar aplikasi mulai dari Januari ${+y+1}.</p><button class="b" onclick="ttPrev()">Lihat pratinjau</button><div id="ttp"></div>`}
