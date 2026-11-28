@@ -110,8 +110,8 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 
   <section id="gate" class="sec" hidden style="margin-top:4px">
     <h3 id="gateTitle">Silakan masuk dulu</h3>
-    <p class="mu" id="gateTxt">Halaman ini memakai login Monitoring Database. Masuk di Monitoring, lalu kembali ke sini.</p>
-    <a class="b pr" href="../" style="display:inline-block;text-decoration:none;margin-top:6px" id="gateBtn">Buka Monitoring Database</a>
+    <p class="mu" id="gateTxt">Halaman ini memakai login Dashboard Monitoring. Masuk di Monitoring, lalu kembali ke sini.</p>
+    <a class="b pr" href="../" style="display:inline-block;text-decoration:none;margin-top:6px" id="gateBtn">Buka Dashboard Monitoring</a>
   </section>
 
   <section id="app" hidden>
@@ -132,7 +132,28 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
         <svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 13l2 2 4-4"/></svg>
         <span data-nav="hs">Hasil</span>
       </button>
+      <button type="button" data-t="mp" title="Mapping Sales Activity" aria-label="Mapping Sales Activity">
+        <svg viewBox="0 0 24 24"><path d="M9 3L3 5.5v15L9 18l6 2.5 6-2.5v-15L15 5.5 9 3z"/><path d="M9 3v15M15 5.5v15"/></svg>
+        <span data-nav="mp">Mapping Sales Activity</span>
+      </button>
     </nav>
+
+    <section id="tMp" hidden>
+      <h2 id="mpTtl" style="font-size:17px;margin:4px 0 8px">Mapping Sales Activity</h2>
+      <div class="row">
+        <select id="mpSales" aria-label="Sales" onchange="mpMuat()"></select>
+        <input id="mpBulan" type="month" aria-label="Bulan" onchange="mpMuat()">
+        <button type="button" class="ib" id="mpBtnKor" onclick="mpBuatKor()">Buat koordinat</button>
+      </div>
+      <p class="mu" id="mpStat" style="margin:6px 0"></p>
+      <div class="mu" style="display:flex;gap:12px;flex-wrap:wrap;margin:6px 0">
+        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9ca3af;margin-right:5px"></i><span id="mpL0">Belum dikunjungi</span></span>
+        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#86efac;margin-right:5px"></i><span id="mpL1">1–2 kunjungan</span></span>
+        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#22c55e;margin-right:5px"></i><span id="mpL2">3–5 kunjungan</span></span>
+        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#15803d;margin-right:5px"></i><span id="mpL3">6+ kunjungan</span></span>
+      </div>
+      <div id="mpMap" style="width:100%;height:60vh;min-height:340px;border-radius:12px;overflow:hidden;border:1px solid var(--ln,#d6d3cb)"></div>
+    </section>
 
     <section id="tDs">
       <div class="row">
@@ -214,8 +235,8 @@ var HASIL_CHECKLIST=[
 var I18N={
   id:{
     docTitle:'Aktivitas Sales · SCANDIA BOTANI', appTitle:'Aktivitas Sales', back:'Monitoring',
-    gateTitle:'Silakan masuk dulu', gateTxt:'Halaman ini memakai login Monitoring Database. Masuk di Monitoring, lalu kembali ke sini.', gateBtn:'Buka Monitoring Database',
-    nav:{ds:'Dashboard',db:'Database',kj:'Kunjungan',hs:'Hasil'},
+    gateTitle:'Silakan masuk dulu', gateTxt:'Halaman ini memakai login Dashboard Monitoring. Masuk di Monitoring, lalu kembali ke sini.', gateBtn:'Buka Dashboard Monitoring',
+    nav:{ds:'Dashboard',db:'Database',kj:'Kunjungan',hs:'Hasil',mp:'Mapping Sales Activity'},
     roleAdmin:'Admin', roleSales:'Sales',
     allCity:'Semua kota', allKec:'Semua kecamatan', allPer:'Semua perumahan', allSales:'Semua sales',
     nonPrm:'Non Perumahan',
@@ -252,8 +273,8 @@ var I18N={
   },
   en:{
     docTitle:'Sales Activity · SCANDIA BOTANI', appTitle:'Sales Activity', back:'Monitoring',
-    gateTitle:'Please sign in first', gateTxt:'This page uses the Monitoring Database login. Sign in on Monitoring, then come back here.', gateBtn:'Open Monitoring Database',
-    nav:{ds:'Dashboard',db:'Database',kj:'Visits',hs:'Results'},
+    gateTitle:'Please sign in first', gateTxt:'This page uses the Dashboard Monitoring login. Sign in on Monitoring, then come back here.', gateBtn:'Open Dashboard Monitoring',
+    nav:{ds:'Dashboard',db:'Database',kj:'Visits',hs:'Results',mp:'Mapping Sales Activity'},
     roleAdmin:'Admin', roleSales:'Sales',
     allCity:'All cities', allKec:'All districts', allPer:'All housing estates', allSales:'All sales reps',
     nonPrm:'Non-Housing Estate',
@@ -303,6 +324,75 @@ function tglPanjang(s){ if(!s) return ''; var p=s.split('-'); var d=new Date(+p[
 function angka(n){return Math.round(Number(n)||0).toLocaleString(LANG==='en'?'en-US':'id-ID')}
 function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort()}
 function fileId(u){ var m=/[?&]id=([^&#]+)/.exec(u)||/\/d\/([^\/?#]+)/.exec(u); return m?m[1]:''; }
+// ---------- Mapping Sales Activity (peta sebaran kunjungan) ----------
+var MPT={
+ id:{ttl:'Mapping Sales Activity',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',l0:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',
+     nokey:'Kunci Google Maps belum diisi. Admin: isi GMAPS_KEY di Script Properties Apps Script.',konfirm:'Buat koordinat untuk perumahan Bogor yang belum punya titik? Proses bisa beberapa kali sampai selesai.',selesai:'Koordinat selesai.',proses:'Memproses',titik:'titik'},
+ en:{ttl:'Mapping Sales Activity',sales:'All sales',bulan:'All months',kor:'Build coordinates',l0:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',kunjungan:'visits',kota:'City',kec:'District',
+     nokey:'Google Maps key is not set. Admin: add GMAPS_KEY in Apps Script Script Properties.',konfirm:'Build coordinates for Bogor housing estates without a point? It may take several runs.',selesai:'Coordinates done.',proses:'Processing',titik:'points'}
+};
+var MP={ready:false,loading:false,map:null,markers:[],iw:null};
+function mpT(k){var L=(localStorage.getItem('si_lang')==='en')?'en':'id';return (MPT[L]&&MPT[L][k])||k}
+function mpStat(s){var el=document.getElementById('mpStat'); if(el) el.textContent=s}
+function mpEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function mpLabels(){
+  var set=function(id,v){var e=document.getElementById(id); if(e) e.textContent=v};
+  set('mpTtl',mpT('ttl'));set('mpBtnKor',mpT('kor'));set('mpL0',mpT('l0'));set('mpL1',mpT('l1'));set('mpL2',mpT('l2'));set('mpL3',mpT('l3'));
+}
+function mpWarna(n){return n==0?'#9ca3af':n<=2?'#86efac':n<=5?'#22c55e':'#15803d'}
+function mpIsiSales(){
+  var s=document.getElementById('mpSales'); if(!s) return;
+  var cur=s.value, opts='<option value="">'+mpT('sales')+'</option>';
+  ((DATA&&DATA.sales)||[]).forEach(function(n){opts+='<option value="'+mpEsc(n)+'">'+mpEsc(n)+'</option>'});
+  s.innerHTML=opts; s.value=cur;
+}
+function mpOpen(){
+  mpLabels(); mpIsiSales();
+  if(MP.ready){ mpMuat(); return; }
+  if(MP.loading) return;
+  MP.loading=true;
+  rpc('petaKunci',[]).then(function(k){
+    if(!k){ mpStat(mpT('nokey')); MP.loading=false; return; }
+    var s=document.createElement('script'); s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(k)+'&callback=mpInit'; s.async=true; document.head.appendChild(s);
+  }).catch(function(e){ mpStat(e.message); MP.loading=false; });
+}
+function mpInit(){
+  MP.ready=true;
+  MP.map=new google.maps.Map(document.getElementById('mpMap'),{center:{lat:-6.6,lng:106.8},zoom:11,mapTypeControl:false,streetViewControl:false});
+  MP.iw=new google.maps.InfoWindow();
+  mpMuat();
+}
+function mpMuat(){
+  if(!MP.map) return;
+  var sales=(document.getElementById('mpSales')||{}).value||'', bulan=(document.getElementById('mpBulan')||{}).value||'';
+  rpc('kunjunganPeta',[sales,bulan]).then(function(d){
+    MP.markers.forEach(function(m){m.setMap(null)}); MP.markers=[];
+    d.titik.forEach(function(t){
+      var n=t.n, m=new google.maps.Marker({position:{lat:t.lat,lng:t.lng},map:MP.map,title:t.p,
+        icon:{path:google.maps.SymbolPath.CIRCLE,scale:7+Math.min(n,8)*1.4,fillColor:mpWarna(n),fillOpacity:.92,strokeColor:'#fff',strokeWeight:1.5},
+        label:n?{text:String(n),color:'#fff',fontSize:'11px',fontWeight:'700'}:null});
+      m.addListener('click',function(){
+        MP.iw.setContent('<div style="font:13px system-ui;color:#1d1d1b"><b>'+mpEsc(t.p)+'</b><br>'+mpEsc(mpT('kota'))+': '+mpEsc(t.kota)+'<br>'+mpEsc(mpT('kec'))+': '+mpEsc(t.kec)+'<br>'+n+' '+mpEsc(mpT('kunjungan'))+'</div>');
+        MP.iw.open(MP.map,m);
+      });
+      MP.markers.push(m);
+    });
+    if(MP.markers.length){ var b=new google.maps.LatLngBounds(); MP.markers.forEach(function(m){b.extend(m.getPosition())}); MP.map.fitBounds(b); }
+    mpStat(d.titik.length+' '+mpT('titik'));
+  }).catch(function(e){ mpStat(e.message); });
+}
+function mpBuatKor(){
+  if(!confirm(mpT('konfirm'))) return;
+  var btn=document.getElementById('mpBtnKor'); btn.disabled=true;
+  (function loop(n){
+    mpStat(mpT('proses')+' '+(n+1)+'…');
+    rpc('kunjunganKoordinatBuat',[]).then(function(r){
+      if(r.sisa>0 && n<30) return loop(n+1);
+      mpStat(mpT('selesai')); btn.disabled=false; mpMuat();
+    }).catch(function(e){ mpStat(e.message); btn.disabled=false; });
+  })(0);
+}
+window.mpInit=mpInit; window.mpMuat=mpMuat; window.mpBuatKor=mpBuatKor; window.mpOpen=mpOpen;
 function viewerOpen(u){
   var id=fileId(u); if(!id){ window.open(u,'_blank','noopener'); return; }
   var v=document.getElementById('viewer'), img=document.getElementById('viewerImg'), err=document.getElementById('viewerErr');
@@ -394,9 +484,10 @@ $('#rebuild').onclick=function(){
 
 function setTab(t){
   TAB=t;
-  var map={ds:'Ds',db:'Db',kj:'Kj',hs:'Hs'};
+  var map={ds:'Ds',db:'Db',kj:'Kj',hs:'Hs',mp:'Mp'};
   Object.keys(map).forEach(function(k){ $('#t'+map[k]).hidden=(k!==t); });
   document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on',b.dataset.t===t); });
+  if(t==='mp') mpOpen();
   if(t==='hs' && !HASIL && DATA) loadHasil();
   if(t==='hs' && HASIL) renderHs();
   if(t==='ds' && DATA) renderDash();
