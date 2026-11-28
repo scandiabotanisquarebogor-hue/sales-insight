@@ -612,7 +612,7 @@ function formHtml(P,a,edit){
     +'<div class="row"><div style="flex:1 1 160px"><p class="mu" style="margin:0 0 4px">'+E(T().cityLbl)+'</p><select id="'+P+'Ko"><option value="">'+E(T().allCity)+'</option>'+cities.map(function(c){return '<option value="'+E(c)+'"'+(c===kota?' selected':'')+'>'+E(c)+'</option>'}).join('')+'</select></div>'
     +'<div style="flex:1 1 160px"><p class="mu" style="margin:0 0 4px">'+E(T().kecLbl)+'</p><select id="'+P+'Kc"><option value="">'+E(T().allKec)+'</option>'+kecList.map(function(k){return '<option value="'+E(k)+'"'+(k===kec?' selected':'')+'>'+E(k)+'</option>'}).join('')+'</select></div></div>'
     +'<div class="row"><div style="flex:1 1 100%"><p class="mu" style="margin:0 0 4px">'+E(T().perLbl)+'</p><input id="'+P+'Pr" placeholder="'+E(T().perPh)+'" value="'+E(a.perumahan&&a.perumahan!==NON_PRM?a.perumahan:'')+'"></div></div>'
-    +'<div class="row"><div style="flex:1 1 100%"><p class="mu" style="margin:0 0 4px">'+E(T().addrLbl)+'</p><div style="display:flex;gap:8px"><input id="'+P+'Al" style="flex:1;min-width:0" placeholder="'+E(T().addrPh)+'" value="'+E(a.alamat||'')+'"><button type="button" class="ib" data-maps-from="'+P+'" title="'+E(T().mapsLbl)+'" aria-label="'+E(T().mapsLbl)+'" style="height:40px">'+PIN+'<span>'+E(T().mapsLbl)+'</span></button></div></div></div>'
+    +'<div class="row"><div style="flex:1 1 100%"><p class="mu" style="margin:0 0 4px">'+E(T().addrLbl)+'</p><div style="display:flex;gap:8px"><input id="'+P+'Al" style="flex:1;min-width:0" placeholder="'+E(T().addrPh)+'" value="'+E(a.alamat||'')+'"><a class="ib" data-maps-from="'+P+'" href="'+E(mapsUrl(['',''].filter(Boolean)))+'" target="_blank" rel="noopener" title="'+E(T().mapsLbl)+'" aria-label="'+E(T().mapsLbl)+'" style="height:40px;display:inline-flex;align-items:center;gap:4px;text-decoration:none;padding:0 10px;white-space:nowrap">'+PIN+'<span>'+E(T().mapsLbl)+'</span></a></div></div></div>'
     +'<p class="mu" style="margin-top:8px">'+E(T().sekLbl)+'</p><input id="'+P+'Sk" placeholder="'+E(T().sekPh)+'" value="'+E(a.sektor||'')+'">'
     +'<p class="mu" style="margin-top:8px">'+E(T().tglLbl)+'</p><input type="date" id="'+P+'Tgl" value="'+E(a.tgl||todayIso())+'">'
     +'<p class="mu" style="margin-top:8px">'+E(T().salesLbl)+'</p><div class="chips" id="'+P+'Chips">'
@@ -717,11 +717,14 @@ function closeSheet(){ $('#sheet').hidden=true; EDIT=null; PEND_BY['e']=[]; }
 $('#sheet').addEventListener('click',function(e){ if(e.target.id==='sheet') closeSheet(); });
 
 // ---------- pilih & hapus foto (sebelum diunggah) ----------
+function updMapsLinks(){ document.querySelectorAll('[data-maps-from]').forEach(function(a){ var P0=a.dataset.mapsFrom, v=function(k){var el=document.getElementById(P0+k); return el?el.value.trim():'';}; var q=[v('Al'),v('Pr'),v('Kc'),v('Ko')].filter(Boolean); if(q.length) a.href=mapsUrl(q); }); }
+document.addEventListener('input',updMapsLinks);
+document.addEventListener('change',updMapsLinks);
 document.addEventListener('click',function(e){
   var mp=e.target.closest&&e.target.closest('[data-maps-from]');
   if(mp){ var P0=mp.dataset.mapsFrom, v=function(k){var el=document.getElementById(P0+k); return el?el.value.trim():'';};
-    var q=[v('Al'),v('Pr'),v('Kc'),v('Ko')].filter(Boolean); if(!q.length){ toast(T().needAlamat,true); return; }
-    window.open(mapsUrl(q),'_blank','noopener'); return; }
+    var q=[v('Al'),v('Pr'),v('Kc'),v('Ko')].filter(Boolean); if(!q.length){ e.preventDefault(); toast(T().needAlamat,true); return; }
+    mp.href=mapsUrl(q); return; }
   var cam=e.target.closest&&e.target.closest('[data-cam]'); if(cam){ PFX_ACTIVE=cam.dataset.cam; $('#fCam').click(); return; }
   var gal=e.target.closest&&e.target.closest('[data-gal]'); if(gal){ PFX_ACTIVE=gal.dataset.gal; $('#fGal').click(); return; }
   var rm=e.target.closest&&e.target.closest('[data-rm]'); if(rm){ e.preventDefault(); var P=rm.dataset.pfx; PEND_BY[P].splice(+rm.dataset.rm,1); pendHtml(P); return; }
