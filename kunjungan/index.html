@@ -155,9 +155,9 @@ body.wide .w{max-width:1320px}
         <svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 13l2 2 4-4"/></svg>
         <span data-nav="hs">Hasil</span>
       </button>
-      <button type="button" data-t="mp" title="Mapping" aria-label="Mapping">
+      <button type="button" data-t="mp" title="Peta" aria-label="Peta">
         <svg viewBox="0 0 24 24"><path d="M9 3L3 5.5v15L9 18l6 2.5 6-2.5v-15L15 5.5 9 3z"/><path d="M9 3v15M15 5.5v15"/></svg>
-        <span data-nav="mp">Mapping</span>
+        <span data-nav="mp">Peta</span>
       </button>
     </nav>
 
@@ -290,7 +290,7 @@ var I18N={
   id:{
     docTitle:'Aktivitas Sales · SCANDIA BOTANI', appTitle:'Aktivitas Sales', back:'Monitoring',
     gateTitle:'Silakan masuk dulu', gateTxt:'Halaman ini memakai login Dashboard Monitoring. Masuk di Monitoring, lalu kembali ke sini.', gateBtn:'Buka Dashboard Monitoring',
-    nav:{ds:'Dashboard',db:'Database',kj:'Kunjungan',hs:'Hasil',mp:'Mapping'},
+    nav:{ds:'Dashboard',db:'Database',kj:'Kunjungan',hs:'Hasil',mp:'Peta'},
     roleAdmin:'Admin', roleSales:'Sales',
     allCity:'Semua kota', allKec:'Semua kecamatan', allPer:'Semua perumahan', allSales:'Semua sales',
     nonPrm:'Non Perumahan',
@@ -328,7 +328,7 @@ var I18N={
   en:{
     docTitle:'Sales Activity · SCANDIA BOTANI', appTitle:'Sales Activity', back:'Monitoring',
     gateTitle:'Please sign in first', gateTxt:'This page uses the Dashboard Monitoring login. Sign in on Monitoring, then come back here.', gateBtn:'Open Dashboard Monitoring',
-    nav:{ds:'Dashboard',db:'Database',kj:'Visits',hs:'Results',mp:'Mapping'},
+    nav:{ds:'Dashboard',db:'Database',kj:'Visits',hs:'Results',mp:'Peta'},
     roleAdmin:'Admin', roleSales:'Sales',
     allCity:'All cities', allKec:'All districts', allPer:'All housing estates', allSales:'All sales reps',
     nonPrm:'Non-Housing Estate',
@@ -380,12 +380,13 @@ function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort
 function fileId(u){ var m=/[?&]id=([^&#]+)/.exec(u)||/\/d\/([^\/?#]+)/.exec(u); return m?m[1]:''; }
 // ---------- Mapping Sales Activity (peta sebaran kunjungan) ----------
 var MPT={
- id:{ttl:'Peta Aktivitas Sales',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',cocok:'perumahan cocok',kataPh:'Keyword (pisah dengan /)',lblSales:'Sales',lblBulan:'Bulan',lblWil:'Wilayah',korTtl:'Buat koordinat',count:'titik',terang:'Terang',gelap:'Gelap',l0:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',
+ id:{ttl:'Peta Aktivitas Sales',masukKj:'Masukkan kunjungan',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',cocok:'perumahan cocok',kataPh:'Keyword (pisah dengan /)',lblSales:'Sales',lblBulan:'Bulan',lblWil:'Wilayah',korTtl:'Buat koordinat',count:'titik',terang:'Terang',gelap:'Gelap',l0:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',
      nokey:'Kunci Google Maps belum diisi. Admin: isi GMAPS_KEY di Script Properties Apps Script.',konfirm:'Buat koordinat untuk perumahan Bogor yang belum punya titik? Proses bisa beberapa kali sampai selesai.',selesai:'Koordinat selesai.',proses:'Memproses',titik:'titik',pilihBulan:'Pilih bulan',semuaKota:'Semua kota',semuaKec:'Semua kecamatan',gelap:'Gelap',terang:'Terang'},
- en:{ttl:'Sales Activity Map',cocok:'housing estates matched',kataPh:'Keyword (separate with /)',lblSales:'Sales',lblBulan:'Month',lblWil:'Area',korTtl:'Build coordinates',count:'points',terang:'Light',gelap:'Dark',sales:'All sales',bulan:'All months',kor:'Build coordinates',l0:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',kunjungan:'visits',kota:'City',kec:'District',
+ en:{ttl:'Sales Activity Map',masukKj:'Add visit',cocok:'housing estates matched',kataPh:'Keyword (separate with /)',lblSales:'Sales',lblBulan:'Month',lblWil:'Area',korTtl:'Build coordinates',count:'points',terang:'Light',gelap:'Dark',sales:'All sales',bulan:'All months',kor:'Build coordinates',l0:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',kunjungan:'visits',kota:'City',kec:'District',
      nokey:'Google Maps key is not set. Admin: add GMAPS_KEY in Apps Script Script Properties.',konfirm:'Build coordinates for Bogor housing estates without a point? It may take several runs.',selesai:'Coordinates done.',proses:'Processing',titik:'points',pilihBulan:'Pick month',semuaKota:'All cities',semuaKec:'All districts',gelap:'Dark',terang:'Light'}
 };
-var MP={ready:false,loading:false,map:null,markers:[],iw:null};
+var MP={ready:false,loading:false,map:null,markers:[],iw:null,list:[]};
+var KJ_PRE=null;
 function mpT(k){var L=(localStorage.getItem('si_lang')==='en')?'en':'id';return (MPT[L]&&MPT[L][k])||k}
 function mpStat(s){var el=document.getElementById('mpStat'); if(el) el.textContent=s}
 function mpEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
@@ -480,8 +481,9 @@ function mpMuat(){
       var n=t.n, m=new google.maps.Marker({position:{lat:t.lat,lng:t.lng},map:MP.map,title:t.p,
         icon:{path:google.maps.SymbolPath.CIRCLE,scale:7+Math.min(n,8)*1.4,fillColor:mpWarna(n),fillOpacity:.92,strokeColor:'#fff',strokeWeight:1.5},
         label:n?{text:String(n),color:n<=2?'#1d1d1b':'#fff',fontSize:'11px',fontWeight:'700'}:null});
+      var idx=MP.list.push(t)-1;
       m.addListener('click',function(){
-        MP.iw.setContent('<div style="font:13px system-ui;color:#1d1d1b"><b>'+mpEsc(t.p)+'</b><br>'+mpEsc(mpT('kota'))+': '+mpEsc(t.kota)+'<br>'+mpEsc(mpT('kec'))+': '+mpEsc(t.kec)+'<br>'+n+' '+mpEsc(mpT('kunjungan'))+'</div>');
+        MP.iw.setContent('<div style="font:13px system-ui;color:#1d1d1b;min-width:180px"><b>'+mpEsc(t.p)+'</b><br>'+mpEsc(mpT('kota'))+': '+mpEsc(t.kota)+'<br>'+mpEsc(mpT('kec'))+': '+mpEsc(t.kec)+'<br>'+n+' '+mpEsc(mpT('kunjungan'))+'<br><button type="button" onclick="mpGoVisit('+idx+')" style="margin-top:8px;border:0;background:#f97316;color:#fff;border-radius:8px;padding:7px 12px;font:inherit;font-weight:600;cursor:pointer">'+mpEsc(mpT('masukKj'))+'</button></div>');
         MP.iw.open(MP.map,m);
       });
       MP.markers.push(m);
@@ -491,6 +493,16 @@ function mpMuat(){
     var cn=document.getElementById('mpCount'); if(cn) cn.textContent=d.titik.length+' '+mpT('count');
   }).catch(function(e){ mpStat(e.message); });
 }
+function mpGoVisit(i){
+  var t=MP.list[i]; if(!t) return;
+  var al=((DATA&&DATA.alamat)||[]).filter(function(a){return normTxt(a.perumahan)===normTxt(t.p) && a.alamat});
+  KJ_PRE={kota:t.kota, kecamatan:t.kec, perumahan:t.p, alamat:al.length?al[0].alamat:''};
+  if(MP.iw) MP.iw.close();
+  setTab('kj');
+  formMasuk();
+  window.scrollTo(0,0);
+}
+function normTxt(s){ return String(s==null?'':s).toUpperCase().replace(/[.,;:()\\\/\\\-_]+/g,' ').replace(/\s+/g,' ').trim(); }
 function mpBuatKor(){
   if(!confirm(mpT('konfirm'))) return;
   var btn=document.getElementById('mpBtnKor'); btn.disabled=true;
@@ -503,7 +515,7 @@ function mpBuatKor(){
     }).catch(function(e){ mpStat(e.message); btn.disabled=false; });
   })(0);
 }
-window.mpInit=mpInit; window.mpMuat=mpMuat; window.mpBuatKor=mpBuatKor; window.mpOpen=mpOpen; window.mpIsiKec=mpIsiKec; window.mpHitung=mpHitung; window.mpSetTheme=mpSetTheme; window.mpMuat=mpMuat;
+window.mpInit=mpInit; window.mpMuat=mpMuat; window.mpBuatKor=mpBuatKor; window.mpOpen=mpOpen; window.mpIsiKec=mpIsiKec; window.mpHitung=mpHitung; window.mpSetTheme=mpSetTheme; window.mpGoVisit=mpGoVisit; window.mpMuat=mpMuat;
 function viewerOpen(u){
   var id=fileId(u); if(!id){ window.open(u,'_blank','noopener'); return; }
   var v=document.getElementById('viewer'), img=document.getElementById('viewerImg'), err=document.getElementById('viewerErr');
@@ -906,7 +918,8 @@ function simpan(P){
 }
 function formMasuk(){
   if(!DATA) return;
-  $('#formMasuk').innerHTML='<div class="sec" style="margin-top:0"><h3>'+E(T().formTitle)+'</h3>'+formHtml('',{tgl:todayIso()},false)
+  var pre=KJ_PRE||{}; KJ_PRE=null;
+  $('#formMasuk').innerHTML='<div class="sec" style="margin-top:0"><h3>'+E(T().formTitle)+'</h3>'+formHtml('',Object.assign({tgl:todayIso()},pre),false)
     +'<div class="row" style="margin-top:12px"><button type="button" class="b pr" id="Save" style="width:100%">'+E(T().saveVisit)+'</button></div><p class="mu" id="Msg"></p></div>';
   PEND_BY['']=[];
   bindForm('');
