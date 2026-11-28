@@ -95,6 +95,18 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 [hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--ac);outline-offset:2px}:focus:not(:focus-visible){outline:none}
 </style>
+<style id="sideCss">
+@media (min-width:900px){
+  #app{display:grid;grid-template-columns:220px minmax(0,1fr);column-gap:28px;align-items:start}
+  #app[hidden]{display:none}
+  #app>.nav{grid-column:1;grid-row:1;display:flex;flex-direction:column;grid-template-columns:none;gap:4px;padding:8px;margin:14px 0 0;position:sticky;top:16px;align-self:start}
+  #app>.nav button{flex-direction:row;justify-content:flex-start;align-items:center;gap:12px;font-size:14px;padding:11px 14px;border-radius:10px;white-space:normal}
+  #app>.nav button:not(.on):hover{background:rgba(127,127,127,.1)}
+  #app>.nav svg{width:18px;height:18px}
+  #app>section{grid-column:2;grid-row:1;min-width:0;margin-top:14px}
+}
+</style>
+
 <style id="pcCss">
 @media (min-width:900px){
   .w{max-width:1040px}
@@ -352,7 +364,7 @@ var I18N={
   en:{
     docTitle:'Sales Activity · SCANDIA BOTANI', appTitle:'Sales Activity', back:'Monitoring',
     gateTitle:'Please sign in first', gateTxt:'This page uses the Dashboard Monitoring login. Sign in on Monitoring, then come back here.', gateBtn:'Open Dashboard Monitoring',
-    nav:{ds:'Dashboard',db:'Database',kj:'Visits',hs:'Results',mp:'Peta'},
+    nav:{ds:'Dashboard',db:'Database',kj:'Visits',hs:'Results',mp:'Map'},
     roleAdmin:'Admin', roleSales:'Sales',
     allCity:'All cities', allKec:'All districts', allPer:'All housing estates', allSales:'All sales reps',
     nonPrm:'Non-Housing Estate',
