@@ -92,7 +92,30 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 @keyframes spin{to{transform:rotate(360deg)}}
 [hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--ac);outline-offset:2px}:focus:not(:focus-visible){outline:none}
-</style></head><body>
+</style>
+<style id="mpCss">
+body.wide .w{max-width:1320px}
+.mp .mpTtl{font-family:"Plus Jakarta Sans","Inter",system-ui,sans-serif;font-size:20px;margin:6px 0 2px;font-weight:700}
+.mpCard{background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:14px;margin-bottom:12px}
+.mpLbl{display:block;font-size:12px;color:var(--mu);margin:10px 0 5px;font-weight:600;letter-spacing:.02em}
+.mp select,.mp input[type=text],.mp input[type=month]{width:100%;min-width:0;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:9px 10px}
+.mpPair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mpKorFoot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;flex-wrap:wrap}
+.mpLegend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;padding:4px 2px}
+.mpLegend span{display:inline-flex;align-items:center;gap:6px}
+.mpLegend i{display:inline-block;width:12px;height:12px;border-radius:50%}
+.mpBar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--ln);border-radius:10px;overflow:hidden;background:var(--cd)}
+.seg button{border:0;background:transparent;padding:7px 14px;font:inherit;font-size:13px;color:var(--mu);cursor:pointer}
+.seg button.on{background:var(--ac);color:#fff;font-weight:600}
+.mpMap{width:100%;height:58vh;min-height:340px;border-radius:14px;overflow:hidden;border:1px solid var(--ln)}
+@media (min-width:900px){
+  .mpGrid{display:grid;grid-template-columns:330px minmax(0,1fr);gap:22px;align-items:start}
+  .mpSide{position:sticky;top:16px}
+  .mpMap{height:calc(100vh - 150px);min-height:560px}
+}
+</style>
+</head><body>
 <div class="w">
   <div class="hd">
     <div>
@@ -138,33 +161,52 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
       </button>
     </nav>
 
-    <section id="tMp" hidden>
-      <h2 id="mpTtl" style="font-size:17px;margin:4px 0 8px">Mapping</h2>
-      <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <select id="mpSales" aria-label="Sales" onchange="mpMuat()"></select>
-        <input id="mpBulan" type="text" placeholder="Pilih bulan" aria-label="Bulan" onfocus="this.type='month'" onblur="if(!this.value)this.type='text'" onchange="mpMuat()" style="min-width:0">
-      </div>
-      <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-        <select id="mpKota" aria-label="Kota" onchange="mpIsiKec();mpMuat();mpHitung()"></select>
-        <select id="mpKec" aria-label="Kecamatan" onchange="mpMuat();mpHitung()"></select>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button type="button" class="ib" id="mpTheme" onclick="mpToggleTheme()">Gelap</button></div>
-      <div style="margin-top:12px;padding:10px;border:1px solid var(--ln,#d6d3cb);border-radius:12px">
-        <p class="mu" style="margin:0 0 8px;font-weight:600">Buat koordinat</p>
-        <input id="mpKata" type="text" placeholder="Keyword (pisah dengan /)" oninput="mpHitung()" style="width:100%;margin-top:8px">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;flex-wrap:wrap">
-          <span class="mu" id="mpCocok"></span>
-          <button type="button" class="ib" id="mpBtnKor" onclick="mpBuatKor()">Buat koordinat</button>
+    <section id="tMp" class="mp" hidden>
+      <div class="mpHead">
+        <div>
+          <h2 id="mpTtl" class="mpTtl">Peta Aktivitas Sales</h2>
+          <p class="mu" id="mpStat" style="margin:4px 0 0"></p>
         </div>
       </div>
-      <p class="mu" id="mpStat" style="margin:8px 0"></p>
-      <div class="mu" style="display:flex;gap:12px;flex-wrap:wrap;margin:6px 0">
-        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9ca3af;margin-right:5px"></i><span id="mpL0">Belum dikunjungi</span></span>
-        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#fdba74;margin-right:5px"></i><span id="mpL1">1–2 kunjungan</span></span>
-        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f97316;margin-right:5px"></i><span id="mpL2">3–5 kunjungan</span></span>
-        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#c2410c;margin-right:5px"></i><span id="mpL3">6+ kunjungan</span></span>
+      <div class="mpGrid">
+        <aside class="mpSide">
+          <div class="mpCard">
+            <label class="mpLbl" id="mpLblSales" for="mpSales">Sales</label>
+            <select id="mpSales" onchange="mpMuat()"></select>
+            <label class="mpLbl" id="mpLblBulan" for="mpBulan">Bulan</label>
+            <input id="mpBulan" type="text" placeholder="Pilih bulan" onfocus="this.type='month'" onblur="if(!this.value)this.type='text'" onchange="mpMuat()">
+            <label class="mpLbl" id="mpLblWil" for="mpKota">Wilayah</label>
+            <div class="mpPair">
+              <select id="mpKota" onchange="mpIsiKec();mpMuat();mpHitung()"></select>
+              <select id="mpKec" onchange="mpMuat();mpHitung()"></select>
+            </div>
+          </div>
+          <div class="mpCard">
+            <p class="mpLbl" id="mpKorTtl" style="margin-top:0">Buat koordinat</p>
+            <input id="mpKata" type="text" placeholder="Keyword (pisah dengan /)" oninput="mpHitung()">
+            <div class="mpKorFoot">
+              <span class="mu" id="mpCocok"></span>
+              <button type="button" class="ib" id="mpBtnKor" onclick="mpBuatKor()">Buat koordinat</button>
+            </div>
+          </div>
+          <div class="mpLegend">
+            <span><i style="background:#9ca3af"></i><span id="mpL0">Belum dikunjungi</span></span>
+            <span><i style="background:#fdba74"></i><span id="mpL1">1–2 kunjungan</span></span>
+            <span><i style="background:#f97316"></i><span id="mpL2">3–5 kunjungan</span></span>
+            <span><i style="background:#c2410c"></i><span id="mpL3">6+ kunjungan</span></span>
+          </div>
+        </aside>
+        <div class="mpMain">
+          <div class="mpBar">
+            <span class="mu" id="mpCount"></span>
+            <div class="seg" role="group" aria-label="Tema peta">
+              <button type="button" id="mpThL" onclick="mpSetTheme('light')">Terang</button>
+              <button type="button" id="mpThD" onclick="mpSetTheme('dark')">Gelap</button>
+            </div>
+          </div>
+          <div id="mpMap" class="mpMap"></div>
+        </div>
       </div>
-      <div id="mpMap" style="width:100%;height:60vh;min-height:340px;border-radius:12px;overflow:hidden;border:1px solid var(--ln,#d6d3cb)"></div>
     </section>
 
     <section id="tDs">
@@ -338,9 +380,9 @@ function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort
 function fileId(u){ var m=/[?&]id=([^&#]+)/.exec(u)||/\/d\/([^\/?#]+)/.exec(u); return m?m[1]:''; }
 // ---------- Mapping Sales Activity (peta sebaran kunjungan) ----------
 var MPT={
- id:{ttl:'Mapping',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',l0:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',
+ id:{ttl:'Peta Aktivitas Sales',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',cocok:'perumahan cocok',kataPh:'Keyword (pisah dengan /)',lblSales:'Sales',lblBulan:'Bulan',lblWil:'Wilayah',korTtl:'Buat koordinat',count:'titik',terang:'Terang',gelap:'Gelap',l0:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',
      nokey:'Kunci Google Maps belum diisi. Admin: isi GMAPS_KEY di Script Properties Apps Script.',konfirm:'Buat koordinat untuk perumahan Bogor yang belum punya titik? Proses bisa beberapa kali sampai selesai.',selesai:'Koordinat selesai.',proses:'Memproses',titik:'titik',pilihBulan:'Pilih bulan',semuaKota:'Semua kota',semuaKec:'Semua kecamatan',gelap:'Gelap',terang:'Terang'},
- en:{ttl:'Mapping',sales:'All sales',bulan:'All months',kor:'Build coordinates',l0:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',kunjungan:'visits',kota:'City',kec:'District',
+ en:{ttl:'Sales Activity Map',cocok:'housing estates matched',kataPh:'Keyword (separate with /)',lblSales:'Sales',lblBulan:'Month',lblWil:'Area',korTtl:'Build coordinates',count:'points',terang:'Light',gelap:'Dark',sales:'All sales',bulan:'All months',kor:'Build coordinates',l0:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',kunjungan:'visits',kota:'City',kec:'District',
      nokey:'Google Maps key is not set. Admin: add GMAPS_KEY in Apps Script Script Properties.',konfirm:'Build coordinates for Bogor housing estates without a point? It may take several runs.',selesai:'Coordinates done.',proses:'Processing',titik:'points',pilihBulan:'Pick month',semuaKota:'All cities',semuaKec:'All districts',gelap:'Dark',terang:'Light'}
 };
 var MP={ready:false,loading:false,map:null,markers:[],iw:null};
@@ -349,10 +391,13 @@ function mpStat(s){var el=document.getElementById('mpStat'); if(el) el.textConte
 function mpEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function mpLabels(){
   var set=function(id,v){var e=document.getElementById(id); if(e) e.textContent=v};
-  set('mpTtl',mpT('ttl'));set('mpBtnKor',mpT('kor'));
+  set('mpTtl',mpT('ttl'));set('mpBtnKor',mpT('kor'));set('mpKorTtl',mpT('korTtl'));
+  set('mpLblSales',mpT('lblSales'));set('mpLblBulan',mpT('lblBulan'));set('mpLblWil',mpT('lblWil'));
+  set('mpL0',mpT('l0'));set('mpL1',mpT('l1'));set('mpL2',mpT('l2'));set('mpL3',mpT('l3'));
   var bl=document.getElementById('mpBulan'); if(bl) bl.placeholder=mpT('pilihBulan');
+  var kp=document.getElementById('mpKata'); if(kp) kp.placeholder=mpT('kataPh');
+  var sk=document.querySelector('#mpKota option[value=""]'); if(sk) sk.textContent=mpT('semuaKota');
   mpApplyTheme();
-  var sk=document.querySelector('#mpKota option[value=""]'); if(sk) sk.textContent=mpT('semuaKota');set('mpL0',mpT('l0'));set('mpL1',mpT('l1'));set('mpL2',mpT('l2'));set('mpL3',mpT('l3'));
 }
 function mpAlamatBogor(){
   return ((DATA&&DATA.alamat)||[]).filter(function(a){return a.perumahan && a.perumahan!==NON_PRM && /bogor/i.test(a.kota||'')});
@@ -387,18 +432,19 @@ function mpHitung(){
     set[a.perumahan]=1;
   });
   var el=document.getElementById('mpCocok');
-  if(el) el.textContent=Object.keys(set).length+' perumahan cocok';
+  if(el) el.textContent=Object.keys(set).length+' '+mpT('cocok');
 }
 function mpWarna(n){return n==0?'#9ca3af':n<=2?'#fdba74':n<=5?'#f97316':'#c2410c'}
 var MP_DARK=[{elementType:'geometry',stylers:[{color:'#212121'}]},{elementType:'labels.icon',stylers:[{visibility:'off'}]},{elementType:'labels.text.fill',stylers:[{color:'#757575'}]},{elementType:'labels.text.stroke',stylers:[{color:'#212121'}]},{featureType:'administrative',elementType:'geometry',stylers:[{color:'#757575'}]},{featureType:'poi',elementType:'labels.text.fill',stylers:[{color:'#757575'}]},{featureType:'poi.park',elementType:'geometry',stylers:[{color:'#181818'}]},{featureType:'road',elementType:'geometry.fill',stylers:[{color:'#2c2c2c'}]},{featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#8a8a8a'}]},{featureType:'road.highway',elementType:'geometry',stylers:[{color:'#3c3c3c'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#000000'}]},{featureType:'water',elementType:'labels.text.fill',stylers:[{color:'#3d3d3d'}]}];
 function mpApplyTheme(){
   var dark=(localStorage.getItem('mp_theme')||'light')==='dark';
   if(MP.map) MP.map.setOptions({styles: dark?MP_DARK:[]});
-  var b=document.getElementById('mpTheme'); if(b) b.textContent=dark?mpT('terang'):mpT('gelap');
+  var l=document.getElementById('mpThL'), d=document.getElementById('mpThD');
+  if(l){ l.className=dark?'':'on'; l.textContent=mpT('terang'); }
+  if(d){ d.className=dark?'on':''; d.textContent=mpT('gelap'); }
 }
-function mpToggleTheme(){
-  var dark=(localStorage.getItem('mp_theme')||'light')==='dark';
-  try{localStorage.setItem('mp_theme',dark?'light':'dark')}catch(e){}
+function mpSetTheme(th){
+  try{localStorage.setItem('mp_theme',th)}catch(e){}
   mpApplyTheme();
 }
 function mpIsiSales(){
@@ -441,7 +487,8 @@ function mpMuat(){
       MP.markers.push(m);
     });
     if(MP.markers.length){ var b=new google.maps.LatLngBounds(); MP.markers.forEach(function(m){b.extend(m.getPosition())}); MP.map.fitBounds(b); if(MP.markers.length===1) MP.map.setZoom(15); }
-    mpStat(d.titik.length+' '+mpT('titik'));
+    mpStat(d.titik.length+' '+mpT('count'));
+    var cn=document.getElementById('mpCount'); if(cn) cn.textContent=d.titik.length+' '+mpT('count');
   }).catch(function(e){ mpStat(e.message); });
 }
 function mpBuatKor(){
@@ -456,7 +503,7 @@ function mpBuatKor(){
     }).catch(function(e){ mpStat(e.message); btn.disabled=false; });
   })(0);
 }
-window.mpInit=mpInit; window.mpMuat=mpMuat; window.mpBuatKor=mpBuatKor; window.mpOpen=mpOpen; window.mpIsiKec=mpIsiKec; window.mpHitung=mpHitung; window.mpToggleTheme=mpToggleTheme; window.mpMuat=mpMuat;
+window.mpInit=mpInit; window.mpMuat=mpMuat; window.mpBuatKor=mpBuatKor; window.mpOpen=mpOpen; window.mpIsiKec=mpIsiKec; window.mpHitung=mpHitung; window.mpSetTheme=mpSetTheme; window.mpMuat=mpMuat;
 function viewerOpen(u){
   var id=fileId(u); if(!id){ window.open(u,'_blank','noopener'); return; }
   var v=document.getElementById('viewer'), img=document.getElementById('viewerImg'), err=document.getElementById('viewerErr');
@@ -488,8 +535,16 @@ function call(fn,args){
 }
 function rpc(fn,args){ return call(fn,[TK].concat(args||[])); }
 
+var PHEN={'Cari alamat, perumahan, kota, kecamatan… pisah dengan /':'Search address, housing, city, district… separate with /','Cari alamat, perumahan, sektor, hasil, catatan… pisah dengan /':'Search address, housing, sector, result, notes… separate with /','Cari perumahan, alamat, kota, kecamatan… pisah dengan /':'Search housing, address, city, district… separate with /','Keyword (pisah dengan /)':'Keyword (separate with /)','Pilih bulan':'Pick month','Wajib diisi, contoh: Jl. Melati No. 5':'Required, e.g. Jl. Melati No. 5'};
+function applyPh(){
+  document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(function(el){
+    if(!el.dataset.phId) el.dataset.phId=el.placeholder;
+    el.placeholder = LANG==='en' ? (PHEN[el.dataset.phId]||el.dataset.phId) : el.dataset.phId;
+  });
+}
 function applyLang(){
   document.documentElement.lang=LANG;
+  applyPh();
   document.title=T().docTitle;
   document.querySelectorAll('.lang button').forEach(function(b){ b.classList.toggle('on',b.dataset.lang===LANG); });
   $('#appTitle').textContent=T().appTitle;
@@ -551,6 +606,7 @@ function setTab(t){
   var map={ds:'Ds',db:'Db',kj:'Kj',hs:'Hs',mp:'Mp'};
   Object.keys(map).forEach(function(k){ $('#t'+map[k]).hidden=(k!==t); });
   document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on',b.dataset.t===t); });
+  document.body.classList.toggle('wide', t==='mp');
   if(t==='mp') mpOpen();
   if(t==='hs' && !HASIL && DATA) loadHasil();
   if(t==='hs' && HASIL) renderHs();
