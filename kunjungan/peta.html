@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f5f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161615" media="(prefers-color-scheme: dark)">
+<title>Peta Sebaran Kunjungan</title>
+<style>
+:root{--bg:#f6f5f1;--tx:#1d1d1b;--mu:#6b6a64;--cd:#fff;--ln:#d6d3cb;--ac:#0f766e;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#161615;--tx:#ecebe6;--mu:#a7a59c;--cd:#1f1f1d;--ln:#3a3a36;--ac:#34d399;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161615;--tx:#ecebe6;--mu:#a7a59c;--cd:#1f1f1d;--ln:#3a3a36;--ac:#34d399;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding-top:env(safe-area-inset-top,0px)}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;flex-wrap:wrap}
+h1{font-size:18px;margin:0}
+a.back{color:var(--ac);text-decoration:none;font-weight:600}
+.bar{display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 10px;align-items:center}
+select,input[type=month],button{font:inherit;color:var(--tx);background:var(--cd);border:1px solid var(--ln);border-radius:10px;padding:8px 10px}
+button{cursor:pointer}
+button.pr{background:var(--ac);color:#fff;border-color:var(--ac)}
+#map{width:100%;height:calc(100vh - 210px);min-height:360px;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;padding:10px 14px;font-size:13px;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.msg{padding:14px;color:var(--mu)}
+</style>
+</head>
+<body>
+<header>
+  <div><a class="back" href="../">← Dashboard</a><h1 id="ttl">Peta Sebaran Kunjungan</h1></div>
+  <div style="display:flex;gap:6px"><button id="lgI" class="pr" onclick="setL('id')">ID</button><button id="lgE" onclick="setL('en')">EN</button></div>
+</header>
+<div class="bar">
+  <select id="fSales" onchange="muat()"></select>
+  <input id="fBulan" type="month" onchange="muat()">
+  <button id="btnKor" onclick="buatKor()">Buat koordinat</button>
+  <span id="stat" class="msg" style="padding:0"></span>
+</div>
+<div class="legend">
+  <span><i style="background:#9ca3af"></i><span id="lg0">Belum dikunjungi</span></span>
+  <span><i style="background:#86efac"></i><span id="lg1">1–2 kunjungan</span></span>
+  <span><i style="background:#22c55e"></i><span id="lg2">3–5 kunjungan</span></span>
+  <span><i style="background:#15803d"></i><span id="lg3">6+ kunjungan</span></span>
+</div>
+<div id="map"></div>
+<p id="noKey" class="msg" hidden></p>
+
+<script>
+// ====== ISI KUNCI GOOGLE MAPS (Maps JavaScript API) DI SINI ======
+const GMAPS_KEY = 'AIzaSyAx_jCKxX6KH6NqnEJpNik4QTPZTa-dFPo';
+
+var API=(localStorage.getItem('si_api')||window.API_URL||'').trim(), TK=localStorage.getItem('si_tk')||'';
+var LANG=localStorage.getItem('si_lang')||'id', map=null, markers=[], iw=null;
+var TX={
+ id:{ttl:'Peta Sebaran Kunjungan',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',belum:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',
+      kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',nokey:'Isi GMAPS_KEY di peta.html dengan API key Google Maps.',nologin:'Silakan masuk di aplikasi Dashboard Monitoring terlebih dahulu.',
+      konfirm:'Buat koordinat untuk perumahan yang belum punya titik? Proses bisa beberapa kali sampai selesai.',tidak:'Tidak ditemukan',selesai:'Koordinat selesai.',
+      titik:'titik',adm:'Hanya Admin yang dapat membuat koordinat.',proses:'Memproses'},
+ en:{ttl:'Visit Distribution Map',sales:'All sales',bulan:'All months',kor:'Build coordinates',belum:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',
+      kunjungan:'visits',kota:'City',kec:'District',nokey:'Set GMAPS_KEY in peta.html with your Google Maps API key.',nologin:'Please log in to the Dashboard Monitoring app first.',
+      konfirm:'Build coordinates for housing estates without a point? It may take several runs.',tidak:'Not found',selesai:'Coordinates done.',
+      titik:'points',adm:'Only Admin can build coordinates.',proses:'Processing'}
+};
+function T(k){return TX[LANG][k]||TX.id[k]||k}
+function setL(l){LANG=l;try{localStorage.setItem('si_lang',l)}catch(e){};applyL();muat()}
+function applyL(){
+  document.getElementById('ttl').textContent=T('ttl');document.getElementById('btnKor').textContent=T('kor');
+  document.getElementById('lg0').textContent=T('belum');document.getElementById('lg1').textContent=T('l1');
+  document.getElementById('lg2').textContent=T('l2');document.getElementById('lg3').textContent=T('l3');
+  document.getElementById('lgI').className=LANG=='id'?'pr':'';document.getElementById('lgE').className=LANG=='en'?'pr':'';
+  document.getElementById('fBulan').title=T('bulan');
+}
+function call(fn,args){
+  if(!API) return Promise.reject(new Error(T('nologin')));
+  return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args}),redirect:'follow',credentials:'omit'})
+    .then(function(r){return r.json()})
+    .then(function(j){ if(!j.ok) throw new Error(j.e||'Error'); return j.v; });
+}
+function rpc(fn,args){return call(fn,[TK].concat(args||[]))}
+
+function warna(n){return n==0?'#9ca3af':n<=2?'#86efac':n<=5?'#22c55e':'#15803d'}
+function clear(){markers.forEach(function(m){m.setMap(null)});markers=[]}
+
+function initMap(){
+  map=new google.maps.Map(document.getElementById('map'),{center:{lat:-6.6,lng:106.8},zoom:11,mapTypeControl:false,streetViewControl:false});
+  iw=new google.maps.InfoWindow();
+  muat();
+}
+function muat(){
+  if(!TK){ document.getElementById('stat').textContent=T('nologin'); return; }
+  if(!map) return;
+  var sales=document.getElementById('fSales').value, bulan=document.getElementById('fBulan').value;
+  rpc('kunjunganPeta',[sales,bulan]).then(function(d){
+    clear();
+    d.titik.forEach(function(t){
+      var n=t.n, m=new google.maps.Marker({position:{lat:t.lat,lng:t.lng},map:map,title:t.p,
+        icon:{path:google.maps.SymbolPath.CIRCLE,scale:7+Math.min(n,8)*1.4,fillColor:warna(n),fillOpacity:.92,strokeColor:'#fff',strokeWeight:1.5},
+        label:n?{text:String(n),color:'#fff',fontSize:'11px',fontWeight:'700'}:null});
+      m.addListener('click',function(){
+        iw.setContent('<div style="font:13px system-ui;color:#1d1d1b"><b>'+esc(t.p)+'</b><br>'+esc(T('kota'))+': '+esc(t.kota)+'<br>'+esc(T('kec'))+': '+esc(t.kec)+'<br>'+n+' '+esc(T('kunjungan'))+'</div>');
+        iw.open(map,m);
+      });
+      markers.push(m);
+    });
+    if(markers.length){ var b=new google.maps.LatLngBounds(); markers.forEach(function(m){b.extend(m.getPosition())}); map.fitBounds(b); }
+    document.getElementById('stat').textContent=d.titik.length+' '+T('titik')+(d.belumKoordinat?' · '+d.belumKoordinat+' '+T('tidak'):'');
+  }).catch(function(e){ document.getElementById('stat').textContent=e.message; });
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+function buatKor(){
+  if(!confirm(T('konfirm'))) return;
+  var st=document.getElementById('stat'), btn=document.getElementById('btnKor'); btn.disabled=true;
+  (function loop(n){
+    st.textContent=T('proses')+' '+(n+1)+'…';
+    rpc('kunjunganKoordinatBuat',[]).then(function(r){
+      if(r.sisa>0 && n<30) return loop(n+1);
+      st.textContent=T('selesai'); btn.disabled=false; muat();
+    }).catch(function(e){ st.textContent=e.message; btn.disabled=false; });
+  })(0);
+}
+
+// Isi pilihan sales dari data kunjungan
+function isiSales(){
+  rpc('kunjunganData',[]).then(function(d){
+    var s=document.getElementById('fSales'), opts='<option value="">'+T('sales')+'</option>';
+    (d.sales||[]).forEach(function(n){opts+='<option value="'+esc(n)+'">'+esc(n)+'</option>'});
+    s.innerHTML=opts;
+  }).catch(function(){});
+}
+function loadGmaps(){
+  if(!GMAPS_KEY||/ISI_GOOGLE/.test(GMAPS_KEY)){ var p=document.getElementById('noKey'); p.textContent=T('nokey'); p.hidden=false; return; }
+  var s=document.createElement('script'); s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(GMAPS_KEY)+'&callback=initMap'; s.async=true; document.head.appendChild(s);
+}
+applyL(); isiSales(); loadGmaps();
+</script>
+</body>
+</html>
