@@ -132,20 +132,31 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
         <svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 13l2 2 4-4"/></svg>
         <span data-nav="hs">Hasil</span>
       </button>
-      <button type="button" data-t="mp" title="Mapping Sales Activity" aria-label="Mapping Sales Activity">
+      <button type="button" data-t="mp" title="Mapping" aria-label="Mapping">
         <svg viewBox="0 0 24 24"><path d="M9 3L3 5.5v15L9 18l6 2.5 6-2.5v-15L15 5.5 9 3z"/><path d="M9 3v15M15 5.5v15"/></svg>
-        <span data-nav="mp">Mapping Sales Activity</span>
+        <span data-nav="mp">Mapping</span>
       </button>
     </nav>
 
     <section id="tMp" hidden>
-      <h2 id="mpTtl" style="font-size:17px;margin:4px 0 8px">Mapping Sales Activity</h2>
-      <div class="row">
+      <h2 id="mpTtl" style="font-size:17px;margin:4px 0 8px">Mapping</h2>
+      <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <select id="mpSales" aria-label="Sales" onchange="mpMuat()"></select>
-        <input id="mpBulan" type="month" aria-label="Bulan" onchange="mpMuat()">
-        <button type="button" class="ib" id="mpBtnKor" onclick="mpBuatKor()">Buat koordinat</button>
+        <input id="mpBulan" type="month" aria-label="Bulan" onchange="mpMuat()" style="min-width:0">
       </div>
-      <p class="mu" id="mpStat" style="margin:6px 0"></p>
+      <div style="margin-top:12px;padding:10px;border:1px solid var(--ln,#d6d3cb);border-radius:12px">
+        <p class="mu" style="margin:0 0 8px;font-weight:600">Buat koordinat</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <select id="mpKota" aria-label="Kota" onchange="mpIsiKec();mpHitung()"></select>
+          <select id="mpKec" aria-label="Kecamatan" onchange="mpHitung()"></select>
+        </div>
+        <input id="mpKata" type="text" placeholder="Keyword (pisah dengan /)" oninput="mpHitung()" style="width:100%;margin-top:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <span class="mu" id="mpCocok"></span>
+          <button type="button" class="ib" id="mpBtnKor" onclick="mpBuatKor()">Buat koordinat</button>
+        </div>
+      </div>
+      <p class="mu" id="mpStat" style="margin:8px 0"></p>
       <div class="mu" style="display:flex;gap:12px;flex-wrap:wrap;margin:6px 0">
         <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9ca3af;margin-right:5px"></i><span id="mpL0">Belum dikunjungi</span></span>
         <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#86efac;margin-right:5px"></i><span id="mpL1">1–2 kunjungan</span></span>
@@ -236,7 +247,7 @@ var I18N={
   id:{
     docTitle:'Aktivitas Sales · SCANDIA BOTANI', appTitle:'Aktivitas Sales', back:'Monitoring',
     gateTitle:'Silakan masuk dulu', gateTxt:'Halaman ini memakai login Dashboard Monitoring. Masuk di Monitoring, lalu kembali ke sini.', gateBtn:'Buka Dashboard Monitoring',
-    nav:{ds:'Dashboard',db:'Database',kj:'Kunjungan',hs:'Hasil',mp:'Mapping Sales Activity'},
+    nav:{ds:'Dashboard',db:'Database',kj:'Kunjungan',hs:'Hasil',mp:'Mapping'},
     roleAdmin:'Admin', roleSales:'Sales',
     allCity:'Semua kota', allKec:'Semua kecamatan', allPer:'Semua perumahan', allSales:'Semua sales',
     nonPrm:'Non Perumahan',
@@ -274,7 +285,7 @@ var I18N={
   en:{
     docTitle:'Sales Activity · SCANDIA BOTANI', appTitle:'Sales Activity', back:'Monitoring',
     gateTitle:'Please sign in first', gateTxt:'This page uses the Dashboard Monitoring login. Sign in on Monitoring, then come back here.', gateBtn:'Open Dashboard Monitoring',
-    nav:{ds:'Dashboard',db:'Database',kj:'Visits',hs:'Results',mp:'Mapping Sales Activity'},
+    nav:{ds:'Dashboard',db:'Database',kj:'Visits',hs:'Results',mp:'Mapping'},
     roleAdmin:'Admin', roleSales:'Sales',
     allCity:'All cities', allKec:'All districts', allPer:'All housing estates', allSales:'All sales reps',
     nonPrm:'Non-Housing Estate',
@@ -326,9 +337,9 @@ function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i}).sort
 function fileId(u){ var m=/[?&]id=([^&#]+)/.exec(u)||/\/d\/([^\/?#]+)/.exec(u); return m?m[1]:''; }
 // ---------- Mapping Sales Activity (peta sebaran kunjungan) ----------
 var MPT={
- id:{ttl:'Mapping Sales Activity',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',l0:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',
+ id:{ttl:'Mapping',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',l0:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',
      nokey:'Kunci Google Maps belum diisi. Admin: isi GMAPS_KEY di Script Properties Apps Script.',konfirm:'Buat koordinat untuk perumahan Bogor yang belum punya titik? Proses bisa beberapa kali sampai selesai.',selesai:'Koordinat selesai.',proses:'Memproses',titik:'titik'},
- en:{ttl:'Mapping Sales Activity',sales:'All sales',bulan:'All months',kor:'Build coordinates',l0:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',kunjungan:'visits',kota:'City',kec:'District',
+ en:{ttl:'Mapping',sales:'All sales',bulan:'All months',kor:'Build coordinates',l0:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',kunjungan:'visits',kota:'City',kec:'District',
      nokey:'Google Maps key is not set. Admin: add GMAPS_KEY in Apps Script Script Properties.',konfirm:'Build coordinates for Bogor housing estates without a point? It may take several runs.',selesai:'Coordinates done.',proses:'Processing',titik:'points'}
 };
 var MP={ready:false,loading:false,map:null,markers:[],iw:null};
@@ -339,6 +350,41 @@ function mpLabels(){
   var set=function(id,v){var e=document.getElementById(id); if(e) e.textContent=v};
   set('mpTtl',mpT('ttl'));set('mpBtnKor',mpT('kor'));set('mpL0',mpT('l0'));set('mpL1',mpT('l1'));set('mpL2',mpT('l2'));set('mpL3',mpT('l3'));
 }
+function mpAlamatBogor(){
+  return ((DATA&&DATA.alamat)||[]).filter(function(a){return a.perumahan && a.perumahan!==NON_PRM && /bogor/i.test(a.kota||'')});
+}
+function mpIsiKota(){
+  var s=document.getElementById('mpKota'); if(!s) return;
+  var cur=s.value, set={}; mpAlamatBogor().forEach(function(a){set[a.kota]=1});
+  s.innerHTML='<option value="">Semua kota</option>'+Object.keys(set).sort().map(function(k){return '<option value="'+mpEsc(k)+'">'+mpEsc(k)+'</option>'}).join('');
+  s.value=cur; mpIsiKec();
+}
+function mpIsiKec(){
+  var s=document.getElementById('mpKec'), kota=(document.getElementById('mpKota')||{}).value||''; if(!s) return;
+  var cur=s.value, set={};
+  mpAlamatBogor().forEach(function(a){ if(!kota||a.kota===kota) set[a.kecamatan]=1; });
+  s.innerHTML='<option value="">Semua kecamatan</option>'+Object.keys(set).sort().map(function(k){return '<option value="'+mpEsc(k)+'">'+mpEsc(k)+'</option>'}).join('');
+  if(set[cur]) s.value=cur;
+}
+function mpFilterKor(){
+  return {kota:(document.getElementById('mpKota')||{}).value||'', kec:(document.getElementById('mpKec')||{}).value||'', kata:(document.getElementById('mpKata')||{}).value||''};
+}
+function mpKataCocok(text,kata){
+  var terms=String(kata||'').toLowerCase().split('/').map(function(s){return s.trim()}).filter(Boolean);
+  if(!terms.length) return true; var t=String(text||'').toLowerCase();
+  return terms.some(function(x){return t.indexOf(x)>=0});
+}
+function mpHitung(){
+  var f=mpFilterKor(), set={};
+  mpAlamatBogor().forEach(function(a){
+    if(f.kota && a.kota!==f.kota) return;
+    if(f.kec && a.kecamatan!==f.kec) return;
+    if(f.kata && !mpKataCocok(a.perumahan+' '+a.alamat, f.kata)) return;
+    set[a.perumahan]=1;
+  });
+  var el=document.getElementById('mpCocok');
+  if(el) el.textContent=Object.keys(set).length+' perumahan cocok';
+}
 function mpWarna(n){return n==0?'#9ca3af':n<=2?'#86efac':n<=5?'#22c55e':'#15803d'}
 function mpIsiSales(){
   var s=document.getElementById('mpSales'); if(!s) return;
@@ -347,7 +393,7 @@ function mpIsiSales(){
   s.innerHTML=opts; s.value=cur;
 }
 function mpOpen(){
-  mpLabels(); mpIsiSales();
+  mpLabels(); mpIsiSales(); mpIsiKota(); mpHitung();
   if(MP.ready){ mpMuat(); return; }
   if(MP.loading) return;
   MP.loading=true;
@@ -384,15 +430,16 @@ function mpMuat(){
 function mpBuatKor(){
   if(!confirm(mpT('konfirm'))) return;
   var btn=document.getElementById('mpBtnKor'); btn.disabled=true;
+  var f=mpFilterKor();
   (function loop(n){
     mpStat(mpT('proses')+' '+(n+1)+'…');
-    rpc('kunjunganKoordinatBuat',[]).then(function(r){
+    rpc('kunjunganKoordinatBuat',[f]).then(function(r){
       if(r.sisa>0 && n<30) return loop(n+1);
       mpStat(mpT('selesai')); btn.disabled=false; mpMuat();
     }).catch(function(e){ mpStat(e.message); btn.disabled=false; });
   })(0);
 }
-window.mpInit=mpInit; window.mpMuat=mpMuat; window.mpBuatKor=mpBuatKor; window.mpOpen=mpOpen;
+window.mpInit=mpInit; window.mpMuat=mpMuat; window.mpBuatKor=mpBuatKor; window.mpOpen=mpOpen; window.mpIsiKec=mpIsiKec; window.mpHitung=mpHitung;
 function viewerOpen(u){
   var id=fileId(u); if(!id){ window.open(u,'_blank','noopener'); return; }
   var v=document.getElementById('viewer'), img=document.getElementById('viewerImg'), err=document.getElementById('viewerErr');
