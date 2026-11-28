@@ -267,7 +267,7 @@ $('#tb').innerHTML=`<p class="mu">${l.length} SPO · ${R(l.reduce((t,r)=>t+r.a,0
 const TREND_CLR=['#0f766e','#b45309','#2563eb','#9333ea','#dc2626','#16a34a','#0891b2','#db2777','#ca8a04','#4f46e5','#65a30d','#78716c'];
 function nameOf(app){var r=(RACE||[]).find(function(x){return x.app===app});return r?r.nama:app}
 var TR_MODE='line', TR_SEL=null, OM_MODE='line', TR_OPEN=false;
-function qMatch(text,q){var t=String(text).toLowerCase();var groups=String(q||'').toLowerCase().split('/').map(function(g){return g.trim().split(/\s+/).filter(Boolean)}).filter(function(g){return g.length});if(!groups.length)return true;return groups.some(function(g){return g.every(function(w){return t.indexOf(w)>=0})})}
+function qMatch(text,q){var t=String(text).toLowerCase();var groups=String(q||'').toLowerCase().split('/').map(function(g){return g.trim().split(/\s+/).filter(Boolean)}).filter(function(g){return g.length});if(!groups.length)return true;return groups.some(function(g){return g.every(function(w){return new RegExp('(^|[^\\p{L}\\p{N}])'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'u').test(t)})})}
 var NONPRM=new Set(['pick up customer','botani','sukabumi','lalamove','stok ccm','aeon','cinere 8','pick up sendiri','pick up','cust. pick up','bali']);
 var VAL_ON=false;
 
