@@ -93,6 +93,30 @@ textarea{min-height:120px;resize:vertical;font-size:15px}
 [hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--ac);outline-offset:2px}:focus:not(:focus-visible){outline:none}
 </style>
+<style id="pcCss">
+@media (min-width:900px){
+  .w{max-width:1040px}
+  body.wide .w{max-width:1320px}
+  .kpi{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .box{padding:14px 16px}
+  .sec{padding:18px 20px;margin-top:18px}
+  .card{padding:14px 16px;margin:0}
+  #listDb,#listHs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+  #listDb>.card,#listHs>.card{margin:0}
+  #formMasuk .row>div{min-width:0}
+  #formMasuk .row{gap:12px}
+  .nav{max-width:100%}
+  .sum,#sum{font-size:15px}
+  .dd{margin-top:8px}
+  .thumbs{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+}
+@media (min-width:1280px){
+  .w{max-width:1140px}
+  body.wide .w{max-width:1320px}
+  #listDb,#listHs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+</style>
+
 <style id="mpCss">
 body.wide .w{max-width:1320px}
 .mp .mpTtl{font-family:"Plus Jakarta Sans","Inter",system-ui,sans-serif;font-size:20px;margin:6px 0 2px;font-weight:700}
