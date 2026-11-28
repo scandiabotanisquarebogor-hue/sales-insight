@@ -46,18 +46,16 @@ button.pr{background:var(--ac);color:#fff;border-color:var(--ac)}
 <p id="noKey" class="msg" hidden></p>
 
 <script>
-// ====== ISI KUNCI GOOGLE MAPS (Maps JavaScript API) DI SINI ======
-const GMAPS_KEY = 'AIzaSyAx_jCKxX6KH6NqnEJpNik4QTPZTa-dFPo';
 
 var API=(localStorage.getItem('si_api')||window.API_URL||'').trim(), TK=localStorage.getItem('si_tk')||'';
 var LANG=localStorage.getItem('si_lang')||'id', map=null, markers=[], iw=null;
 var TX={
  id:{ttl:'Peta Sebaran Kunjungan',sales:'Semua sales',bulan:'Semua bulan',kor:'Buat koordinat',belum:'Belum dikunjungi',l1:'1–2 kunjungan',l2:'3–5 kunjungan',l3:'6+ kunjungan',
-      kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',nokey:'Isi GMAPS_KEY di peta.html dengan API key Google Maps.',nologin:'Silakan masuk di aplikasi Dashboard Monitoring terlebih dahulu.',
+      kunjungan:'kunjungan',kota:'Kota',kec:'Kecamatan',nokey:'Kunci Google Maps belum diisi. Admin: isi GMAPS_KEY di Script Properties Apps Script.',nologin:'Silakan masuk di aplikasi Dashboard Monitoring terlebih dahulu.',
       konfirm:'Buat koordinat untuk perumahan yang belum punya titik? Proses bisa beberapa kali sampai selesai.',tidak:'Tidak ditemukan',selesai:'Koordinat selesai.',
       titik:'titik',adm:'Hanya Admin yang dapat membuat koordinat.',proses:'Memproses'},
  en:{ttl:'Visit Distribution Map',sales:'All sales',bulan:'All months',kor:'Build coordinates',belum:'Not visited yet',l1:'1–2 visits',l2:'3–5 visits',l3:'6+ visits',
-      kunjungan:'visits',kota:'City',kec:'District',nokey:'Set GMAPS_KEY in peta.html with your Google Maps API key.',nologin:'Please log in to the Dashboard Monitoring app first.',
+      kunjungan:'visits',kota:'City',kec:'District',nokey:'Google Maps key is not set. Admin: add GMAPS_KEY in Apps Script Script Properties.',nologin:'Please log in to the Dashboard Monitoring app first.',
       konfirm:'Build coordinates for housing estates without a point? It may take several runs.',tidak:'Not found',selesai:'Coordinates done.',
       titik:'points',adm:'Only Admin can build coordinates.',proses:'Processing'}
 };
@@ -129,8 +127,11 @@ function isiSales(){
   }).catch(function(){});
 }
 function loadGmaps(){
-  if(!GMAPS_KEY||/ISI_GOOGLE/.test(GMAPS_KEY)){ var p=document.getElementById('noKey'); p.textContent=T('nokey'); p.hidden=false; return; }
-  var s=document.createElement('script'); s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(GMAPS_KEY)+'&callback=initMap'; s.async=true; document.head.appendChild(s);
+  if(!TK){ document.getElementById('stat').textContent=T('nologin'); return; }
+  rpc('petaKunci',[]).then(function(k){
+    if(!k){ var p=document.getElementById('noKey'); p.textContent=T('nokey'); p.hidden=false; return; }
+    var s=document.createElement('script'); s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(k)+'&callback=initMap'; s.async=true; document.head.appendChild(s);
+  }).catch(function(e){ document.getElementById('stat').textContent=e.message; });
 }
 applyL(); isiSales(); loadGmaps();
 </script>
